@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lao-quiz-v2';
+const CACHE_NAME = 'lao-quiz-v4';
 const assetsToCache = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const assetsToCache = [
   './b.png',
   './c.png',
   './d.png',
+  './send.png',
   './Phetsarath-OT.woff',
   './ABC.txt',
   './A.txt',

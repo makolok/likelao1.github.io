@@ -52,17 +52,11 @@ html, body {
 
 /* การ์ดคำถาม จัดพื้นที่ภายในให้เลื่อนขึ้นลงได้พอดี */
 .question-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow-y: auto;
-    margin-bottom: 8px;
-    min-height: 0;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
-
 .question-title {
     font-size: 0.95rem;
     font-weight: bold;

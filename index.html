@@ -24,7 +24,25 @@
             font-family: 'Phetsarath', sans-serif !important;
         }
 
-        /* 🎨 แถบปุ่มด้านล่าง: ปรับสไตล์และขนาดถอดแบบจาก category5.html อย่างลงตัว */
+        /* 📱 ปรับหน้าจออัตโนมัติสำหรับแท็บเล็ตและไอแพด (ความกว้าง 768px ขึ้นไป) */
+        @media screen and (min-width: 768px) {
+            .quiz-container {
+                max-width: 580px !important;
+                height: 85vh !important;
+                margin: auto !important;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: #0f172a;
+            }
+        }
+
+        /* 🎨 แถบปุ่มด้านล่าง */
         .cat5-bottom-bar {
             display: flex !important;
             justify-content: space-around !important;
@@ -57,7 +75,6 @@
             background: transparent !important;
         }
 
-        /* ปุ่มยาวของโหมด 1 */
         .btn-next {
             width: 100% !important;
             padding: 16px 14px !important;
@@ -84,15 +101,11 @@
             setInterval(syncBackground, 50);
         });
 
-        /* 👋 ฟังก์ชันปิดหน้าต่างต้อนรับ เมื่อกดปุ่มเข้าสู่หน้าหลัก */
         function closeWelcomeModal() {
             const modal = document.getElementById('welcome-modal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
+            if (modal) modal.style.display = 'none';
         }
 
-        /* 🔐 ฟังก์ชันเปิดหน้าต่างรหัสผ่านคูสອນ */
         function teacherUnlock() {
             const modal = document.getElementById('custom-password-modal');
             if (modal) {
@@ -148,7 +161,6 @@
         
         <!-- 🏠 หน้าที่ 1: หน้าแรก (Home Screen) -->
         <div id="home-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; overflow-y: auto;">
-            
             <div style="width: 100%; max-width: 360px;">
                 <div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                     <span style="display: flex; align-items: center; gap: 8px;">
@@ -273,12 +285,10 @@
                 </div>
             </div>
 
-            <!-- 🎯 ปุ่มด้านล่าง: สไตล์เดียวกับหมวด 5 เป๊ะ -->
+            <!-- 🎯 ปุ่มด้านล่าง -->
             <div style="flex-shrink: 0; padding-bottom: 8px;">
-                <!-- 📌 ปุ่มสำหรับโหมด 1 (ปุ่มยาวแบบเดิม) -->
                 <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display: none;">ກົດຂໍ້ຕໍ່ໄປ</button>
 
-                <!-- 📌 แถบปุ่มสำหรับโหมด 2, 3, 4 (แถบ ก ข ค ง แบบ category5) -->
                 <div id="cat5-bottom-bar-wrapper" class="cat5-bottom-bar" style="display: flex;">
                     <button onclick="prevOrSubmit()" class="cat5-img-btn" title="กลับ / ส่งข้อสอบ">
                         <img id="back-submit-img" src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
@@ -304,37 +314,30 @@
 
     </div>
 
-    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ (Welcome Modal) ปรับตัวหนังสือเป็นสีขาวและตัวหนาทั้งหมด -->
+    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ -->
     <div id="welcome-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
         <div style="background: #1e293b; padding: 25px 20px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.7); border: 2px solid #38bdf8; box-sizing: border-box;">
-            
             <h2 style="color: #ffffff; margin: 0 0 4px 0; font-size: 1.5rem; font-weight: bold;">ສະບາຍດີ</h2>
             <p style="color: #ffffff; font-size: 1rem; margin: 0 0 15px 0; font-weight: bold;">ຍິນດີຕ້ອນຮັບສູ່</p>
-            
             <div style="background: rgba(0, 0, 0, 0.4); padding: 15px 10px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.15);">
                 <div style="margin-bottom: 10px; display: flex; justify-content: center;">
                     <img src="icon-192.png" alt="Logo" style="width: 55px; height: 55px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
                 </div>
-                <div style="font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-bottom: 6px;">
-                    ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
-                </div>
+                <div style="font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-bottom: 6px;">ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ</div>
                 <h1 style="font-size: 1.05rem; color: #ffffff; margin: 0; font-weight: bold;">020-22293666, 02077116687</h1>
             </div>
-
             <button onclick="closeWelcomeModal()" style="width: 100%; padding: 12px; font-size: 1.1rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(2,132,199,0.5);">
                 🚀 ເຂົ້າສູ່ໜ້າຫຼັກ
             </button>
         </div>
     </div>
 
-    <!-- 🔐 หน้าต่างใส่รหัสผ่านแบบกำหนดเอง -->
+    <!-- 🔐 หน้าต่างใส่รหัสผ่าน -->
     <div id="custom-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #38bdf8;">
             <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 1.1rem;">🔐 ໂໝດສຳລັບຄູສອນ</h3>
             <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px;">ກະລຸນາໃສ່ລະຫັດຜ່ານ:</p>
-            
             <input type="tel" inputmode="numeric" pattern="[0-9]*" id="custom-password-input" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100% !important; box-sizing: border-box !important; padding: 10px !important; font-size: 1rem !important; border-radius: 6px !important; border: 2px solid #38bdf8 !important; background-color: #facc15 !important; background: #facc15 !important; color: #000000 !important; outline: none !important; font-weight: bold !important; text-align: center !important; margin-bottom: 15px !important;">
-            
             <div style="display: flex; gap: 8px;">
                 <button onclick="closePasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
                 <button onclick="submitPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
@@ -343,8 +346,6 @@
     </div>
 	
     <script src="app.js"></script>
-    
-    <!-- 🚀 ลงทะเบียน Service Worker สำหรับทำงานแบบ Offline -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
