@@ -304,27 +304,23 @@
 
     </div>
 
-    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ (Welcome Modal) ปรับย้ายโลโก้มาอยู่เหนือชื่อโรงเรียน -->
+    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ (Welcome Modal) ปรับตัวหนังสือเป็นสีขาวและตัวหนาทั้งหมด -->
     <div id="welcome-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
         <div style="background: #1e293b; padding: 25px 20px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.7); border: 2px solid #38bdf8; box-sizing: border-box;">
             
-            <!-- ข้อความทักทายและต้อนรับ -->
-            <h2 style="color: #facc15; margin: 0 0 4px 0; font-size: 1.5rem; font-weight: bold;">ສະບາຍດີ</h2>
-            <p style="color: #cbd5e1; font-size: 1rem; margin: 0 0 15px 0;">ຍິນດີຕ້ອນຮັບສູ່</p>
+            <h2 style="color: #ffffff; margin: 0 0 4px 0; font-size: 1.5rem; font-weight: bold;">ສະບາຍດີ</h2>
+            <p style="color: #ffffff; font-size: 1rem; margin: 0 0 15px 0; font-weight: bold;">ຍິນດີຕ້ອນຮັບສູ່</p>
             
-            <!-- กล่องข้อมูลโรงเรียน: โลโก้อยู่ข้างบนชื่อโรงเรียน ขนาดพอดีตา ตรงกลาง -->
             <div style="background: rgba(0, 0, 0, 0.4); padding: 15px 10px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.15);">
-                <!-- โลโก้ขนาดกำลังดี อยู่ตรงกลางเหนือชื่อโรงเรียน -->
                 <div style="margin-bottom: 10px; display: flex; justify-content: center;">
                     <img src="icon-192.png" alt="Logo" style="width: 55px; height: 55px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
                 </div>
                 <div style="font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-bottom: 6px;">
                     ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
                 </div>
-                <h1 style="font-size: 1.05rem; color: #38bdf8; margin: 0; font-weight: bold;">020-22293666, 02077116687</h1>
+                <h1 style="font-size: 1.05rem; color: #ffffff; margin: 0; font-weight: bold;">020-22293666, 02077116687</h1>
             </div>
 
-            <!-- ปุ่มกดเข้าหน้าหลัก -->
             <button onclick="closeWelcomeModal()" style="width: 100%; padding: 12px; font-size: 1.1rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(2,132,199,0.5);">
                 🚀 ເຂົ້າສູ່ໜ້າຫຼັກ
             </button>
@@ -347,5 +343,16 @@
     </div>
 	
     <script src="app.js"></script>
+    
+    <!-- 🚀 ลงทะเบียน Service Worker สำหรับทำงานแบบ Offline -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!', reg))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </body>
 </html>
