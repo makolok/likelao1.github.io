@@ -282,10 +282,10 @@ function startApp(mode) {
     document.getElementById('main-quiz-wrapper').style.display = 'flex';
 
     const quizBox = document.getElementById('main-quiz-box');
-    if (currentMode === 'study') quizBox.style.backgroundColor = '#18181b';
-    else if (currentMode === 'quiz') quizBox.style.backgroundColor = '#713f12';
-    else if (currentMode === 'random') quizBox.style.backgroundColor = '#581c87';
-    else if (currentMode === 'review_wrong') quizBox.style.backgroundColor = '#ca8a04';
+    if (currentMode === 'study') quizBox.style.backgroundColor = '#000000';
+    else if (currentMode === 'quiz') quizBox.style.backgroundColor = '#0000CC';
+    else if (currentMode === 'random') quizBox.style.backgroundColor = '#993399';
+    else if (currentMode === 'review_wrong') quizBox.style.backgroundColor = '#996600';
 
     document.getElementById('live-score-board').style.display = (currentMode === 'study') ? 'none' : 'flex';
     fetchQuestions(currentCategoryFile, false);
@@ -436,8 +436,7 @@ function loadQuestion() {
 
     q.options.forEach((opt, idx) => {
         const isChecked = userAnswers[currentQuestionIndex] === idx;
-        let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;";
-
+let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; background-color: transparent !important; border: none !important; box-shadow: none !important;";
         if (currentMode === 'study') {
             if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
         } else {
@@ -457,7 +456,7 @@ function loadQuestion() {
         `;
     });
 
-// 🎯 สลับปุ่มควบคุมด้านล่างตามโหมด (บังคับเช็คเงื่อนไขหมวด 1 ให้ชัดเจน)
+    // 🎯 สลับปุ่มควบคุมด้านล่างตามโหมด (บังคับเช็คเงื่อนไขหมวด 1 ให้ชัดเจน)
     const nextBtn = document.getElementById('btn-next');
     const bottomBarWrapper = document.getElementById('cat5-bottom-bar-wrapper');
 
@@ -565,15 +564,10 @@ function prevQuestion() {
     }
 }
 
+// 🎯 ปรับปรุงจุดนี้: บังคับให้ผู้ใชิต้องเลือกตอบก่อน ถึงจะกดปุ่มข้อถัดไป/ข้าม ได้
 function nextOrSkipQuestion() {
     if (currentMode !== 'study' && !isAnswered) {
-        if (currentQuestionIndex < quizQuestions.length - 1) {
-            currentQuestionIndex++;
-            saveQuizState();
-            loadQuestion();
-        } else {
-            finishExamOrNext();
-        }
+        alert('⚠️ ກະລຸນາເລືອກຕອບຄຳຖາມ (ກ, ຂ, ຄ, ງ) ກ່ອນໄປຂໍ້ຕໍ່ໄປ!');
         return;
     }
 
@@ -663,7 +657,7 @@ function showResults() {
     
     document.getElementById('final-score').innerText = `ຜິດພາດ: ${wrongCount} ຂໍ້ (ຈາກ ${quizQuestions.length} ຂໍ້)`;
     const isPassed = wrongCount <= 10;
-    document.getElementById('score-message').innerText = isPassed ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານการສອບເສັງ` : `❌ ທ່ານບໍ່ຜ່ານการສອບເສັງ`;
+    document.getElementById('score-message').innerText = isPassed ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງ` : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງ`;
 
     let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
     let reviewButtonHtml = '';

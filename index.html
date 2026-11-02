@@ -24,39 +24,38 @@
             font-family: 'Phetsarath', sans-serif !important;
         }
 
-        /* 🎨 บังคับขยายขนาดปุ่ม ก ข ค ง ให้ใหญ่ขึ้นจริงทุกอุปกรณ์ */
+        /* 🎨 แถบปุ่มด้านล่าง: ปรับสไตล์และขนาดถอดแบบจาก category5.html อย่างลงตัว */
         .cat5-bottom-bar {
             display: flex !important;
             justify-content: space-around !important;
             align-items: center !important;
-            gap: 6px !important;
-            padding: 8px 10px !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 6px !important;
-            flex-shrink: 0 !important;
+            background: transparent !important;
+            padding: 6px 4px !important;
+            border-top: none !important;
+            border-radius: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
 
-.cat5-img-btn {
-    background: transparent !important; /* บังคับโปร่งใสแบบเด็ดขาด */
-    background-color: transparent !important;
-    border: none !important;
-    cursor: pointer !important;
-    padding: 0 !important;
-    flex: 1 !important;
-    max-width: 75px !important;   /* 👈 ขยายความกว้างขึ้นอีกนิด เพื่อให้รับกับความสูง 80px */
-    height: 80px !important;      /* 👈 ความสูงที่คุณต้องการ */
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
+        .cat5-bottom-bar .cat5-img-btn {
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            width: 90px !important;  
+            height: 120px !important; 
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
 
-.cat5-img-btn img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important; /* 👈 เปลี่ยนจาก fill เป็น contain เพื่อไม่ให้รูปถูกบีบและรักษาความโปร่งใส */
-    border-radius: 8px !important;
-    background: transparent !important; /* ป้องกันพื้นหลังติดที่ตัวรูป */
-}
+        .cat5-bottom-bar .cat5-img-btn img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: fill !important;
+            border-radius: 6px !important;
+            background: transparent !important;
+        }
 
         /* ปุ่มยาวของโหมด 1 */
         .btn-next {
@@ -84,6 +83,63 @@
             };
             setInterval(syncBackground, 50);
         });
+
+        /* 👋 ฟังก์ชันปิดหน้าต่างต้อนรับ เมื่อกดปุ่มเข้าสู่หน้าหลัก */
+        function closeWelcomeModal() {
+            const modal = document.getElementById('welcome-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        /* 🔐 ฟังก์ชันเปิดหน้าต่างรหัสผ่านคูสອນ */
+        function teacherUnlock() {
+            const modal = document.getElementById('custom-password-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const passInput = document.getElementById('custom-password-input');
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
+            }
+        }
+
+        function closePasswordModal() {
+            const modal = document.getElementById('custom-password-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function submitPasswordModal() {
+            const passInput = document.getElementById('custom-password-input');
+            const password = passInput ? passInput.value.trim() : '';
+            closePasswordModal();
+
+            const homeSelect = document.getElementById('homeCategory');
+            const filename = homeSelect && homeSelect.value ? homeSelect.value : (typeof currentCategoryFile !== 'undefined' ? currentCategoryFile : 'ABC.txt');
+
+            if (password === "1234") {
+                if (typeof teacherTempUnlocked !== 'undefined') teacherTempUnlocked = true;
+                localStorage.removeItem(`lao_quiz_study_passed_${filename}`);
+                localStorage.removeItem(`lao_quiz_quiz_passed_${filename}`);
+                localStorage.removeItem(`lao_quiz_teacher_secret_${filename}`);
+                if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
+                localStorage.removeItem('lao_quiz_selected_category');
+                if (typeof checkHomeUnlockStatus === 'function') checkHomeUnlockStatus();
+                alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
+            } else if (password === "77116687") {
+                localStorage.setItem(`lao_quiz_study_passed_${filename}`, 'true');
+                localStorage.setItem(`lao_quiz_quiz_passed_${filename}`, 'true');
+                localStorage.setItem(`lao_quiz_teacher_secret_${filename}`, 'true');
+                if (typeof teacherTempUnlocked !== 'undefined') teacherTempUnlocked = false;
+                if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
+                localStorage.removeItem('lao_quiz_selected_category');
+                if (typeof checkHomeUnlockStatus === 'function') checkHomeUnlockStatus();
+                alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ!");
+            } else {
+                alert("❌ ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!");
+            }
+        }
     </script>
 </head>
 <body id="app-body">
@@ -111,7 +167,7 @@
                     </div>
 
                     <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-                        <input type="number" id="studentAge" placeholder="ອາຍຸ..." style="width: 50%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
+                        <input type="tel" id="studentAge" inputmode="numeric" pattern="[0-9]*" placeholder="ອາຍຸ..." style="width: 50%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
                         <input type="tel" id="studentPhone" placeholder="ເບີໂທລະສັບ..." style="width: 50%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
                     </div>
 
@@ -217,12 +273,12 @@
                 </div>
             </div>
 
-            <!-- 🎯 ปุ่มด้านล่าง: จะสลับแสดงผลอัตโนมัติตามโหมด -->
+            <!-- 🎯 ปุ่มด้านล่าง: สไตล์เดียวกับหมวด 5 เป๊ะ -->
             <div style="flex-shrink: 0; padding-bottom: 8px;">
                 <!-- 📌 ปุ่มสำหรับโหมด 1 (ปุ่มยาวแบบเดิม) -->
                 <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display: none;">ກົດຂໍ້ຕໍ່ໄປ</button>
 
-                <!-- 📌 แถบปุ่มสำหรับโหมด 2, 3, 4 (แถบ ก ข ค ง) -->
+                <!-- 📌 แถบปุ่มสำหรับโหมด 2, 3, 4 (แถบ ก ข ค ง แบบ category5) -->
                 <div id="cat5-bottom-bar-wrapper" class="cat5-bottom-bar" style="display: flex;">
                     <button onclick="prevOrSubmit()" class="cat5-img-btn" title="กลับ / ส่งข้อสอบ">
                         <img id="back-submit-img" src="back.png" alt="ກັບ" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'45\'><rect width=\'100%\' height=\'100%\' fill=\'%23dc2626\' rx=\'6\'/><text x=\'50%\' y=\'55%\' fill=\'white\' font-size=\'13\' font-weight=\'bold\' text-anchor=\'middle\' dominant-baseline=\'middle\'>ກັບ</text></svg>'">
@@ -248,14 +304,40 @@
 
     </div>
 
-    <!-- 🔐 หน้าต่างใส่รหัสผ่านแบบกำหนดเอง (พื้นหลังช่องกรอกสีขาว ตัวหนังสือสีดำ เห็นชัดเจนแน่นอน) -->
+    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ (Welcome Modal) ปรับย้ายโลโก้มาอยู่เหนือชื่อโรงเรียน -->
+    <div id="welcome-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
+        <div style="background: #1e293b; padding: 25px 20px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.7); border: 2px solid #38bdf8; box-sizing: border-box;">
+            
+            <!-- ข้อความทักทายและต้อนรับ -->
+            <h2 style="color: #facc15; margin: 0 0 4px 0; font-size: 1.5rem; font-weight: bold;">ສະບາຍດີ</h2>
+            <p style="color: #cbd5e1; font-size: 1rem; margin: 0 0 15px 0;">ຍິນດີຕ້ອນຮັບສູ່</p>
+            
+            <!-- กล่องข้อมูลโรงเรียน: โลโก้อยู่ข้างบนชื่อโรงเรียน ขนาดพอดีตา ตรงกลาง -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 15px 10px; border-radius: 12px; margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.15);">
+                <!-- โลโก้ขนาดกำลังดี อยู่ตรงกลางเหนือชื่อโรงเรียน -->
+                <div style="margin-bottom: 10px; display: flex; justify-content: center;">
+                    <img src="icon-192.png" alt="Logo" style="width: 55px; height: 55px; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.3);">
+                </div>
+                <div style="font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-bottom: 6px;">
+                    ໂຮງຮຽນສອນຂັບລົດບ້ານສາມັກຄີ
+                </div>
+                <h1 style="font-size: 1.05rem; color: #38bdf8; margin: 0; font-weight: bold;">020-22293666, 02077116687</h1>
+            </div>
+
+            <!-- ปุ่มกดเข้าหน้าหลัก -->
+            <button onclick="closeWelcomeModal()" style="width: 100%; padding: 12px; font-size: 1.1rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(2,132,199,0.5);">
+                🚀 ເຂົ້າສູ່ໜ້າຫຼັກ
+            </button>
+        </div>
+    </div>
+
+    <!-- 🔐 หน้าต่างใส่รหัสผ่านแบบกำหนดเอง -->
     <div id="custom-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #38bdf8;">
             <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 1.1rem;">🔐 ໂໝດສຳລັບຄູສອນ</h3>
             <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px;">ກະລຸນາໃສ່ລະຫັດຜ່ານ:</p>
             
-            <!-- ช่องกรอกรหัส: พื้นหลังสีขาว (#ffffff) ตัวหนังสือสีดำ (#000000) -->
-            <input type="password" id="custom-password-input" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100%; box-sizing: border-box; padding: 10px; font-size: 1rem; border-radius: 6px; border: 2px solid #38bdf8; background-color: #FFFFFF !important; color: #000000 !important; outline: none; font-weight: bold; text-align: center; margin-bottom: 15px;">
+            <input type="tel" inputmode="numeric" pattern="[0-9]*" id="custom-password-input" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100% !important; box-sizing: border-box !important; padding: 10px !important; font-size: 1rem !important; border-radius: 6px !important; border: 2px solid #38bdf8 !important; background-color: #facc15 !important; background: #facc15 !important; color: #000000 !important; outline: none !important; font-weight: bold !important; text-align: center !important; margin-bottom: 15px !important;">
             
             <div style="display: flex; gap: 8px;">
                 <button onclick="closePasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
@@ -263,7 +345,7 @@
             </div>
         </div>
     </div>
-
+	
     <script src="app.js"></script>
 </body>
 </html>
