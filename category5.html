@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- 📌 เพิ่มการเชื่อมโยง Manifest และตั้งค่า PWA เต็มจอ -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -385,7 +384,7 @@
             </button>
         </div>
 
-        <!-- 📊 หน้าจอสรุปผลสไตล์เดียวกับหมวด 2 และ 3 พร้อมปุ่มไปแก้ข้อผิดหมวด 4 -->
+        <!-- 📊 หน้าจอสรุปผลหมวด 5 -->
         <div id="cat5-result-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0f172a; text-align: center; padding: 20px; color: white; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; z-index: 9999;">
             
             <div style="max-width: 480px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -749,7 +748,6 @@
             cat5Answers[cat5Index] = optIdx;
             captureCat5Snapshot(cat5Index + 1);
 
-            // 🎯 บันทึกข้อผิดลงในคีย์ของหมวด 4 ทันทีที่ตอบผิด
             const q = cat5Questions[cat5Index];
             const keyName = 'lao_quiz_wrong_' + cat5Config.fileName;
             let existingWrong = JSON.parse(localStorage.getItem(keyName) || '[]');
@@ -804,7 +802,6 @@
                 }
             });
 
-            // 🎯 ผสานและบันทึกข้อผิดสะสมส่งไปรวมกับหมวด 4 อย่างสมบูรณ์
             const keyName = 'lao_quiz_wrong_' + cat5Config.fileName;
             let existingWrong = JSON.parse(localStorage.getItem(keyName) || '[]');
             wrongList.forEach(w => {
@@ -831,6 +828,7 @@
             }
         }
 
+        // 🎯 [ปรับปรุงจุดที่ 1] สรุปชุดย่อย: ตัดปุ่มย้อนกลับไปหน้าแรกออก เหลือเฉพาะปุ่มไปต่อ
         function showBatchSummaryScreen(correct, wrong, remainingMaster, currentWrongCount) {
             const examGrid = document.querySelector('.cat5-exam-grid');
             const topHeader = document.querySelector('.cat5-top-header');
@@ -866,14 +864,12 @@
                 <button onclick="window.location.reload()" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
                     🔄 ໄປເຮັດຂໍ້ສອບຊຸດຖັດໄປຕໍ່
                 </button>
-                <button onclick="window.location.href='index.html'" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🏠 ກຼັບຄືນໜ້າທຳອິດ
-                </button>
             `;
 
             document.getElementById('cat5-result-action-buttons').innerHTML = actionButtonsHtml;
         }
 
+        // 🎯 [ปรับปรุงจุดที่ 2] จบคลังข้อสอบใหญ่: ตัดปุ่มเริ่มใหม่และปุ่มกลับหน้าแรกออก ให้เหลือปุ่มแก้ข้อผิดอันเดียว
         function showFinalCompleteScreen() {
             let batchHistory = JSON.parse(localStorage.getItem('cat5_history_' + cat5Config.fileName) || '[]');
             let totalWrong = 0;
@@ -922,22 +918,20 @@
             let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + cat5Config.fileName) || '[]');
 
             let actionButtonsHtml = '';
+            // บังคับแสดงเฉพาะปุ่มไปแก้ข้อผิดในหมวด 4 เพียงปุ่มเดียว ตัดปุ่มอื่นออกทั้งหมดตามสั่ง
             if (currentWrongSaved.length > 0) {
                 actionButtonsHtml += `
-                    <button onclick="window.location.href='index.html'" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                    <button onclick="window.location.href='index.html'" style="padding: 14px; font-size: 1.05rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                         🎯 ໄປແກ້ສະເພາະຂໍ້ທີ່ຜິດໃນໝວດ 4 (${currentWrongSaved.length} ຂໍ້) - [ບັງຄັບ]
                     </button>
                 `;
+            } else {
+                actionButtonsHtml += `
+                    <button onclick="window.location.href='index.html'" style="padding: 14px; font-size: 1.05rem; font-weight: bold; background: #16a34a; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        🏠 ກຼັບຄືນໜ້າທຳອິດ
+                    </button>
+                `;
             }
-
-            actionButtonsHtml += `
-                <button onclick="localStorage.removeItem('cat5_master_bank_${cat5Config.fileName}'); localStorage.removeItem('cat5_current_batch_${cat5Config.fileName}'); localStorage.removeItem('cat5_history_${cat5Config.fileName}'); window.location.reload();" style="padding: 12px; font-size: 0.95rem; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🔄 เริ่มสอบคลังใหม่ทั้งหมด
-                </button>
-                <button onclick="window.location.href='index.html'" style="padding: 10px; font-size: 0.85rem; font-weight: bold; background: #475569; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;">
-                    🏠 ກຼັບຄືນໜ້າທຳອິດ
-                </button>
-            `;
 
             document.getElementById('cat5-result-action-buttons').innerHTML = actionButtonsHtml;
         }

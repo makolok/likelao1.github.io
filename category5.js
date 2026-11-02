@@ -10,6 +10,10 @@ let cat5Config = {
     fileName: 'ABC.txt'
 };
 
+// 🤖 ตั้งค่า Telegram API และ Chat ID ตัวจริง
+const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
+const TELEGRAM_CHAT_ID = '-5193551029';
+
 window.addEventListener('DOMContentLoaded', () => {
     const savedCat = localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt';
     setCat5Rules(savedCat);
@@ -35,6 +39,20 @@ function setCat5Rules(filename) {
     
     const badge = document.getElementById('cat5-category-badge');
     if (badge) badge.innerText = `ປະເພດ: ${cat5Config.categoryName} (${cat5Config.total} ข้อ)`;
+}
+
+// 🌐 ฟังก์ชันกลางส่งข้อความเข้า Telegram API แบบเดียวกับหน้าหลัก (รองรับออฟไลน์)
+function sendToTelegramAPI(message) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const payload = { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' };
+    if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => { saveToOfflineQueue(payload); });
+}
+
+function saveToOfflineQueue(payload) {
+    let queue = JSON.parse(localStorage.getItem('lao_quiz_offline_queue')) || [];
+    queue.push(payload);
+    localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue));
 }
 
 // 🎥 เปิดกล้องเว็บแคป
@@ -322,11 +340,14 @@ function cat5SubmitExam() {
 
 function cat5EvaluateAndShowResults() {
     let wrongCount = 0;
+    let correctCount = 0;
     let wrongList = [];
 
     cat5Questions.forEach((q, idx) => {
         const userAns = cat5Answers[idx];
-        if (userAns !== q.answer) {
+        if (userAns === q.answer) {
+            correctCount++;
+        } else {
             wrongCount++;
             wrongList.push(q);
         }
@@ -344,6 +365,20 @@ function cat5EvaluateAndShowResults() {
     localStorage.setItem(keyName, JSON.stringify(existingWrong));
 
     const isPassed = wrongCount <= cat5Config.maxWrong;
+
+    // 📨 **ส่งรายงานสรุปผลการสอบหมวด 5 เข้า Telegram ทันที**
+    const sName = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
+    const sAge = localStorage.getItem('lao_quiz_student_age') || '-';
+    const sPhone = localStorage.getItem('lao_quiz_student_phone') || '-';
+
+    let tgMsg = `🚨 🚀 **ຜົນການສອບເສັງຈຳລອງ ໝວດທີ 5** 🚀 🚨\n` +
+                `👤 ຊື່: ${sName} (ອາຍຸ: ${sAge} ປີ)\n` +
+                `📞 ເບີໂທ: ${sPhone}\n` +
+                `🚗 ປະເພດໃບຂັບຂີ່: ${cat5Config.categoryName}\n` +
+                `📊 คะแนน: ຖືກ ${correctCount} | ຜິດ ${wrongCount} (ຈາກທັງໝົດ ${cat5Questions.length} ຂໍ້)\n` +
+                `🏆 ສະຖານະ: ${isPassed ? 'ຜ່ານ ✅' : 'ຕົກ ❌'}`;
+    
+    sendToTelegramAPI(tgMsg);
 
     const examGrid = document.querySelector('.cat5-exam-grid');
     const topHeader = document.querySelector('.cat5-top-header');
