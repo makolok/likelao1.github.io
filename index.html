@@ -355,5 +355,41 @@
             });
         }
     </script>
+	
+	<script>
+// ฟังก์ชันแอบดาวน์โหลดรูปภาพทั้งหมดเก็บเข้า Cache ล่วงหน้าทันทีที่เปิดเว็บ
+async function preloadAllQuizImages() {
+    const quizFiles = ['ABC.txt', 'A.txt', 'AB.txt', 'B.txt', 'CDBC.txt'];
+    if ('caches' in window) {
+        const cache = await caches.open('lao-quiz-cache-v3');
+        
+        quizFiles.forEach(async (file) => {
+            try {
+                const response = await fetch(file);
+                if (!response.ok) return;
+                const text = await response.text();
+                
+                // ค้นหาชื่อไฟล์รูปภาพ (.png, .jpg) จากข้อความในไฟล์ .txt ทั้งหมด
+                const matches = text.match(/[^,\r\n]+\.(png|jpg|jpeg)/gi);
+                if (matches) {
+                    matches.forEach(img => {
+                        const cleanImgPath = img.trim().replace(/^"|"$/g, '');
+                        // สั่งดาวน์โหลดและบันทึกลง Cache ทันทีแบบเงียบๆ
+                        cache.add(cleanImgPath).catch(e => {});
+                    });
+                }
+            } catch (err) {
+                console.log("Preload background error:", err);
+            }
+        });
+    }
+}
+
+// เริ่มทำงานหลังจากหน้าเว็บโหลดเสร็จ 3 วินาที
+window.addEventListener('load', () => {
+    setTimeout(preloadAllQuizImages, 3000);
+});
+</script>
+	
 </body>
 </html>
