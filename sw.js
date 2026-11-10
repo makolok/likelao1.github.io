@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lao-quiz-cache-v4'; // 🟢 เปลี่ยนชื่อเป็น v4 เพื่อบังคับเคลียร์แคชเดิม
+const CACHE_NAME = 'lao-quiz-cache-v4'; // 🟢 เปลี่ยนชื่อเป็น v4 เพื่อบังคับเคลียร์แคชเดิม[cite: 8]
 
 const QUIZ_FILES = ['ABC.txt', 'A.txt', 'AB.txt', 'B.txt', 'CDBC.txt'];
 
@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-// 2. เคลียร์แคชเก่า (v3) ออกจากเครื่องทันที
+// 2. เคลียร์แคชเก่า ออกจากเครื่องทันที
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -39,7 +39,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
 
-    // ถ้าเป็นไฟล์โค้ด ให้โหลดจากเน็ตก่อน ถ้าไม่มีเน็ตค่อยใช้ในแคช
     if (requestUrl.pathname.match(/\.(js|html)$/i)) {
         event.respondWith(
             fetch(event.request).then((networkResponse) => {
@@ -50,7 +49,6 @@ self.addEventListener('fetch', (event) => {
             }).catch(() => caches.match(event.request))
         );
     } else if (requestUrl.pathname.match(/\.(png|jpg|jpeg|svg|woff|txt|css)$/i)) {
-        // รูปภาพหรือไฟล์มีเดีย ให้ใช้แคชก่อน
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
                 if (cachedResponse) return cachedResponse;

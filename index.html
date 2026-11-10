@@ -172,7 +172,7 @@
                 <h1 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 8px; font-weight: bold;">020-22293666,02077116687</h1>
                 
                 <div id="student-profile-box" style="margin-bottom: 10px; text-align: left; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px;">
-                    <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 4px; color: #fbbf24; text-align: center;">📋 ຂໍ້ມູນສ່ວນຕົວຜູ້ສອບເສັງ:</div>
+                    <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 4px; color: #fbbf24; text-align: center;">📋 ຂໍ້ມູນສ່ວນຕົວຜູ້ສອບເສັງ:[cite: 3]</div>
                     
                     <div style="margin-bottom: 6px;">
                         <input type="text" id="studentName" placeholder="ຊື່ ແລະ ນາມສະກຸນ..." style="width: 100%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
@@ -357,11 +357,10 @@
     </script>
 	
 	<script>
-// ฟังก์ชันแอบดาวน์โหลดรูปภาพทั้งหมดเก็บเข้า Cache ล่วงหน้าทันทีที่เปิดเว็บ
 async function preloadAllQuizImages() {
     const quizFiles = ['ABC.txt', 'A.txt', 'AB.txt', 'B.txt', 'CDBC.txt'];
     if ('caches' in window) {
-        const cache = await caches.open('lao-quiz-cache-v3');
+        const cache = await caches.open('lao-quiz-cache-v4');
         
         quizFiles.forEach(async (file) => {
             try {
@@ -369,12 +368,10 @@ async function preloadAllQuizImages() {
                 if (!response.ok) return;
                 const text = await response.text();
                 
-                // ค้นหาชื่อไฟล์รูปภาพ (.png, .jpg) จากข้อความในไฟล์ .txt ทั้งหมด
                 const matches = text.match(/[^,\r\n]+\.(png|jpg|jpeg)/gi);
                 if (matches) {
                     matches.forEach(img => {
                         const cleanImgPath = img.trim().replace(/^"|"$/g, '');
-                        // สั่งดาวน์โหลดและบันทึกลง Cache ทันทีแบบเงียบๆ
                         cache.add(cleanImgPath).catch(e => {});
                     });
                 }
@@ -385,7 +382,6 @@ async function preloadAllQuizImages() {
     }
 }
 
-// เริ่มทำงานหลังจากหน้าเว็บโหลดเสร็จ 3 วินาที
 window.addEventListener('load', () => {
     setTimeout(preloadAllQuizImages, 3000);
 });

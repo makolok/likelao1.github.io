@@ -12,7 +12,7 @@ let hasSkipped = false;
 
 let teacherTempUnlocked = false;
 
-// 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่
+// 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่[cite: 3]
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -57,7 +57,6 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('online', processOfflineQueue);
     processOfflineQueue();
 
-    // 🌐 ส่งแจ้งเตือนเมื่อนักเรียนเข้าสู่ระบบครั้งแรก
     sendLoginNotificationToDiscord();
 });
 
@@ -65,7 +64,6 @@ window.addEventListener('pageshow', (event) => {
     checkHomeUnlockStatus();
 });
 
-// 🌐 ฟังก์ชันกลางส่งข้อความเข้า Discord Webhook แบบสมบูรณ์ รองรับคิวออฟไลน์
 function sendToDiscordAPI(message) {
     const payload = { content: message };
     if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
@@ -95,7 +93,6 @@ function processOfflineQueue() {
     }).then(() => { processOfflineQueue(); }).catch(() => { queue.unshift(payload); localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue)); });
 }
 
-// 📨 1. ฟังก์ชันส่งแจ้งเตือนเข้าสู่ระบบ (Login Notification)
 function sendLoginNotificationToDiscord() {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
@@ -154,7 +151,6 @@ function sendLoginNotificationToDiscord() {
     }
 }
 
-// 📨 2. ฟังก์ชันแจ้งเตือนเมื่อเริ่มเข้าเรียนแต่ละหมวด
 function sendClassStartingNotification(modeName) {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
@@ -169,7 +165,6 @@ function sendClassStartingNotification(modeName) {
     sendToDiscordAPI(message);
 }
 
-// 📨 3. ฟังก์ชันรายงานผลการทำข้อสอบ (ส่ง Discord ทุกหมวดอย่างแม่นยำ 100%)
 function sendResultsToDiscord(statusText) {
     const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
     const age = localStorage.getItem('lao_quiz_student_age') || '-';
@@ -685,7 +680,6 @@ function nextOrSkipQuestion() {
     }
 }
 
-// 🎯 ฟังก์ชันจบการสอบหรือจบหมวด พร้อมส่งผลลัพธ์ผ่าน Discord ทันที
 function finishExamOrNext() {
     localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
 
@@ -825,7 +819,6 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_phone', phone);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
-    // ส่ง Discord แจ้งเตือนเมื่อเข้าสู่หมวดที่ 5
     const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
     let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນ ໝວດທີ 5 ແລ້ວ 🚀 📚\n` +
                    `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
