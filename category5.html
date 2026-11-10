@@ -401,23 +401,17 @@
 
     </div>
 
-    <!-- 🤖 Telegram API Config -->
+    <!-- 🤖 Discord Webhook Config -->
     <script>
-        const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
-        const TELEGRAM_CHAT_ID = '-5193551029';
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
 
-        function sendTelegramNotification(message) {
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-            const payload = {
-                chat_id: TELEGRAM_CHAT_ID,
-                text: message,
-                parse_mode: 'Markdown'
-            };
-            fetch(url, {
+        function sendDiscordNotification(message) {
+            const payload = { content: message };
+            fetch(DISCORD_WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).catch(e => console.log("Telegram error:", e));
+            }).catch(e => console.log("Discord error:", e));
         }
     </script>
 
@@ -828,7 +822,6 @@
             }
         }
 
-        // 🎯 [ปรับปรุงจุดที่ 1] สรุปชุดย่อย: ตัดปุ่มย้อนกลับไปหน้าแรกออก เหลือเฉพาะปุ่มไปต่อ
         function showBatchSummaryScreen(correct, wrong, remainingMaster, currentWrongCount) {
             const examGrid = document.querySelector('.cat5-exam-grid');
             const topHeader = document.querySelector('.cat5-top-header');
@@ -869,7 +862,6 @@
             document.getElementById('cat5-result-action-buttons').innerHTML = actionButtonsHtml;
         }
 
-        // 🎯 [ปรับปรุงจุดที่ 2] จบคลังข้อสอบใหญ่: ตัดปุ่มเริ่มใหม่และปุ่มกลับหน้าแรกออก ให้เหลือปุ่มแก้ข้อผิดอันเดียว
         function showFinalCompleteScreen() {
             let batchHistory = JSON.parse(localStorage.getItem('cat5_history_' + cat5Config.fileName) || '[]');
             let totalWrong = 0;
@@ -888,14 +880,14 @@
             const sAge = localStorage.getItem('lao_quiz_student_age') || '-';
             const sPhone = localStorage.getItem('lao_quiz_student_phone') || '-';
             
-            let tgMsg = `🚨 **ຜົນການສອບເສັງຈຳລອງ ໝວດທີ 5 (ຈบคลัง)** 🚨\n` +
+            let dgMsg = `🚨 **ຜົນການສອບເສັງຈຳລອງ ໝວດທີ 5 (ຈบคลัง)** 🚨\n` +
                         `👤 ຊື່: ${sName} (ອາຍຸ: ${sAge} ປີ)\n` +
                         `📞 ເບີໂທ: ${sPhone}\n` +
                         `📋 ປະເພດໃບຂັບຂີ່: ${cat5Config.categoryName}\n` +
                         `📊 คะแนนรวม: ຖືກ ${totalCorrect} | ຜິດ ${totalWrong} (ຈາກທັງໝົດ ${totalQuestions} ຂໍ້)\n` +
                         `🏆 ສະຖານະ: ${isPassed ? 'ຜ່ານ ✅' : 'ຕົກ ❌'}`;
 
-            sendTelegramNotification(tgMsg);
+            sendDiscordNotification(dgMsg);
 
             const examGrid = document.querySelector('.cat5-exam-grid');
             const topHeader = document.querySelector('.cat5-top-header');
@@ -918,7 +910,6 @@
             let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + cat5Config.fileName) || '[]');
 
             let actionButtonsHtml = '';
-            // บังคับแสดงเฉพาะปุ่มไปแก้ข้อผิดในหมวด 4 เพียงปุ่มเดียว ตัดปุ่มอื่นออกทั้งหมดตามสั่ง
             if (currentWrongSaved.length > 0) {
                 actionButtonsHtml += `
                     <button onclick="window.location.href='index.html'" style="padding: 14px; font-size: 1.05rem; font-weight: bold; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">

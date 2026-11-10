@@ -12,9 +12,8 @@ let hasSkipped = false;
 
 let teacherTempUnlocked = false;
 
-// 🤖 ตั้งค่า Telegram API และ Chat ID (ค่าเดิมที่ใช้งานได้สมบูรณ์)
-const TELEGRAM_BOT_TOKEN = '8235688305:AAGUwsZaWzJJn7keTauBLpbUcUYP5eRuv_A';
-const TELEGRAM_CHAT_ID = '-5193551029';
+// 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่
+const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
 
 window.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('lao_quiz_student_name');
@@ -58,20 +57,23 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('online', processOfflineQueue);
     processOfflineQueue();
 
-    // 🌐 ส่งแจ้งเตือนเมื่อนักเรียนเข้าสู่ระบบครั้งแรก (พร้อมพิกัด GPS หรือแจ้งเตือนตามระบบเดิม)
-    sendLoginNotificationToTelegram();
+    // 🌐 ส่งแจ้งเตือนเมื่อนักเรียนเข้าสู่ระบบครั้งแรก
+    sendLoginNotificationToDiscord();
 });
 
 window.addEventListener('pageshow', (event) => {
     checkHomeUnlockStatus();
 });
 
-// 🌐 ฟังก์ชันกลางส่งข้อความเข้า Telegram API แบบสมบูรณ์ รองรับคิวออฟไลน์
-function sendToTelegramAPI(message) {
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-    const payload = { chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'Markdown' };
+// 🌐 ฟังก์ชันกลางส่งข้อความเข้า Discord Webhook แบบสมบูรณ์ รองรับคิวออฟไลน์
+function sendToDiscordAPI(message) {
+    const payload = { content: message };
     if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
-    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => { saveToOfflineQueue(payload); });
+    fetch(DISCORD_WEBHOOK_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(payload) 
+    }).catch(() => { saveToOfflineQueue(payload); });
 }
 
 function saveToOfflineQueue(payload) {
@@ -84,14 +86,17 @@ function processOfflineQueue() {
     if (!navigator.onLine) return;
     let queue = JSON.parse(localStorage.getItem('lao_quiz_offline_queue')) || [];
     if (queue.length === 0) return;
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     const payload = queue.shift();
     localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue));
-    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(() => { processOfflineQueue(); }).catch(() => { queue.unshift(payload); localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue)); });
+    fetch(DISCORD_WEBHOOK_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(payload) 
+    }).then(() => { processOfflineQueue(); }).catch(() => { queue.unshift(payload); localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue)); });
 }
 
 // 📨 1. ฟังก์ชันส่งแจ้งเตือนเข้าสู่ระบบ (Login Notification)
-function sendLoginNotificationToTelegram() {
+function sendLoginNotificationToDiscord() {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
     const phone = localStorage.getItem('lao_quiz_student_phone');
@@ -123,7 +128,7 @@ function sendLoginNotificationToTelegram() {
                                 `⏰ ເວລາ: ${loginTime}\n` +
                                 `📍 ຕຳແໜ່ງ GPS: [ຄລິກເບິ່ງແຜນທີ່](${mapsLink})\n` +
                                 `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-                sendToTelegramAPI(message);
+                sendToDiscordAPI(message);
             },
             () => {
                 const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
@@ -133,7 +138,7 @@ function sendLoginNotificationToTelegram() {
                                 `⏰ ເວລາ: ${loginTime}\n` +
                                 `📍 ຕຳແໜ່ງ GPS: ⚠️ ປະຕິເສດການແບ່ງປັນຕຳແໜ່ງ\n` +
                                 `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-                sendToTelegramAPI(message);
+                sendToDiscordAPI(message);
             },
             { enableHighAccuracy: true }
         );
@@ -145,7 +150,7 @@ function sendLoginNotificationToTelegram() {
                         `⏰ ເວລາ: ${loginTime}\n` +
                         `📍 ຕຳແໜ່ງ GPS: ⚠️ ເບຣົາເຊີບໍ່ຮອງຮັບ Geolocation\n` +
                         `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
-        sendToTelegramAPI(message);
+        sendToDiscordAPI(message);
     }
 }
 
@@ -161,11 +166,11 @@ function sendClassStartingNotification(modeName) {
                     `📞 ເບີໂທ: ${phone}\n` +
                     `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
                     `📌 ກຳລັງເຂົ້າຮຽນໃນ: **${modeName}** ✅`;
-    sendToTelegramAPI(message);
+    sendToDiscordAPI(message);
 }
 
-// 📨 3. ฟังก์ชันรายงานผลการทำข้อสอบ (ส่ง Telegram ทุกหมวดอย่างแม่นยำ 100%)
-function sendResultsToTelegram(statusText) {
+// 📨 3. ฟังก์ชันรายงานผลการทำข้อสอบ (ส่ง Discord ทุกหมวดอย่างแม่นยำ 100%)
+function sendResultsToDiscord(statusText) {
     const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
     const age = localStorage.getItem('lao_quiz_student_age') || '-';
     const phone = localStorage.getItem('lao_quiz_student_phone') || '-';
@@ -187,7 +192,7 @@ function sendResultsToTelegram(statusText) {
                     `✅ ຕອບຖືກ: ${correctCount} ຂໍ້\n` +
                     `❌ ຕອບຜິດ: ${wrongCount} ຂໍ້\n` +
                     `📌 ສະຖານະ: ${statusText}`;
-    sendToTelegramAPI(message);
+    sendToDiscordAPI(message);
 }
 
 function validateAndStartApp(mode) {
@@ -250,7 +255,6 @@ function validateAndStartApp(mode) {
     if (phoneInput) phoneInput.disabled = true;
     if (homeSelect) homeSelect.disabled = true;
 
-    // ส่ง Telegram แจ้งเตือนเมื่อกดเริ่มเข้าเรียนแต่ละโหมด
     let modeText = '';
     if (mode === 'study') modeText = '📖 ໝວດ 1 (ໂໝດອ່ານຮຽນຮູ້)';
     else if (mode === 'quiz') modeText = '📝 ໝວດ 2 (ໂໝດແບບທົດສອບ)';
@@ -681,26 +685,26 @@ function nextOrSkipQuestion() {
     }
 }
 
-// 🎯 ฟังก์ชันจบการสอบหรือจบหมวด พร้อมส่งผลลัพธ์ผ่าน Telegram ทันที
+// 🎯 ฟังก์ชันจบการสอบหรือจบหมวด พร้อมส่งผลลัพธ์ผ่าน Discord ทันที
 function finishExamOrNext() {
     localStorage.removeItem('lao_quiz_state_' + currentMode + '_' + currentCategoryFile);
 
     if (currentMode === 'study') {
         localStorage.setItem(`lao_quiz_study_passed_${currentCategoryFile}`, 'true');
         checkHomeUnlockStatus();
-        sendResultsToTelegram('ອ່ານຈົບໝວດທີ 1 ແລ້ວ 📖');
+        sendResultsToDiscord('ອ່ານຈົບໝວດທີ 1 ແລ້ວ 📖');
         showStudyCompleteScreen();
     } else if (currentMode === 'quiz') {
         localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
         checkHomeUnlockStatus();
         const isPassed = wrongCount <= 10;
-        sendResultsToTelegram(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
+        sendResultsToDiscord(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
         showResults();
     } else if (currentMode === 'random') {
         localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
         checkHomeUnlockStatus();
         const isPassed = wrongCount <= 10;
-        sendResultsToTelegram(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
+        sendResultsToDiscord(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
         showResults();
     } else if (currentMode === 'review_wrong') {
         let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
@@ -708,7 +712,7 @@ function finishExamOrNext() {
             alert(`⚠️ ຍັງມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ ${remainingWrong.length} ຂໍ້!`);
             startApp('review_wrong'); 
         } else {
-            sendResultsToTelegram('ແກ້ໄຂຂໍ້ຜິດຄົບຖ້ວນສົມບູນ 🎯');
+            sendResultsToDiscord('ແກ້ໄຂຂໍ້ຜິດຄົບຖ້ວນສົມບູນ 🎯');
             showReviewWrongCompleteScreen(); 
         }
     }
@@ -821,13 +825,13 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_phone', phone);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
-    // ส่ง Telegram แจ้งเตือนเมื่อเข้าสู่หมวดที่ 5
+    // ส่ง Discord แจ้งเตือนเมื่อเข้าสู่หมวดที่ 5
     const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
     let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນ ໝວດທີ 5 ແລ້ວ 🚀 📚\n` +
                    `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                    `📞 ເບີໂທ: ${phone}\n` +
                    `🚗 ປະເພດໃບຂັບຂີ່: ${licenseTypeOnly} ✅`;
-    sendToTelegramAPI(startMsg);
+    sendToDiscordAPI(startMsg);
 
     setTimeout(() => { window.location.href = 'category5.html'; }, 300);
 }
