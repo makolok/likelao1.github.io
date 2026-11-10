@@ -1,13 +1,10 @@
-const CACHE_NAME = 'lao-quiz-cache-v3';
+const CACHE_NAME = 'lao-quiz-cache-v4'; // 🟢 เปลี่ยนชื่อเป็น v4 เพื่อบังคับเคลียร์แคชเดิม
 
-// รายชื่อไฟล์ข้อสอบหลักทั้งหมดที่มีในระบบ
 const QUIZ_FILES = ['ABC.txt', 'A.txt', 'AB.txt', 'B.txt', 'CDBC.txt'];
 
-// 1. เมื่อติดตั้ง Service Worker ให้ดาวน์โหลดไฟล์หลักและข้อสอบเก็บไว้ล่วงหน้า
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            // โหลดหน้าเว็บหลักและไฟล์ข้อสอบเก็บไว้ก่อน
             return cache.addAll([
                 './',
                 './index.html',
@@ -23,7 +20,7 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-// 2. เปิดใช้งานและเคลียร์แคชเก่า
+// 2. เคลียร์แคชเก่า (v3) ออกจากเครื่องทันที
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -38,24 +35,31 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// 3. ดักจับการ Fetch พร้อมเทคนิคแอบโหลดรูปภาพล่วงหน้าอัตโนมัติ
+// 3. ปรับให้ไฟล์ JS, HTML ดึงจากเน็ตก่อน (Network First)
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
 
-    if (requestUrl.pathname.match(/\.(png|jpg|jpeg|svg|woff|txt|css|js)$/i)) {
+    // ถ้าเป็นไฟล์โค้ด ให้โหลดจากเน็ตก่อน ถ้าไม่มีเน็ตค่อยใช้ในแคช
+    if (requestUrl.pathname.match(/\.(js|html)$/i)) {
+        event.respondWith(
+            fetch(event.request).then((networkResponse) => {
+                return caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, networkResponse.clone());
+                    return networkResponse;
+                });
+            }).catch(() => caches.match(event.request))
+        );
+    } else if (requestUrl.pathname.match(/\.(png|jpg|jpeg|svg|woff|txt|css)$/i)) {
+        // รูปภาพหรือไฟล์มีเดีย ให้ใช้แคชก่อน
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
+                if (cachedResponse) return cachedResponse;
                 return fetch(event.request).then((networkResponse) => {
                     return caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, networkResponse.clone());
                         return networkResponse;
                     });
-                }).catch(() => {
-                    // กรณีออฟไลน์
-                });
+                }).catch(() => {});
             })
         );
     } else {
