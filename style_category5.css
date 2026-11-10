@@ -1,10 +1,10 @@
-/* 🚗 สไตล์หลักสำหรับหน้าจอคอมพิวเตอร์และทั่วไป */
+/* 🚗 สไตล์หลักสำหรับหน้าจอคอมพิวเตอร์และทั่วไป (ธีมสว่าง พื้นขาว ตัวหนังสือดำ) */
 #cat5-body {
     margin: 0;
     padding: 0;
-    background-color: #0f172a;
+    background-color: #ffffff;
     font-family: sans-serif;
-    color: #ffffff;
+    color: #0f172a;
     overflow-x: hidden;
 }
 
@@ -21,11 +21,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(15, 23, 42, 0.9);
+    background: #f1f5f9;
     padding: 8px 12px;
     border-radius: 6px;
     margin-bottom: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid #cbd5e1;
 }
 
 .cat5-exam-grid {
@@ -39,12 +39,13 @@
 
 /* คอลัมน์ซ้าย: ตารางข้อสอบ */
 .cat5-sidebar-panel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     padding: 8px;
     display: flex;
     flex-direction: column;
+    color: #0f172a;
 }
 
 .cat5-grid-box {
@@ -58,19 +59,21 @@
 
 /* คอลัมน์กลาง: คำถามและตัวเลือก */
 .cat5-main-content {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     padding: 15px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    color: #0f172a;
 }
 
 .cat5-q-title {
     font-size: 1.15rem;
     font-weight: bold;
     margin-bottom: 10px;
+    color: #0f172a;
 }
 
 .cat5-img-box {
@@ -93,30 +96,31 @@
     align-items: center;
     padding: 10px 14px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    background: #f1f5f9;
+    border: 1.5px solid #cbd5e1;
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 /* คอลัมน์ขวา: กล้องและแกลเลอรี */
 .cat5-right-panel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    color: #0f172a;
 }
 
 .cat5-camera-box {
     position: relative;
     width: 100%;
     height: 120px;
-    background: #000;
+    background: #000000;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -127,14 +131,14 @@
     gap: 2px;
     max-height: 120px;
     overflow-y: auto;
-    background: rgba(0,0,0,0.2);
+    background: #e2e8f0;
     padding: 3px;
     border-radius: 4px;
 }
 
 .cat5-timer-box {
     text-align: center;
-    background: rgba(0,0,0,0.3);
+    background: #e2e8f0;
     padding: 6px;
     border-radius: 4px;
 }
@@ -146,8 +150,8 @@
     align-items: center;
     gap: 10px;
     padding: 10px 15px;
-    background: rgba(15, 23, 42, 0.95);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: #f1f5f9;
+    border-top: 1px solid #cbd5e1;
     border-radius: 6px;
 }
 
@@ -158,8 +162,7 @@
     padding: 0;
 }
 
-
-/* 📱 ระบบ Responsive สำหรับมือถือ: ข้างละ 26px และบังคับขยายทั้งปุ่มและรูปด้านในให้ใหญ่ 90x80px */
+/* 📱 ระบบ Responsive สำหรับมือถือ */
 @media screen and (max-width: 768px) {
     .cat5-container {
         width: 100vw;
@@ -178,19 +181,17 @@
         font-size: 0.7rem;
     }
 
-    /* 📐 สัดส่วน Grid: ซ้าย 26px | ตรงกลาง 1fr | ขวา 26px */
     .cat5-exam-grid {
         display: grid !important;
         grid-template-columns: 26px 1fr 26px !important;
         gap: 2px;
         flex: 1;
         overflow: hidden;
-        margin-bottom: 95px; /* เว้นพื้นที่ด้านล่างให้รองรับปุ่มขนาดใหญ่ */
+        margin-bottom: 95px;
         width: 100%;
         box-sizing: border-box;
     }
 
-    /* 👈 1. คอลัมน์ซ้าย (ตารางข้อสอบจิ๋ว 26px) */
     .cat5-sidebar-panel {
         display: flex !important;
         visibility: visible !important;
@@ -216,7 +217,6 @@
         width: 100%;
     }
 
-    /* 🎯 2. คอลัมน์กลาง (คำถามและตัวเลือก ก ข ค ง) */
     .cat5-main-content {
         display: flex !important;
         visibility: visible !important;
@@ -236,7 +236,6 @@
         line-height: 1.1;
     }
 
-    /* 👉 3. คอลัมน์ขวา (กล้องและแกลเลอรีจิ๋ว 26px) */
     .cat5-right-panel {
         display: flex !important;
         visibility: visible !important;
@@ -264,23 +263,22 @@
         font-size: 0.4rem !important;
     }
 
-    /* 🔘 แถบปุ่มควบคุมด้านล่าง */
     .cat5-bottom-bar {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
-        background: rgba(15, 23, 42, 0.98);
+        background: #ffffff;
         padding: 6px 4px;
         box-sizing: border-box;
         z-index: 1000;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        box-shadow: 0 -6px 15px rgba(0,0,0,0.7);
+        border-top: 1px solid #cbd5e1;
+        box-shadow: 0 -6px 15px rgba(0,0,0,0.1);
     }
 
-    /* 🚀 จุดที่ต้องแก้: บังคับทั้งตัวปุ่ม และตัวรูปภาพข้างในให้ขยายตาม 90x80px เต็มๆ */
     .cat5-bottom-bar .cat5-img-btn {
         width: 90px !important;  
         height: 120px !important; 
@@ -292,7 +290,6 @@
         object-fit: fill !important;
     }
     
-    /* 📱 ล็อกขนาดรูปบนมือถือให้พอดีจอ ไม่ให้ล้น */
     .cat5-img-box .cat5-question-img {
         max-height: 130px !important;
         width: auto !important;
@@ -302,7 +299,6 @@
     }
 }
 
-/* 💻 เพิ่มเติม: ขยายรูปภาพคำถามให้ใหญ่สะใจเฉพาะบนคอมพิวเตอร์ (Desktop) */
 @media screen and (min-width: 769px) {
     .cat5-img-box {
         text-align: center;
@@ -311,11 +307,11 @@
     }
 
     .cat5-img-box .cat5-question-img {
-        max-height: 420px !important; /* สามารถปรับเพิ่มหรือลดขนาดตรงนี้ได้ตามต้องการ เช่น 380px หรือ 450px */
+        max-height: 420px !important;
         width: auto !important;
         max-width: 100% !important;
         object-fit: contain;
         border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid #cbd5e1;
     }
 }

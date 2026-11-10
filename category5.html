@@ -6,9 +6,9 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Quiz ໃບຂັບຂີ່">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#ffffff">
 
     <title>ໝວດທີ 5 - ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ</title>
     <link rel="icon" href="data:,">
@@ -23,11 +23,12 @@
             font-family: 'Phetsarath', sans-serif !important;
         }
 
+        /* 🤍 แบ็คกราวด์ทั้งหมดเป็นสีขาว ตัวหนังสือเป็นสีดำ */
         #cat5-body {
             margin: 0;
             padding: 0;
-            background-color: #0f172a;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
             overflow-x: hidden;
         }
 
@@ -44,11 +45,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.9);
+            background: #f1f5f9;
             padding: 8px 12px;
             border-radius: 6px;
             margin-bottom: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #cbd5e1;
+            color: #000000;
         }
 
         .cat5-exam-grid {
@@ -61,12 +63,13 @@
         }
 
         .cat5-sidebar-panel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 8px;
             display: flex;
             flex-direction: column;
+            color: #000000;
         }
 
         .cat5-grid-box {
@@ -79,13 +82,14 @@
         }
 
         .cat5-main-content {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 15px;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            color: #000000;
         }
 
         .cat5-q-title {
@@ -93,6 +97,7 @@
             font-weight: bold;
             margin-bottom: 10px;
             line-height: 1.4;
+            color: #000000 !important;
         }
 
         .cat5-img-box {
@@ -110,8 +115,8 @@
             height: auto !important;
             object-fit: contain;
             border-radius: 8px;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-            background: rgba(0, 0, 0, 0.3);
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
             padding: 6px;
         }
 
@@ -122,31 +127,37 @@
             margin-top: 10px;
         }
 
+        /* 🔒 ล็อกขนาดกล่องตัวเลือก ก, ข, ค, ง ให้กลืนกับพื้นหลังสีขาว */
         .cat5-options-box > div {
             width: 100%;
-            min-height: 60px;
+            min-height: 50px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
-            padding: 12px 18px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.25);
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #ffffff !important;
+            border: none !important;
             cursor: pointer;
-            font-size: 1.45rem !important;
+            font-size: 1rem;
             font-weight: bold;
-            color: #ffffff;
-            line-height: 1.4;
+            color: #000000 !important;
+            box-shadow: none !important;
+        }
+
+        .cat5-options-box > div:hover {
+            background: #ffffff !important;
         }
 
         .cat5-right-panel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 6px;
             padding: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
+            color: #000000;
         }
 
         .cat5-camera-box {
@@ -164,16 +175,18 @@
             gap: 2px;
             max-height: 120px;
             overflow-y: auto;
-            background: rgba(0,0,0,0.2);
+            background: #e2e8f0;
             padding: 3px;
             border-radius: 4px;
         }
 
+        /* ⬛ กล่องนาฬิกาพื้นหลังสีดำ ตัวหนังสือแดงเด่นชัด */
         .cat5-timer-box {
             text-align: center;
-            background: rgba(0,0,0,0.3);
-            padding: 6px;
-            border-radius: 4px;
+            background: #000000 !important;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #334155;
         }
 
         .cat5-bottom-bar {
@@ -182,8 +195,8 @@
             align-items: center;
             gap: 10px;
             padding: 10px 15px;
-            background: rgba(15, 23, 42, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: #f1f5f9;
+            border-top: 1px solid #cbd5e1;
             border-radius: 6px;
         }
 
@@ -246,11 +259,13 @@
                 gap: 1px;
                 overflow-y: auto;
             }
+            /* 🖤 ปุ่มตัวเลือกซ้ายมือ พร้อมขอบหนา 2.5px ตามต้องการ */
             .cat5-grid-box button {
                 padding: 1px 0 !important;
                 font-size: 0.55rem !important;
                 min-height: 18px;
                 width: 100%;
+                border: 2.5px solid #000000 !important;
             }
 
             .cat5-main-content {
@@ -295,12 +310,13 @@
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                background: rgba(15, 23, 42, 0.98);
+                background: #ffffff;
                 padding: 6px 4px;
                 z-index: 1000;
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
+                border-top: 1px solid #cbd5e1;
             }
 
             .cat5-bottom-bar .cat5-img-btn {
@@ -328,16 +344,16 @@
     <div class="cat5-container">
         
         <div class="cat5-top-header">
-            <span id="cat5-progress-text" style="font-size: 0.85rem; font-weight: bold; color: #ffffff;">ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ 1 ຮອດ 20)</span>
-            <span id="cat5-bank-header-badge" style="font-size: 0.8rem; color: #fbbf24; font-weight: bold; margin-left: 8px;">[ເຫຼືຢູ່ໃນລະບົບ: 0]</span>
+            <span id="cat5-progress-text" style="font-size: 0.85rem; font-weight: bold; color: #000000;">ທົດສອບເສັງໃບຂັບຂີ່ (ຄຳຖາມທີ 1 ຮອດ 20)</span>
+            <span id="cat5-bank-header-badge" style="font-size: 0.8rem; color: #b45309; font-weight: bold; margin-left: 8px;">[ເຫຼືຢູ່ໃນລະບົບ: 0]</span>
         </div>
 
         <div class="cat5-exam-grid">
             
             <div class="cat5-sidebar-panel">
-                <div style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold; margin-bottom: 4px; text-align: center;">ລາຍຊື່ຂໍ້ສອບ</div>
+                <div style="font-size: 0.75rem; color: #475569; font-weight: bold; margin-bottom: 4px; text-align: center;">ລາຍຊື່ຂໍ້ສອບ</div>
                 <div id="cat5-grid-container" class="cat5-grid-box"></div>
-                <div id="cat5-answered-text" style="font-size: 0.7rem; color: #ffffff; text-align: center; margin-top: 4px; font-weight: bold;">ຕອບແລ້ວ 0 ຂໍ້</div>
+                <div id="cat5-answered-text" style="font-size: 0.7rem; color: #000000; text-align: center; margin-top: 4px; font-weight: bold;">ຕອບແລ້ວ 0 ຂໍ້</div>
             </div>
 
             <div class="cat5-main-content">
@@ -356,8 +372,8 @@
                 <div id="cat5-snapshots-gallery" class="cat5-mini-gallery"></div>
 
                 <div class="cat5-timer-box">
-                    <div style="font-size: 0.65rem; color: #cbd5e1;">ເວລາເຫຼືອ</div>
-                    <div id="cat5-timer" style="font-size: 1.1rem; color: #ef4444; font-weight: bold;">24:56</div>
+                    <div style="font-size: 0.75rem; color: #ef4444; font-weight: bold; margin-bottom: 2px;">ເວລາຄົງเหลือ</div>
+                    <div id="cat5-timer" style="font-size: 1.5rem; color: #ef4444; font-weight: bold; letter-spacing: 1px;">35:00</div>
                 </div>
             </div>
 
@@ -384,17 +400,18 @@
             </button>
         </div>
 
-        <!-- 📊 หน้าจอสรุปผลหมวด 5 -->
-        <div id="cat5-result-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #0f172a; text-align: center; padding: 20px; color: white; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; z-index: 9999;">
+        <!-- 📊 หน้าจอสรุปผลหมวด 5 (ปรับปรุงใหม่ตามรูปตัวอย่าง) -->
+        <div id="cat5-result-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #ffffff; text-align: center; padding: 20px; color: #000000; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; z-index: 9999;">
             
             <div style="max-width: 480px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <h2 id="cat5-result-title-text" style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">ຜົນການສອບເສັງຂອງທ່ານ</h2>
+                <h2 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 10px; color: #000000;">ສອບເສັງໃບຂັບຂີ່ ພາກທິດສະດີ</h2>
                 
-                <div class="score-display" id="cat5-final-score" style="margin: 8px 0; font-size: 1.25rem; font-weight: bold; color: #ffffff !important;">0 / 0</div>
+                <div id="cat5-final-score" style="margin: 8px 0; font-size: 1.15rem; font-weight: bold; color: #000000 !important;">ຕອບຜິດ 0 ຂໍ້ ໃນທັງໝົດ 20 ຂໍ້</div>
                 
-                <p id="cat5-score-message" style="margin-bottom: 16px; font-size: 0.95rem; line-height: 1.4; color: #ffffff !important;"></p>
+                <!-- 🟢/🔴 ตัวหนังสือขนาดใหญ่ แสดงผลคำว่า ຜ່ານ หรือ ຕົກ ตามต้องการ -->
+                <div id="cat5-pass-fail-big-text" style="margin: 15px 0; font-size: 6rem; font-weight: bold; line-height: 1.2;">ຜ່ານ</div>
                 
-                <div id="cat5-result-action-buttons" style="display: flex; flex-direction: column; gap: 10px; width: 100%;"></div>
+                <div id="cat5-result-action-buttons" style="display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 20px;"></div>
             </div>
 
         </div>
@@ -403,7 +420,7 @@
 
     <!-- 🤖 Discord Webhook Config -->
     <script>
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';[cite: 3]
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
 
         function sendDiscordNotification(message) {
             const payload = { content: message };
@@ -422,12 +439,42 @@
         let cat5Snapshots = {};
         let cat5Config = { total: 20, categoryName: 'A', fileName: 'A.txt' };
 
+        // ⏱️ ระบบเวลานับถอยหลัง 35 นาที
+        let totalSecondsLeft = 35 * 60;
+        let timerInterval = null;
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedCat = localStorage.getItem('lao_quiz_selected_category') || 'A.txt';
             setCat5Rules(savedCat);
             initCat5Webcam();
+            startCat5Timer();
             initOrResumeBank();
         });
+
+        function startCat5Timer() {
+            const timerEl = document.getElementById('cat5-timer');
+            if (!timerEl) return;
+
+            const savedTime = localStorage.getItem('cat5_timer_seconds_' + cat5Config.fileName);
+            if (savedTime !== null) {
+                totalSecondsLeft = parseInt(savedTime, 10);
+            }
+
+            timerInterval = setInterval(() => {
+                if (totalSecondsLeft > 0) {
+                    totalSecondsLeft--;
+                    localStorage.setItem('cat5_timer_seconds_' + cat5Config.fileName, totalSecondsLeft);
+                    
+                    let minutes = Math.floor(totalSecondsLeft / 60);
+                    let seconds = totalSecondsLeft % 60;
+                    timerEl.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                } else {
+                    clearInterval(timerInterval);
+                    alert('⏰ หมดเวลาการสอบแล้ว!');
+                    cat5SubmitExam();
+                }
+            }, 1000);
+        }
 
         function setCat5Rules(filename) {
             cat5Config.fileName = filename;
@@ -490,6 +537,7 @@
                     localStorage.setItem(currentBatchKey, JSON.stringify(currentBatch));
                     localStorage.removeItem('cat5_answers_' + cat5Config.fileName);
                     localStorage.removeItem('cat5_index_' + cat5Config.fileName);
+                    localStorage.removeItem('cat5_timer_seconds_' + cat5Config.fileName);
                 }
 
                 cat5Questions = currentBatch;
@@ -592,20 +640,34 @@
             canvas.width = 160;
             canvas.height = 120;
             let dataURL = null;
+
             if (video && video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
                 try {
                     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    const timerEl = document.getElementById('cat5-timer');
+                    const timeString = timerEl ? timerEl.innerText : '';
+                    if (timeString) {
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                        ctx.fillRect(4, 4, 52, 16); 
+                        ctx.fillStyle = '#ef4444'; 
+                        ctx.font = 'bold 10px sans-serif';
+                        ctx.fillText(timeString, 8, 16);
+                    }
+
                     dataURL = canvas.toDataURL('image/png');
                 } catch (e) { console.log(e); }
             }
+
             if (!dataURL) {
-                ctx.fillStyle = '#1e293b';
+                ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = '#ffffff';
                 ctx.font = 'bold 12px sans-serif';
                 ctx.fillText(`Q ${qNum}`, 40, 60);
                 dataURL = canvas.toDataURL('image/png');
             }
+
             cat5Snapshots[qNum] = dataURL;
             renderCat5MiniGallery();
         }
@@ -616,8 +678,8 @@
             gallery.innerHTML = '';
             Object.keys(cat5Snapshots).forEach(qNum => {
                 gallery.innerHTML += `
-                    <div style="background: rgba(255,255,255,0.05); border-radius: 4px; padding: 1px; text-align: center;">
-                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 26px; object-fit: cover; border-radius: 2px;">
+                    <div style="background: rgba(0,0,0,0.05); border-radius: 4px; padding: 1px; text-align: center; position: relative;">
+                        <img src="${cat5Snapshots[qNum]}" style="width: 100%; height: 26px; object-fit: cover; border-radius: 2px;" title="ข้อที่ ${qNum}">
                     </div>
                 `;
             });
@@ -641,7 +703,7 @@
                     btn.innerText = (idx + 1);
                 }
 
-                btn.style.cssText = "padding: 6px; font-weight: bold; font-size: 0.85rem; border-radius: 4px; border: 1px solid #475569; cursor: pointer; background: #ffffff; color: #0f172a; text-align: center;";
+                btn.style.cssText = "padding: 6px; font-weight: bold; font-size: 0.85rem; border-radius: 4px; border: 2.5px solid #000000; cursor: pointer; background: #ffffff; color: #000000; text-align: center;";
                 
                 if (idx === cat5Index) {
                     btn.style.backgroundColor = '#fef08a';
@@ -717,7 +779,7 @@
             const userAns = cat5Answers[cat5Index];
 
             q.options.forEach((opt, idx) => {
-                let optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; font-size: 1.45rem; font-weight: bold; color: #ffffff; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.25);";
+                let optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; font-size: 1.45rem; font-weight: bold; color: #000000; background: #f1f5f9; border: 2px solid #cbd5e1;";
                 if (userAns !== undefined) {
                     if (idx === q.answer) {
                         optStyle = "display: flex; align-items: center; padding: 14px 18px; border-radius: 10px; margin-bottom: 10px; font-size: 1.45rem; font-weight: bold; color: #ffffff; background-color: #16a34a !important; border: 2px solid #22c55e !important;";
@@ -727,7 +789,7 @@
                 }
                 optList.innerHTML += `
                     <div onclick="cat5SelectOption(${idx})" style="${optStyle}">
-                        <span style="color: #ffffff; margin-right: 12px; font-size: 1.55rem;">${letters[idx]}.</span>
+                        <span style="color: ${userAns !== undefined ? '#ffffff' : '#000000'}; margin-right: 12px; font-size: 1.55rem;">${letters[idx]}.</span>
                         <span>${opt}</span>
                     </div>
                 `;
@@ -782,6 +844,9 @@
         }
 
         function cat5SubmitExam() {
+            if (timerInterval) clearInterval(timerInterval);
+            localStorage.removeItem('cat5_timer_seconds_' + cat5Config.fileName);
+
             let wrongCount = 0;
             let correctCount = 0;
             let wrongList = [];
@@ -833,14 +898,18 @@
             const resultScreen = document.getElementById('cat5-result-screen');
             if (resultScreen) resultScreen.style.display = 'flex';
 
-            document.getElementById('cat5-result-title-text').innerText = `ຜົນການສອບເສັງຂອງທ່ານ`;
-            document.getElementById('cat5-final-score').innerText = `ຜິດພາດ: ${wrong} ຂໍ້ (ຈາກ ${cat5Questions.length} ຂໍ້)`;
+            document.getElementById('cat5-final-score').innerText = `ຕອບຜິດ ${wrong} ຂໍ້ ໃນທັງໝົດ ${cat5Questions.length} ຂໍ້`;
             
+            // 📝 เงื่อนไขผ่าน: ผิดไม่เกิน 4 ข้อ
             let isPassed = wrong <= 4;
-            const msg = isPassed
-                ? `🎉 ຍິນດີດ້ວຍ! ຊຸດນີ້ຜ່ານเกณฑ์ (ຜິດ ${wrong} ຂໍ້)`
-                : `❌ ທ່ານບໍ່ຜ່ານเกณฑ์ชຸດนี้ (ຜິດ ${wrong} ຂໍ້)`;
-            document.getElementById('cat5-score-message').innerText = msg;
+            const bigTextEl = document.getElementById('cat5-pass-fail-big-text');
+            if (isPassed) {
+                bigTextEl.innerText = 'ຜ່ານ';
+                bigTextEl.style.color = '#16a34a'; // 🟢 สีเขียว
+            } else {
+                bigTextEl.innerText = 'ຕົກ';
+                bigTextEl.style.color = '#dc2626'; // 🔴 สีแดง
+            }
 
             let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + cat5Config.fileName) || '[]');
 
@@ -899,13 +968,16 @@
             const resultScreen = document.getElementById('cat5-result-screen');
             if (resultScreen) resultScreen.style.display = 'flex';
             
-            document.getElementById('cat5-result-title-text').innerText = `ຜົນການສອບເສັງຂອງທ່ານ (ຈบคลังข้อสอบทั้งหมด)`;
-            document.getElementById('cat5-final-score').innerText = `ຜິດພາດ: ${totalWrong} ຂໍ້ (ຈາກ ${totalQuestions} ຂໍ້)`;
+            document.getElementById('cat5-final-score').innerText = `ຕອບຜິດ ${totalWrong} ຂໍ້ ໃນທັງໝົດ ${totalQuestions} ຂໍ້`;
             
-            const msg = isPassed
-                ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງລວມ (ຜິດ ${totalWrong} ຂໍ້)`
-                : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງລວມ (ຜິດ ${totalWrong} ຂໍ້)`;
-            document.getElementById('cat5-score-message').innerText = msg;
+            const bigTextEl = document.getElementById('cat5-pass-fail-big-text');
+            if (isPassed) {
+                bigTextEl.innerText = 'ຜ່ານ';
+                bigTextEl.style.color = '#16a34a';
+            } else {
+                bigTextEl.innerText = 'ຕົກ';
+                bigTextEl.style.color = '#dc2626';
+            }
 
             let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + cat5Config.fileName) || '[]');
 
