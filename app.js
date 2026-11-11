@@ -10,6 +10,9 @@ let currentCategoryFile = 'ABC.txt';
 let currentMode = 'quiz'; 
 let hasSkipped = false; 
 
+// 🛡️ ตัวแปรสำหรับป้องกันการส่ง Discord ซ้ำซ้อนในรอบนั้นๆ
+let hasSentDiscord = false;
+
 let teacherTempUnlocked = false;
 
 // 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่[cite: 3]
@@ -118,35 +121,41 @@ function sendLoginNotificationToDiscord() {
                 const lon = position.coords.longitude;
                 const mapsLink = `https://www.google.com/maps?q=${lat},${lon}`;
 
-                const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
+                const message = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                                `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                                 `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                                 `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
+                                `🚗 ປະເພດ: ${licenseType}\n` +
                                 `⏰ ເວລາ: ${loginTime}\n` +
-                                `📍 ຕຳແໜ່ງ GPS: [ຄລິກເບິ່ງແຜນທີ່](${mapsLink})\n` +
-                                `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
+                                `📍 ຕຳແໜ່ງ GPS: [ຮຽນຢູ່ໄສ](${mapsLink})\n` +
+                                `📌 ສະຖານະ: ເຂົ້າຮຽນ ✅\n` +
+                                `━━━━━━━━━━━━━━━━━━━━━━`;
                 sendToDiscordAPI(message);
             },
             () => {
-                const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
+                const message = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                                `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                                 `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                                 `📞 ເບີໂທ: ${phone}\n` +
-                                `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
+                                `🚗 ປະເພດ: ${licenseType}\n` +
                                 `⏰ ເວລາ: ${loginTime}\n` +
                                 `📍 ຕຳແໜ່ງ GPS: ⚠️ ປະຕິເສດການແບ່ງປັນຕຳແໜ່ງ\n` +
-                                `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
+                                `📌 ສະຖານະ: ເຂົ້າຮຽນ ✅\n` +
+                                `━━━━━━━━━━━━━━━━━━━━━━`;
                 sendToDiscordAPI(message);
             },
             { enableHighAccuracy: true }
         );
     } else {
-        const message = `🔔 📚 **ນັກຮຽນເຂົ້າສູ່ລະບົບແລ້ວ (ຄັ້ງທີ ${visitCount})** 📚 🔔\n` +
+        const message = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                         `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                         `📞 ເບີໂທ: ${phone}\n` +
-                        `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
+                        `🚗 ປະເພດ: ${licenseType}\n` +
                         `⏰ ເວລາ: ${loginTime}\n` +
                         `📍 ຕຳແໜ່ງ GPS: ⚠️ ເບຣົາເຊີບໍ່ຮອງຮັບ Geolocation\n` +
-                        `📌 ສະຖານະ: ເປີດໜ້າເວັບເຂົ້າສູ່ລະບົບ ✅`;
+                        `📌 ສະຖານະ: ເຂົ້າຮຽນ ✅\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━`;
         sendToDiscordAPI(message);
     }
 }
@@ -157,15 +166,41 @@ function sendClassStartingNotification(modeName) {
     const phone = localStorage.getItem('lao_quiz_student_phone');
     const licenseType = currentCategoryFile.replace('.txt', '');
 
-    const message = `📖 🚀 **ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນແລ້ວ** 🚀 📖\n` +
+    const currentTime = new Date().toLocaleString('lo-LA', { 
+        timeZone: 'Asia/Vientiane',
+        dateStyle: 'short', 
+        timeStyle: 'medium' 
+    });
+
+    const message = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `📖 🚀 **ນັກຮຽນເຂົ້າຮຽນ** 🚀 📖\n` +
                     `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                     `📞 ເບີໂທ: ${phone}\n` +
-                    `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                    `📌 ກຳລັງເຂົ້າຮຽນໃນ: **${modeName}** ✅`;
+                    `🚗 ປະເພດ: ${licenseType}\n` +
+                    `⏰ ເວລາ: ${currentTime}\n` +
+                    `📌 ເຂົ້າຮຽນ: **${modeName}** ✅\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━`;
     sendToDiscordAPI(message);
 }
 
+function getTotalCompletedRounds() {
+    const filename = currentCategoryFile;
+    const r2 = parseInt(localStorage.getItem(`lao_quiz_rounds_quiz_${filename}`)) || 0;
+    const r3 = parseInt(localStorage.getItem(`lao_quiz_rounds_random_${filename}`)) || 0;
+    const r5 = parseInt(localStorage.getItem(`lao_quiz_rounds_cat5_${filename}`)) || 0;
+    return { r2, r3, r5, total: r2 + r3 + r5 };
+}
+
+function getPassedRoundsForMode(mode) {
+    const filename = currentCategoryFile;
+    return parseInt(localStorage.getItem(`lao_quiz_passed_rounds_${mode}_${filename}`)) || 0;
+}
+
 function sendResultsToDiscord(statusText) {
+    // 🛡️ เช็คว่าส่งไปแล้วหรือยัง ถ้าส่งแล้วจะไม่ส่งซ้ำอีกในรอบนี้
+    if (hasSentDiscord) return;
+    hasSentDiscord = true;
+
     const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
     const age = localStorage.getItem('lao_quiz_student_age') || '-';
     const phone = localStorage.getItem('lao_quiz_student_phone') || '-';
@@ -178,15 +213,38 @@ function sendResultsToDiscord(statusText) {
     else if (currentMode === 'random') modeName = '🔀 3. ໂໝດສະຫຼັບຄຳຖາມ';
     else if (currentMode === 'review_wrong') modeName = '🎯 4. ໂໝດແກ້ໄຂຂໍ້ຜິດ';
 
-    const message = `📊 📉 **ລາຍງານຜົນການຮຽນ/ສອບເສັງ** 📉 📊\n` +
+    const rounds = getTotalCompletedRounds();
+    let passedRounds = 0;
+    let completedRounds = 0;
+    if (currentMode === 'quiz') {
+        passedRounds = getPassedRoundsForMode('quiz');
+        completedRounds = rounds.r2;
+    } else if (currentMode === 'random') {
+        passedRounds = getPassedRoundsForMode('random');
+        completedRounds = rounds.r3;
+    }
+
+    const currentTime = new Date().toLocaleString('lo-LA', { 
+        timeZone: 'Asia/Vientiane',
+        dateStyle: 'short', 
+        timeStyle: 'medium' 
+    });
+
+    const message = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `📊 📉 **ສະລຸບການຮຽນ/ສອບເສັງ** 📉 📊\n` +
                     `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                     `📞 ເບີໂທ: ${phone}\n` +
-                    `🚗 ປະເພດໃບຂັບຂີ່: ${licenseType}\n` +
-                    `📌 ໝວດທີ່ເຮັດ: ${modeName}\n` +
+                    `🚗 ປະເພດ: ${licenseType}\n` +
+                    `📌 ໝວດ: ${modeName}\n` +
+                    `⏰ ເວລາ: ${currentTime}\n` +
                     `----------------------------------\n` +
                     `✅ ຕອບຖືກ: ${correctCount} ຂໍ້\n` +
                     `❌ ຕອບຜິດ: ${wrongCount} ຂໍ້\n` +
-                    `📌 ສະຖານະ: ${statusText}`;
+                    `🏆 ສອບຜ່ານ: ${passedRounds} ຮອບ | 🔄 ອ່ານຈົບ: ${completedRounds} ຮອບ\n` +
+                    `🔄 **ອ່ານຈົບລວມ (ໝວດ 2, 3, 5):** ${rounds.total} ຮອບ\n` +
+                    `   • ໝວດ 2: ${rounds.r2} ຮອບ | ໝວດ 3: ${rounds.r3} ຮອບ | ໝວດ 5: ${rounds.r5} ຮອບ\n` +
+                    `📌 ສະຖານະ: ${statusText}\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━`;
     sendToDiscordAPI(message);
 }
 
@@ -207,7 +265,7 @@ function validateAndStartApp(mode) {
     }
 
     if (homeSelect && !homeSelect.value) {
-        alert('⚠️ ກະລຸນາເລືອກປະເພດໃບຂັບຂີ່ກ່ອນເລີ່ມຕົ້ນ!');
+        alert('⚠️ ກະລຸນາເລືອກປະເພດກ່ອນເລີ່ມຕົ້ນ!');
         homeSelect.focus();
         return;
     }
@@ -386,6 +444,7 @@ function startApp(mode) {
     
     currentMode = mode;
     hasSkipped = false; 
+    hasSentDiscord = false; // รีเซ็ตสถานะการส่งเมื่อเริ่มเข้าโหมดใหม่
     
     const innerSelect = document.getElementById('licenseCategory');
     if (innerSelect) innerSelect.value = currentCategoryFile;
@@ -400,7 +459,37 @@ function startApp(mode) {
     else if (currentMode === 'review_wrong') quizBox.style.backgroundColor = '#996600';
 
     document.getElementById('live-score-board').style.display = (currentMode === 'study') ? 'none' : 'flex';
+    
+    const roundBanner = document.getElementById('round-counter-banner');
+    if (roundBanner) {
+        if (currentMode === 'quiz' || currentMode === 'random') {
+            roundBanner.style.display = 'block';
+            updateRoundCounterBanner();
+        } else {
+            roundBanner.style.display = 'none';
+        }
+    }
+
     fetchQuestions(currentCategoryFile, false);
+}
+
+function updateRoundCounterBanner() {
+    const filename = currentCategoryFile;
+    const r2 = parseInt(localStorage.getItem(`lao_quiz_rounds_quiz_${filename}`)) || 0;
+    const r3 = parseInt(localStorage.getItem(`lao_quiz_rounds_random_${filename}`)) || 0;
+    
+    const passedCountEl = document.getElementById('passed-rounds-count');
+    const completedCountEl = document.getElementById('completed-rounds-count');
+    
+    if (currentMode === 'quiz') {
+        const passedRounds = getPassedRoundsForMode('quiz');
+        if (passedCountEl) passedCountEl.innerText = passedRounds;
+        if (completedCountEl) completedCountEl.innerText = r2;
+    } else if (currentMode === 'random') {
+        const passedRounds = getPassedRoundsForMode('random');
+        if (passedCountEl) passedCountEl.innerText = passedRounds;
+        if (completedCountEl) completedCountEl.innerText = r3;
+    }
 }
 
 function goHome() {
@@ -688,17 +777,30 @@ function finishExamOrNext() {
         checkHomeUnlockStatus();
         sendResultsToDiscord('ອ່ານຈົບໝວດທີ 1 ແລ້ວ 📖');
         showStudyCompleteScreen();
-    } else if (currentMode === 'quiz') {
-        localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
-        checkHomeUnlockStatus();
+    } else if (currentMode === 'quiz' || currentMode === 'random') {
+        const roundKey = `lao_quiz_rounds_${currentMode}_${currentCategoryFile}`;
+        let currentRounds = parseInt(localStorage.getItem(roundKey)) || 0;
+        currentRounds++;
+        localStorage.setItem(roundKey, currentRounds);
+
         const isPassed = wrongCount <= 10;
-        sendResultsToDiscord(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
-        showResults();
-    } else if (currentMode === 'random') {
-        localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
+        if (isPassed) {
+            const passedRoundKey = `lao_quiz_passed_rounds_${currentMode}_${currentCategoryFile}`;
+            let passedRounds = parseInt(localStorage.getItem(passedRoundKey)) || 0;
+            passedRounds++;
+            localStorage.setItem(passedRoundKey, passedRounds);
+        }
+
+        if (currentMode === 'quiz') {
+            localStorage.setItem(`lao_quiz_quiz_passed_${currentCategoryFile}`, 'true');
+        } else {
+            localStorage.setItem(`lao_quiz_random_passed_${currentCategoryFile}`, 'true');
+        }
+
         checkHomeUnlockStatus();
-        const isPassed = wrongCount <= 10;
         sendResultsToDiscord(isPassed ? 'ສອບເສັງຜ່ານ ✅' : 'ສອບເສັງບໍ່ຜ່ານ ❌');
+        
+        updateRoundCounterBanner();
         showResults();
     } else if (currentMode === 'review_wrong') {
         let remainingWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
@@ -765,6 +867,14 @@ function showResults() {
     const isPassed = wrongCount <= 10;
     document.getElementById('score-message').innerText = isPassed ? `🎉 ຍິນດີດ້ວຍ! ທ່ານຜ່ານການສອບເສັງ` : `❌ ທ່ານບໍ່ຜ່ານການສອບເສັງ`;
 
+    const rounds = getTotalCompletedRounds();
+    const passedRounds = getPassedRoundsForMode(currentMode);
+    let roundDisplay = document.getElementById('result-round-display');
+    if (roundDisplay) {
+        roundDisplay.innerHTML = `🏆 <b>ສອບຜ່ານ:</b> ${passedRounds} ຮອບ | 🔄 <b>ອ່ານຈົບ:</b> ${currentMode === 'quiz' ? rounds.r2 : rounds.r3} ຮອບ<br>` +
+                                 `🔄 <b>ສະຖິຕິການອ່ານຈົບລວມ (ໝວດ2, 3, 5):</b> ${rounds.total} ຮອບ (ໝວດ2: ${rounds.r2}, ໝວດ3: ${rounds.r3}, ໝວດ5: ${rounds.r5})`;
+    }
+
     let currentWrongSaved = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + currentCategoryFile)) || [];
     let reviewButtonHtml = '';
     if (currentWrongSaved.length > 0) {
@@ -799,18 +909,18 @@ function openCategory5() {
         return;
     }
 
-    let selectedCategory = homeSelect ? homeSelect.value : (localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt');
+    let selectedCategory = homeSelect && homeSelect.value ? homeSelect.value : (localStorage.getItem('lao_quiz_selected_category') || 'ABC.txt');
     const isQuizPassed = (localStorage.getItem(`lao_quiz_quiz_passed_${selectedCategory}`) === 'true') || teacherTempUnlocked || (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true');
     const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + selectedCategory)) || [];
     const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${selectedCategory}`) === 'true') || teacherTempUnlocked;
 
     if (!isQuizPassed) {
-        alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nກະລຸນາເຮັດແບບທົດສອບ (ໝວດ 2) ให้เสร็จก่อนครับ.');
+        alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ໄດ້!\nກະລຸນາເຮັດແບບທົດສອບ (ໝວດ 2) ໃຫ້ເສັດກ່ອນ.');
         return;
     }
 
     if (savedWrong.length > 0 && !isPermanentUnlocked) {
-        alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ได้!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາเข้าไปแก้ข้อผิดในหมวด 4 ให้หมดก่อนครับ!`);
+        alert(`⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານ ໝວດ 5 ໄດ້!\nທ່ານມີຂໍ້ທີ່ຕອບຜິດຄ້າງຢູ່ໃນ ໝວດ 4 ຈຳນວນ ${savedWrong.length} ຂໍ້\nກະລຸນາເຂົ້າໄປແກ້ຂໍ້ຜິດໃນໝວດ 4 ໃຫ້ໝົດກ່ອນ!`);
         return;
     }
 
@@ -820,10 +930,21 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
     const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
-    let startMsg = `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນ ໝວດທີ 5 ແລ້ວ 🚀 📚\n` +
+    const currentTime = new Date().toLocaleString('lo-LA', { 
+        timeZone: 'Asia/Vientiane',
+        dateStyle: 'short', 
+        timeStyle: 'medium' 
+    });
+
+    let startMsg = `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                   `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນ ໝວດທີ 5 ແລ້ວ 🚀 📚\n` +
                    `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                    `📞 ເບີໂທ: ${phone}\n` +
-                   `🚗 ປະເພດໃບຂັບຂີ່: ${licenseTypeOnly} ✅`;
+                   `🚗 ປະເພດ: ${licenseTypeOnly}\n` +
+                   `⏰ ເວລາ: ${currentTime}\n` +
+                   `📌 ສະຖານະ: ເຂົ້າຮຽນໝວດ 5 ✅\n` +
+                   `━━━━━━━━━━━━━━━━━━━━━━`;
+    
     sendToDiscordAPI(startMsg);
 
     setTimeout(() => { window.location.href = 'category5.html'; }, 300);

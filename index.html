@@ -24,7 +24,6 @@
             font-family: 'Phetsarath', sans-serif !important;
         }
 
-        /* 📱 ปรับหน้าจออัตโนมัติสำหรับแท็บเล็ตและไอแพด (ความกว้าง 768px ขึ้นไป) */
         @media screen and (min-width: 768px) {
             .quiz-container {
                 max-width: 580px !important;
@@ -42,7 +41,6 @@
             }
         }
 
-        /* 🎨 แถบปุ่มด้านล่าง */
         .cat5-bottom-bar {
             display: flex !important;
             justify-content: space-around !important;
@@ -159,7 +157,6 @@
 
     <div class="quiz-container" id="main-quiz-box">
         
-        <!-- 🏠 หน้าที่ 1: หน้าแรก (Home Screen) -->
         <div id="home-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; overflow-y: auto;">
             <div style="width: 100%; max-width: 360px;">
                 <div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
@@ -225,7 +222,6 @@
             </div>
         </div>
 
-        <!-- 📝 หน้าจอทำข้อสอบ -->
         <div id="main-quiz-wrapper" style="display: none; flex-direction: column; width: 100%; height: 100%; justify-content: space-between;">
             <div>
                 <div style="font-size: 1.0rem; font-weight: bold; color: #ffffff; margin-bottom: 8px; background: rgba(0, 0, 0, 0.3); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
@@ -240,7 +236,7 @@
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <h1 id="mode-header-title" style="font-size: 0.95rem; color: #ffffff !important; margin: 0; padding: 0; line-height: 1.0; font-weight: bold; display: none;"></h1>
                         <div id="round-counter-banner" style="font-size: 0.7rem; font-weight: bold; color: #ffffff; background: rgba(0, 0, 0, 0.25); padding: 3px 8px; border-radius: 4px; display: none; white-space: nowrap;">
-                            🏆 ສອບຜ່ານ: <span id="passed-rounds-count">0</span> ຮອບ | 🔄 ອ່ານຈົບ: <span id="completed-rounds-count">0</span> ຮອບ
+                            🏆 ຜ່ານ: <span id="passed-rounds-count">0</span> ຮອບ | 🔄 ອ່ານຈົບ: <span id="completed-rounds-count">0</span> ຮອບ
                         </div>
                     </div>
                     <div id="live-score-board" style="display: flex; gap: 8px; font-size: 0.8rem; font-weight: bold; color: #ffffff;">
@@ -285,7 +281,6 @@
                 </div>
             </div>
 
-            <!-- 🎯 ปุ่มด้านล่าง -->
             <div style="flex-shrink: 0; padding-bottom: 8px;">
                 <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display: none;">ກົດຂໍ້ຕໍ່ໄປ</button>
 
@@ -314,7 +309,6 @@
 
     </div>
 
-    <!-- 👋 หน้าต่างกล่องข้อความต้อนรับ -->
     <div id="welcome-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
         <div style="background: #1e293b; padding: 25px 20px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.7); border: 2px solid #38bdf8; box-sizing: border-box;">
             <h2 style="color: #ffffff; margin: 0 0 4px 0; font-size: 1.5rem; font-weight: bold;">ສະບາຍດີ</h2>
@@ -332,7 +326,6 @@
         </div>
     </div>
 
-    <!-- 🔐 หน้าต่างใส่รหัสผ่าน -->
     <div id="custom-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #38bdf8;">
             <h3 style="color: #ffffff; margin-bottom: 12px; font-size: 1.1rem;">🔐 ໂໝດສຳລັບຄູສອນ</h3>
