@@ -656,7 +656,7 @@ q.options.forEach((opt, idx) => {
         const isChecked = userAnswers[currentQuestionIndex] === idx;
         
         // 🛠️ กำหนดค่าพื้นฐานร่วมกันตรงนี้ (ปรับ padding และ margin-bottom ให้แคบลงที่นี่จุดเดียว)
-        let baseStyle = "display: flex !important; align-items: center !important; padding: 6px 10px !important; border-radius: 8px !important; margin-bottom: 4px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.3 !important; font-weight: bold !important; color: #ffffff !important; box-shadow: none !important;";
+        let baseStyle = "display: flex !important; align-items: center !important; padding: 6px 10px !important; border-radius: 8px !important; margin-bottom: 4px !important; cursor: pointer !important; font-size: 1.0rem !important; line-height: 1.3 !important; font-weight: bold !important; color: #ffffff !important; box-shadow: none !important;";
         let optionStyle = baseStyle + " background: transparent !important; background-color: transparent !important; border: none !important;";
 
         if (currentMode === 'study') {

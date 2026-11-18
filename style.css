@@ -58,7 +58,7 @@ html, body {
     box-shadow: none !important;
 }
 .question-title {
-    font-size: 0.9rem !important; /* ปรับขนาดตัวหนังสือคำถามให้ใหญ่ขึ้นชัดเจน */
+    font-size: 1.0rem !important; /* ปรับขนาดตัวหนังสือคำถามให้ใหญ่ขึ้นชัดเจน */
     font-weight: bold;
     margin-bottom: 10px;
     line-height: 1.5;
