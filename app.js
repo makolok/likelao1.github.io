@@ -12,20 +12,21 @@ let hasSkipped = false;
 
 // 🛡️ ตัวแปรสำหรับป้องกันการส่ง Discord ซ้ำซ้อนในรอบนั้นๆ
 let hasSentDiscord = false;
-
 let teacherTempUnlocked = false;
 
-// 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่[cite: 3]
+// 🤖 ตั้งค่า Discord Webhook URL จริงของคุณที่นี่
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
 
 window.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('lao_quiz_student_name');
     const savedAge = localStorage.getItem('lao_quiz_student_age');
     const savedPhone = localStorage.getItem('lao_quiz_student_phone');
+    const savedExamDate = localStorage.getItem('lao_quiz_exam_date');
 
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
     const phoneInput = document.getElementById('studentPhone');
+    const examDateInput = document.getElementById('examDateInput');
     const homeSelect = document.getElementById('homeCategory');
 
     if (savedName && nameInput) {
@@ -42,6 +43,11 @@ window.addEventListener('DOMContentLoaded', () => {
         phoneInput.value = savedPhone;
         phoneInput.disabled = true;
         phoneInput.style.backgroundColor = '#334155';
+    }
+    if (savedExamDate && examDateInput) {
+        examDateInput.value = savedExamDate;
+        examDateInput.disabled = true;
+        examDateInput.style.backgroundColor = '#334155';
     }
 
     const savedCategory = localStorage.getItem('lao_quiz_selected_category');
@@ -70,6 +76,7 @@ window.addEventListener('pageshow', (event) => {
 function sendToDiscordAPI(message) {
     const payload = { content: message };
     if (!navigator.onLine) { saveToOfflineQueue(payload); return; }
+    
     fetch(DISCORD_WEBHOOK_URL, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
@@ -89,6 +96,7 @@ function processOfflineQueue() {
     if (queue.length === 0) return;
     const payload = queue.shift();
     localStorage.setItem('lao_quiz_offline_queue', JSON.stringify(queue));
+    
     fetch(DISCORD_WEBHOOK_URL, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
@@ -100,6 +108,7 @@ function sendLoginNotificationToDiscord() {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
     const phone = localStorage.getItem('lao_quiz_student_phone');
+    const examDate = localStorage.getItem('lao_quiz_exam_date') || 'ບໍ່ໄດ້ລະບຸ';
     const visitCount = localStorage.getItem('lao_quiz_visit_count') || '1';
 
     if (!name || !phone) return;
@@ -125,6 +134,7 @@ function sendLoginNotificationToDiscord() {
                                 `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                                 `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                                 `📞 ເບີໂທ: ${phone}\n` +
+                                `📅 วันสอบ: ${examDate}\n` +
                                 `🚗 ປະເພດ: ${licenseType}\n` +
                                 `⏰ ເວລາ: ${loginTime}\n` +
                                 `📍 ຕຳແໜ່ງ GPS: [ຮຽນຢູ່ໄສ](${mapsLink})\n` +
@@ -137,6 +147,7 @@ function sendLoginNotificationToDiscord() {
                                 `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                                 `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                                 `📞 ເບີໂທ: ${phone}\n` +
+                                `📅 วันสอบ: ${examDate}\n` +
                                 `🚗 ປະເພດ: ${licenseType}\n` +
                                 `⏰ ເວລາ: ${loginTime}\n` +
                                 `📍 ຕຳແໜ່ງ GPS: ⚠️ ປະຕິເສດການແບ່ງປັນຕຳແໜ່ງ\n` +
@@ -151,6 +162,7 @@ function sendLoginNotificationToDiscord() {
                         `🔔 📚 **ນັກຮຽນເຂົ້າຮຽນ (ເທືອທີ ${visitCount})** 📚 🔔\n` +
                         `👤 ຊື່: ${name} (ອາຍຸ: ${age || '-'} ປີ)\n` +
                         `📞 ເບີໂທ: ${phone}\n` +
+                        `📅 วันสอบ: ${examDate}\n` +
                         `🚗 ປະເພດ: ${licenseType}\n` +
                         `⏰ ເວລາ: ${loginTime}\n` +
                         `📍 ຕຳແໜ່ງ GPS: ⚠️ ເບຣົາເຊີບໍ່ຮອງຮັບ Geolocation\n` +
@@ -164,6 +176,7 @@ function sendClassStartingNotification(modeName) {
     const name = localStorage.getItem('lao_quiz_student_name');
     const age = localStorage.getItem('lao_quiz_student_age');
     const phone = localStorage.getItem('lao_quiz_student_phone');
+    const examDate = localStorage.getItem('lao_quiz_exam_date') || 'ບໍ່ໄດ້ລະບຸ';
     const licenseType = currentCategoryFile.replace('.txt', '');
 
     const currentTime = new Date().toLocaleString('lo-LA', { 
@@ -176,6 +189,7 @@ function sendClassStartingNotification(modeName) {
                     `📖 🚀 **ນັກຮຽນເຂົ້າຮຽນ** 🚀 📖\n` +
                     `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                     `📞 ເບີໂທ: ${phone}\n` +
+                    `📅 วันสอบ: ${examDate}\n` +
                     `🚗 ປະເພດ: ${licenseType}\n` +
                     `⏰ ເວລາ: ${currentTime}\n` +
                     `📌 ເຂົ້າຮຽນ: **${modeName}** ✅\n` +
@@ -197,13 +211,13 @@ function getPassedRoundsForMode(mode) {
 }
 
 function sendResultsToDiscord(statusText) {
-    // 🛡️ เช็คว่าส่งไปแล้วหรือยัง ถ้าส่งแล้วจะไม่ส่งซ้ำอีกในรอบนี้
     if (hasSentDiscord) return;
     hasSentDiscord = true;
 
     const name = localStorage.getItem('lao_quiz_student_name') || 'ບໍ່ລະບຸຊື່';
     const age = localStorage.getItem('lao_quiz_student_age') || '-';
     const phone = localStorage.getItem('lao_quiz_student_phone') || '-';
+    const examDate = localStorage.getItem('lao_quiz_exam_date') || 'ບໍ່ໄດ້ລະບຸ';
     
     const licenseType = currentCategoryFile.replace('.txt', '');
     
@@ -234,6 +248,7 @@ function sendResultsToDiscord(statusText) {
                     `📊 📉 **ສະລຸບການຮຽນ/ສອບເສັງ** 📉 📊\n` +
                     `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                     `📞 ເບີໂທ: ${phone}\n` +
+                    `📅 วันสอบ: ${examDate}\n` +
                     `🚗 ປະເພດ: ${licenseType}\n` +
                     `📌 ໝວດ: ${modeName}\n` +
                     `⏰ ເວລາ: ${currentTime}\n` +
@@ -252,11 +267,13 @@ function validateAndStartApp(mode) {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
     const phoneInput = document.getElementById('studentPhone');
+    const examDateInput = document.getElementById('examDateInput');
     const homeSelect = document.getElementById('homeCategory');
 
     const name = nameInput ? nameInput.value.trim() : (localStorage.getItem('lao_quiz_student_name') || '');
     const age = ageInput ? ageInput.value.trim() : (localStorage.getItem('lao_quiz_student_age') || '');
     const phone = phoneInput ? phoneInput.value.trim() : (localStorage.getItem('lao_quiz_student_phone') || '');
+    const examDate = examDateInput ? examDateInput.value.trim() : (localStorage.getItem('lao_quiz_exam_date') || '');
 
     if (!name || !age || !phone) {
         alert('⚠️ ຖ້າກະລຸນາ ໃສ່ຊື່, ອາຍຸ ແລະ ເບີໂທລະສັບ ໃຫ້ຄົບຖ້ວນກ່ອນເລີ່ມຕົ້ນ!');
@@ -276,11 +293,9 @@ function validateAndStartApp(mode) {
     const savedWrong = JSON.parse(localStorage.getItem('lao_quiz_wrong_' + filename)) || [];
     const isPermanentUnlocked = (localStorage.getItem(`lao_quiz_teacher_secret_${filename}`) === 'true') || teacherTempUnlocked;
 
-    if (mode === 'quiz') {
-        if (!isStudyPassed) {
-            alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານໂໝດອ່ານຮຽນຮູ້ (ໝວດ 1) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ.');
-            return;
-        }
+    if (mode === 'quiz' && !isStudyPassed) {
+        alert('⚠️ ຍັງບໍ່ສາມາດເຂົ້າໃຊ້ງານໄດ້!\nກະລຸນາອ່ານໂໝດອ່ານຮຽນຮູ້ (ໝວດ 1) ໃຫ້ຈົບທຸກຂໍ້ກ່ອນ.');
+        return;
     }
 
     if (mode === 'random') {
@@ -297,6 +312,7 @@ function validateAndStartApp(mode) {
     localStorage.setItem('lao_quiz_student_name', name);
     localStorage.setItem('lao_quiz_student_age', age);
     localStorage.setItem('lao_quiz_student_phone', phone);
+    if (examDate) localStorage.setItem('lao_quiz_exam_date', examDate);
 
     if (homeSelect) {
         currentCategoryFile = homeSelect.value;
@@ -306,6 +322,7 @@ function validateAndStartApp(mode) {
     if (nameInput) nameInput.disabled = true;
     if (ageInput) ageInput.disabled = true;
     if (phoneInput) phoneInput.disabled = true;
+    if (examDateInput) examDateInput.disabled = true;
     if (homeSelect) homeSelect.disabled = true;
 
     let modeText = '';
@@ -444,7 +461,7 @@ function startApp(mode) {
     
     currentMode = mode;
     hasSkipped = false; 
-    hasSentDiscord = false; // รีเซ็ตสถานะการส่งเมื่อเริ่มเข้าโหมดใหม่
+    hasSentDiscord = false; 
     
     const innerSelect = document.getElementById('licenseCategory');
     if (innerSelect) innerSelect.value = currentCategoryFile;
@@ -637,7 +654,7 @@ function loadQuestion() {
 
     q.options.forEach((opt, idx) => {
         const isChecked = userAnswers[currentQuestionIndex] === idx;
-        let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; background-color: transparent !important; border: none !important; box-shadow: none !important;";
+        let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; background-color: transparent !important; border: none !important; box-shadow: none !important;";
         if (currentMode === 'study') {
             if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
         } else {
@@ -897,11 +914,13 @@ function openCategory5() {
     const nameInput = document.getElementById('studentName');
     const ageInput = document.getElementById('studentAge');
     const phoneInput = document.getElementById('studentPhone');
+    const examDateInput = document.getElementById('examDateInput');
     const homeSelect = document.getElementById('homeCategory');
 
     const name = nameInput ? nameInput.value.trim() : (localStorage.getItem('lao_quiz_student_name') || '');
     const age = ageInput ? ageInput.value.trim() : (localStorage.getItem('lao_quiz_student_age') || '');
     const phone = phoneInput ? phoneInput.value.trim() : (localStorage.getItem('lao_quiz_student_phone') || '');
+    const examDate = examDateInput ? examDateInput.value.trim() : (localStorage.getItem('lao_quiz_exam_date') || '');
 
     if (!name || !age || !phone) {
         alert('⚠️ ຖ້າກະລຸນາ ໃສ່ຊື່, ອາຍຸ ແລະ ເບີໂທລະສັບ ໃຫ້ຄົບຖ້ວນກ່ອນເລີ່ມຕົ້ນ!');
@@ -927,6 +946,7 @@ function openCategory5() {
     localStorage.setItem('lao_quiz_student_name', name);
     localStorage.setItem('lao_quiz_student_age', age);
     localStorage.setItem('lao_quiz_student_phone', phone);
+    if (examDate) localStorage.setItem('lao_quiz_exam_date', examDate);
     localStorage.setItem('lao_quiz_selected_category', selectedCategory);
 
     const licenseTypeOnly = selectedCategory.replace('.txt', '').toUpperCase();
@@ -940,6 +960,7 @@ function openCategory5() {
                    `📚 🚀 ນັກຮຽນກຳລັງເລີ່ມເຂົ້າຮຽນ ໝວດທີ 5 ແລ້ວ 🚀 📚\n` +
                    `👤 ຊື່: ${name} (ອາຍຸ: ${age} ປີ)\n` +
                    `📞 ເບີໂທ: ${phone}\n` +
+                   `📅 วันสอบ: ${examDate || 'ບໍ່ໄດ້ລະບຸ'}\n` +
                    `🚗 ປະເພດ: ${licenseTypeOnly}\n` +
                    `⏰ ເວລາ: ${currentTime}\n` +
                    `📌 ສະຖານະ: ເຂົ້າຮຽນໝວດ 5 ✅\n` +

@@ -1,0 +1,115 @@
+/* 💬 กรอบแชทเด้งเตือน (Pop-up Widget) ลอยมุมขวาล่าง */
+#chat-reminder-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: none;
+    flex-direction: column;
+    width: 320px;
+    max-width: 90vw;
+    background: #1e293b;
+    border: 2px solid #38bdf8;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    font-family: 'Phetsarath', sans-serif;
+    animation: slideUpChat 0.4s ease-out;
+}
+
+@keyframes slideUpChat {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 📌 แถบหัวแชท (Header) */
+.chat-widget-header {
+    background: #0284c7;
+    color: #ffffff;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.chat-widget-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-widget-profile img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.chat-widget-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* 💬 กล่องข้อความแชท (Body) */
+.chat-widget-body {
+    padding: 12px;
+    background: #0f172a;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-bubble {
+    background: #334155;
+    color: #ffffff;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border-bottom-left-radius: 2px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.chat-time {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: right;
+    margin-top: 4px;
+}
+
+/* 🔘 ปุ่มกดในแชท */
+.chat-widget-footer {
+    padding: 8px 12px 12px 12px;
+    background: #0f172a;
+    display: flex;
+    gap: 6px;
+}
+
+.chat-btn-action {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    background: #0284c7;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.chat-btn-action:hover {
+    background: #0369a1;
+}

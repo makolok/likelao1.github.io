@@ -4,28 +4,25 @@ let cat5Answers = {};
 let cat5Snapshots = {};
 let cat5Config = { total: 20, categoryName: 'A', fileName: 'A.txt' };
 
-// ⏱️ ระบบเวลานับถอยหลัง 35 นาที
 let totalSecondsLeft = 35 * 60;
 let timerInterval = null;
-
-// 🛡️ ตัวแปรป้องกันการส่ง Discord ซ้ำซ้อนในหมวด 5
 let cat5HasSentDiscord = false;
 
-const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1569554833038377013/B5QYG-dl3mJfGDvr9n-NTFgczn-3SeYsMlAOMlBhZVgxJn5q-CaBR7IrF-fN9w40bN8H';
+// 🔒 [Security Note] ใช้ Proxy Endpoint แทนการแปะ Webhook ตรงๆ
+const DISCORD_API_ENDPOINT = '/api/send-discord';
 
 function sendDiscordNotification(message) {
     if (cat5HasSentDiscord) return;
     cat5HasSentDiscord = true;
 
     const payload = { content: message };
-    fetch(DISCORD_WEBHOOK_URL, {
+    fetch(DISCORD_API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     }).catch(e => console.log("Discord error:", e));
 }
 
-// 📌 ฟังก์ชันตรวจสอบเกณฑ์การสอบผ่าน (แยกตามประเภทใบขับขี่)
 function checkIsPassed(wrongCount) {
     const upper = cat5Config.fileName.toUpperCase().trim();
     if (upper === 'AB.TXT' || upper === 'AB' || upper === 'ABC.TXT' || upper === 'ABC') {
@@ -112,7 +109,7 @@ function initCat5Webcam() {
 
 async function initOrResumeBank() {
     try {
-        cat5HasSentDiscord = false; // รีเซ็ตสถานะการส่งเมื่อเริ่มชุดใหม่
+        cat5HasSentDiscord = false;
         let masterBankKey = 'cat5_master_bank_' + cat5Config.fileName;
         let currentBatchKey = 'cat5_current_batch_' + cat5Config.fileName;
         

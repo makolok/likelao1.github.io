@@ -58,14 +58,13 @@ html, body {
     box-shadow: none !important;
 }
 .question-title {
-    font-size: 0.95rem;
+    font-size: 0.9rem !important; /* ปรับขนาดตัวหนังสือคำถามให้ใหญ่ขึ้นชัดเจน */
     font-weight: bold;
-    margin-bottom: 6px;
-    line-height: 1.35;
+    margin-bottom: 10px;
+    line-height: 1.5;
     color: #ffffff !important;
     flex-shrink: 0;
 }
-
 /* 🖼️ ปรับแต่งรูปภาพให้แสดงผลพอดี */
 .question-image {
     text-align: center;
@@ -97,7 +96,7 @@ html, body {
     padding: 8px 10px !important;
     border-radius: 6px !important;
     cursor: pointer !important;
-    font-size: 0.88rem !important;
+    font-size: 0.70rem !important;
     line-height: 1.3 !important;
     font-weight: bold !important;
     color: #ffffff !important;

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="lo">
+<html lang="lo" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -12,6 +12,8 @@
 
     <title>ໂປຼແກມຮຽນ ຄຳຖາມສອບເສັງໃບຂັບຂີ່ - Lao Driving License Quiz</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 💬 เชื่อมต่อ CSS ของระบบแชทแจ้งเตือนวันสอบ -->
+    <link rel="stylesheet" href="reminder-style.css">
     <link rel="icon" href="data:,">
     <style>
         @font-face {
@@ -97,6 +99,14 @@
                 }
             };
             setInterval(syncBackground, 50);
+
+            // โหลดวันที่สอบที่เคยบันทึกไว้มาแสดงในช่องกรอก (ถ้ามี)
+            const savedExamDate = localStorage.getItem('lao_quiz_exam_date');
+            const examDateInput = document.getElementById('examDateInput');
+            if (savedDate && examDateInput) {
+                examDateInput.value = savedDate;
+                examDateInput.type = 'date';
+            }
         });
 
         function closeWelcomeModal() {
@@ -127,6 +137,7 @@
             closePasswordModal();
 
             const homeSelect = document.getElementById('homeCategory');
+            const examDateInput = document.getElementById('examDateInput');
             const filename = homeSelect && homeSelect.value ? homeSelect.value : (typeof currentCategoryFile !== 'undefined' ? currentCategoryFile : 'ABC.txt');
 
             if (password === "1234") {
@@ -135,6 +146,7 @@
                 localStorage.removeItem(`lao_quiz_quiz_passed_${filename}`);
                 localStorage.removeItem(`lao_quiz_teacher_secret_${filename}`);
                 if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
+                if (examDateInput) { examDateInput.disabled = false; examDateInput.style.backgroundColor = '#475569'; }
                 localStorage.removeItem('lao_quiz_selected_category');
                 if (typeof checkHomeUnlockStatus === 'function') checkHomeUnlockStatus();
                 alert("🎉 ປົດລັອກແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
@@ -144,6 +156,7 @@
                 localStorage.setItem(`lao_quiz_teacher_secret_${filename}`, 'true');
                 if (typeof teacherTempUnlocked !== 'undefined') teacherTempUnlocked = false;
                 if (homeSelect) { homeSelect.disabled = false; homeSelect.style.backgroundColor = '#475569'; }
+                if (examDateInput) { examDateInput.disabled = false; examDateInput.style.backgroundColor = '#475569'; }
                 localStorage.removeItem('lao_quiz_selected_category');
                 if (typeof checkHomeUnlockStatus === 'function') checkHomeUnlockStatus();
                 alert("🎉 ປົດລັອກແບບ **ຖາວອນ** ສຳເລັດ!");
@@ -169,10 +182,16 @@
                 <h1 style="font-size: 1.15rem; color: #ffffff; margin-bottom: 8px; font-weight: bold;">020-22293666,02077116687</h1>
                 
                 <div id="student-profile-box" style="margin-bottom: 10px; text-align: left; background: rgba(0,0,0,0.25); padding: 8px; border-radius: 6px;">
-                    <div style="font-weight: bold; font-size: 0.8rem; margin-bottom: 4px; color: #fbbf24; text-align: center;">📋 ຂໍ້ມູນສ່ວນຕົວຜູ້ສອບເສັງ:[cite: 3]</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-weight: bold; font-size: 0.8rem; color: #fbbf24;">📋 ຂໍ້ມູນສ່ວນຕົວຜູ້ສອບເສັງ:</span>
+                        <a href="exam-setting.html" style="font-size: 0.72rem; color: #38bdf8; text-decoration: none; font-weight: bold; background: rgba(56, 189, 248, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.4);">📅 ຕັ້ງວັນສອບ</a>
+                    </div>
                     
-                    <div style="margin-bottom: 6px;">
-                        <input type="text" id="studentName" placeholder="ຊື່ ແລະ ນາມສະກຸນ..." style="width: 100%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
+                    <!-- 🎯 แถวที่ 1: ชื่อ-นามสกุล (55%) และ ช่องเลือกวันสอบ (รองรับปฏิทินภาษาลาว) -->
+                    <div style="display: flex; gap: 6px; margin-bottom: 6px;" lang="lo">
+                        <input type="text" id="studentName" placeholder="ຊື່ ແລະ ນາມສະກຸນ..." style="width: 55%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
+                        
+                        <input type="text" id="examDateInput" lang="lo" placeholder="ວັນທີສອບເສັງ..." onfocus="this.type='date'; this.showPicker && this.showPicker();" onblur="if(!this.value)this.type='text';" onchange="localStorage.setItem('lao_quiz_exam_date', this.value)" title="ວັນທີກຳນົດສອບເສັງ" style="width: 45%; box-sizing: border-box; padding: 7px; font-size: 0.75rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold; color-scheme: dark;">
                     </div>
 
                     <div style="display: flex; gap: 6px; margin-bottom: 6px;">
@@ -204,7 +223,7 @@
                     </button>
 
                     <button id="btn-mode-3" onclick="validateAndStartApp('random')" style="padding: 10px 14px; font-size: 0.95rem; font-weight: bold; background: #64748b; color: #cbd5e1; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                        🔒 3. ໂໝດສະຫຼັບຄຳຖາມ (Random) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]
+                        🔒 3. ໂໝດສະຫຼັບຄຳຖາມ (Random) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສຳເລັດກ່ອນ]
                     </button>
 
                     <button id="btn-mode-4" onclick="validateAndStartApp('review_wrong')" style="padding: 10px 14px; font-size: 0.95rem; font-weight: bold; background: #64748b; color: #cbd5e1; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
@@ -212,7 +231,7 @@
                     </button>
 
                     <button id="btn-category-5" onclick="openCategory5()" style="padding: 10px 14px; font-size: 0.95rem; font-weight: bold; background: #64748b; color: #cbd5e1; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-                        🔒 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສร็จກ່ອນ]
+                        🔒 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສຳເລັດກ່ອນ]
                     </button>
                 </div>
 
@@ -339,6 +358,8 @@
     </div>
 	
     <script src="app.js"></script>
+    <!-- 💬 เชื่อมต่อระบบแชทเด้งเตือนวันสอบ -->
+    <script src="reminder-widget.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
