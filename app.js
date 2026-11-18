@@ -652,18 +652,27 @@ function loadQuestion() {
     optionsContainer.innerHTML = '';
     const laoLetters = ['ກ', 'ຂ', 'ຄ', 'ງ'];
 
-    q.options.forEach((opt, idx) => {
+q.options.forEach((opt, idx) => {
         const isChecked = userAnswers[currentQuestionIndex] === idx;
-        let optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background: transparent !important; background-color: transparent !important; border: none !important; box-shadow: none !important;";
+        
+        // 🛠️ กำหนดค่าพื้นฐานร่วมกันตรงนี้ (ปรับ padding และ margin-bottom ให้แคบลงที่นี่จุดเดียว)
+        let baseStyle = "display: flex !important; align-items: center !important; padding: 6px 10px !important; border-radius: 8px !important; margin-bottom: 4px !important; cursor: pointer !important; font-size: 0.9rem !important; line-height: 1.3 !important; font-weight: bold !important; color: #ffffff !important; box-shadow: none !important;";
+        let optionStyle = baseStyle + " background: transparent !important; background-color: transparent !important; border: none !important;";
+
         if (currentMode === 'study') {
-            if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
+            if (idx === q.answer) {
+                optionStyle = baseStyle + " font-size: 0.9rem !important; background-color: #15803d !important; border: 1px solid #16a34a !important;";
+            }
         } else {
             if (isAnswered) {
-                if (idx === q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
-                else if (isChecked && idx !== q.answer) optionStyle = "display: flex !important; align-items: center !important; padding: 12px 14px !important; border-radius: 8px !important; margin-bottom: 8px !important; cursor: pointer !important; font-size: 1.05rem !important; line-height: 1.45 !important; font-weight: bold !important; color: #ffffff !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
+                if (idx === q.answer) {
+                    optionStyle = baseStyle + " font-size: 0.9rem !important; background-color: #15803d !important; border: 1px solid #16a34a !important;"; 
+                } else if (isChecked && idx !== q.answer) {
+                    optionStyle = baseStyle + " font-size: 0.9rem !important; background-color: #b91c1c !important; border: 1px solid #dc2626 !important;"; 
+                }
             }
         }
-
+		
         const letterLabel = laoLetters[idx] || (idx + 1);
         optionsContainer.innerHTML += `
             <label class="option-label" onclick="selectOption(${idx})" style="${optionStyle}">
