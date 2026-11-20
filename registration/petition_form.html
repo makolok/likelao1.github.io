@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ໃບຄຳຮ້ອງຂໍສອບເສັງໃບຂັບຂີ່ - ແຂວງອັດຕະປື</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: #e2e8f0;
+      font-family: "Phetsarath OT", "Saysettha OT", "Noto Sans Lao", sans-serif;
+      color: #111;
+      font-size: 14.5px;
+      line-height: 1.85;
+    }
+
+    .top-bar {
+      max-width: 210mm;
+      margin: 0 auto 12px;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .student-selector {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .search-input {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid #94a3b8;
+      min-width: 190px;
+      max-width: 260px;
+    }
+    select, button {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 7px 11px;
+      border-radius: 6px;
+      border: 1px solid #94a3b8;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+    }
+    select {
+      min-width: 220px;
+      max-width: 100%;
+    }
+    .btn-back {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #64748b;
+      font-weight: bold;
+    }
+    .btn-print {
+      background: #16a34a;
+      color: #fff;
+      border-color: #15803d;
+      font-weight: bold;
+    }
+    .btn-info {
+      font-size: 13px;
+      color: #334155;
+      font-weight: bold;
+    }
+
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: #fff;
+      padding: 10mm 15mm 12mm;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .state-header {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .emblem-img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 3px;
+    }
+    .state-motto {
+      font-weight: bold;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .org-block {
+      margin-top: 2px;
+      margin-bottom: 6px;
+    }
+    .pwt-img {
+      width: 92px;
+      height: 46px;
+      object-fit: contain;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .org-left {
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .doc-title {
+      text-align: center;
+      font-size: 21px;
+      font-weight: bold;
+      margin: 8px 0 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .to-line {
+      font-weight: bold;
+      margin-bottom: 12px;
+      font-size: 14.5px;
+    }
+
+    .form-line {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: nowrap;
+      gap: 5px;
+      margin-bottom: 11px;
+      width: 100%;
+    }
+    .form-line > span:first-child {
+      white-space: nowrap;
+    }
+    .lbl-nowrap {
+      white-space: nowrap;
+    }
+
+    .dot-field {
+      flex: 1 1 0;
+      min-width: 48px;
+      border-bottom: 1.4px dotted #334155;
+      padding: 0 6px;
+      text-align: center;
+      font-weight: bold;
+      color: #0f172a;
+      line-height: 1.35;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dot-field.wide {
+      flex: 1.8 1 0;
+      min-width: 110px;
+    }
+    .dot-field.short {
+      flex: 0.65 1 0;
+      min-width: 46px;
+    }
+
+    .purpose-heading {
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0 12px;
+      font-size: 15px;
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    .chk-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      line-height: 1.45;
+    }
+    .chk-with-dot {
+      display: flex;
+      align-items: baseline;
+      flex: 1;
+      gap: 4px;
+    }
+    .chk-with-dot .dot-field {
+      flex: 1 1 0;
+      min-width: 55px;
+    }
+    .box-mark {
+      display: inline-flex;
+      width: 15px;
+      height: 15px;
+      border: 1.3px solid #111;
+      align-items: center;
+      justify-content: center;
+      font-size: 12.5px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .closing-note {
+      margin-top: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .date-sign-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+    .sign-block {
+      width: 310px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .sign-date-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+    }
+    .sign-date-line .dot-field {
+      flex: 0 0 115px;
+      min-width: 115px;
+    }
+    .sign-role {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    .sign-name {
+      margin-top: 50px;
+      font-weight: bold;
+      font-size: 14.5px;
+    }
+
+    .attachments {
+      margin-top: auto;
+      padding-top: 8px;
+      font-size: 13.5px;
+      line-height: 1.48;
+    }
+    .attachments-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    .attachments ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .attachments li {
+      margin-bottom: 2px;
+    }
+
+    @media print {
+      body {
+        background: #fff !important;
+        padding: 0 !important;
+        font-size: 13.8px !important;
+        line-height: 1.5 !important;
+      }
+      .top-bar {
+        display: none !important;
+      }
+      .a4-page {
+        width: 100% !important;
+        min-height: 278mm !important;
+        height: 278mm !important;
+        margin: 0 !important;
+        padding: 3mm 11mm 2mm !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+      }
+      .emblem-img {
+        width: 62px !important;
+        height: 62px !important;
+        margin-bottom: 2px !important;
+      }
+      .state-motto {
+        font-size: 14.2px !important;
+        line-height: 1.3 !important;
+      }
+      .pwt-img {
+        width: 82px !important;
+        height: 41px !important;
+      }
+      .org-left {
+        font-size: 12.2px !important;
+        line-height: 1.26 !important;
+      }
+      .doc-title {
+        font-size: 19.5px !important;
+        margin: 4px 0 8px !important;
+      }
+      .to-line {
+        font-size: 13.8px !important;
+        margin-bottom: 7px !important;
+      }
+      .form-line {
+        margin-bottom: 6.5px !important;
+      }
+      .dot-field {
+        line-height: 1.24 !important;
+      }
+      .purpose-heading {
+        font-size: 14.2px !important;
+        margin: 8px 0 7px !important;
+      }
+      .checkbox-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 5.5px 20px !important;
+        margin-bottom: 8px !important;
+        font-size: 13.2px !important;
+        width: 100% !important;
+      }
+      .checkbox-grid > .chk-item {
+        min-width: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      .chk-with-dot {
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+      }
+      .chk-with-dot .dot-field {
+        min-width: 40px !important;
+      }
+      .closing-note {
+        font-size: 13.2px !important;
+        margin: 5px 0 6px !important;
+      }
+      .date-sign-wrap {
+        display: flex !important;
+        justify-content: flex-end !important;
+        width: 100% !important;
+        margin-top: 2px !important;
+        margin-bottom: 6px !important;
+      }
+      .sign-block {
+        width: 310px !important;
+        max-width: 100% !important;
+        margin-left: auto !important;
+        text-align: center !important;
+        font-size: 13.2px !important;
+      }
+      .sign-role {
+        margin-top: 4px !important;
+      }
+      .sign-name {
+        margin-top: 28px !important;
+        font-size: 13.8px !important;
+      }
+      .attachments {
+        margin-top: auto !important;
+        padding-top: 4px !important;
+        font-size: 12.8px !important;
+        line-height: 1.32 !important;
+      }
+      .attachments-title {
+        font-size: 13.4px !important;
+        margin-bottom: 3px !important;
+      }
+      .attachments li {
+        margin-bottom: 1px !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .a4-page {
+        width: 100%;
+        min-height: auto;
+        padding: 12px;
+      }
+      .form-line {
+        flex-wrap: wrap;
+      }
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+      .date-sign-wrap {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="student-selector">
+      <button type="button" class="btn-back" onclick="window.location.href='index.html'">⬅ ກັບໄປໜ້າຕາຕະລາງ</button>
+      <input id="studentSearchInput" type="text" class="search-input" placeholder="🔍 ຄົ້ນຫາ ຊື່ / ລະຫັດ / ເບີໂທ..." oninput="onSearchStudentInput()" />
+      <select id="studentSelect" onchange="onSelectStudentChange()"></select>
+      <button type="button" onclick="stepStudent(-1)">⬅ ກ່ອນໜ້າ</button>
+      <button type="button" onclick="stepStudent(1)">ຖັດໄປ ➡</button>
+      <span id="studentPositionLabel" class="btn-info"></span>
+    </div>
+    <button type="button" class="btn-print" onclick="window.print()">🖨️ ສັ່ງພິມໃບຄຳຮ້ອງ</button>
+  </div>
+
+  <div class="a4-page">
+    <div>
+      <div class="state-header">
+        <img id="emblemLogo" class="emblem-img" src="lao.png" alt="ກາຊາດ ສປປ ລາວ" />
+        <div class="state-motto">
+          <div>ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ</div>
+          <div>ສັນຕິພາບ ເອກະລາດ ປະຊາທິປະໄຕ ເອກະພາບ ວັດທະນາຖາວອນ</div>
+        </div>
+      </div>
+
+      <div class="org-block">
+        <img id="pwtLogo" class="pwt-img" src="pwt.png" alt="ໂລໂກ້ ຍທຂ PWT" />
+        <div class="org-left">
+          <div>ກະຊວງໂຍທາທິການແລະຂົນສົ່ງ</div>
+          <div>ພະແນກ ຍທຂ ແຂວງອັດຕະປື</div>
+          <div>ກອງຄຸ້ມຄອງພາຫະນະແລະການຂັບຂີ່</div>
+        </div>
+      </div>
+
+      <div class="doc-title">ໃບຄຳຮ້ອງ</div>
+
+      <div class="to-line">
+        ຮຽນ: ທ່ານຫົວໜ້າກອງຄຸ້ມຄອງພາຫະນະແລະການຂັບຂີ່, ພະແນກ ຍທຂ ປະຈຳແຂວງອັດຕະປື.
+      </div>
+
+      <div class="form-line">
+        <span>ຂ້າພະເຈົ້າ ທ້າວ / ນາງ :</span>
+        <span class="dot-field wide" id="fLaoName"></span>
+        <span class="lbl-nowrap">, ເກີດວັນທີ :</span>
+        <span class="dot-field short" id="fBirthDay"></span>
+        <span class="lbl-nowrap">ເດືອນ :</span>
+        <span class="dot-field short" id="fBirthMonth"></span>
+        <span class="lbl-nowrap">ປີ :</span>
+        <span class="dot-field short" id="fBirthYear"></span>
+      </div>
+
+      <div class="form-line">
+        <span>ຊື່ແລະນາມສະກຸນເປັນພາສາສາກົນ :</span>
+        <span class="dot-field wide" id="fEnName"></span>
+        <span class="lbl-nowrap">ຖືກຕ້ອງຕາມບັດສະປອດ</span>
+      </div>
+
+      <div class="form-line">
+        <span>ເກີດຢູ່ບ້ານ :</span>
+        <span class="dot-field wide" id="fBirthVillage"></span>
+        <span class="lbl-nowrap">ເມືອງ :</span>
+        <span class="dot-field" id="fBirthDistrict"></span>
+        <span class="lbl-nowrap">ແຂວງ :</span>
+        <span class="dot-field" id="fBirthProvince"></span>
+      </div>
+
+      <div class="form-line">
+        <span>ສຳມະໂນຄົວເລກທີ :</span>
+        <span class="dot-field short" id="fFamilyBook"></span>
+        <span class="lbl-nowrap">ລົງວັນທີ :</span>
+        <span class="dot-field" id="fFamilyDate"></span>
+        <span class="lbl-nowrap">ອອກໃຫ້ທີ່ :</span>
+        <span class="dot-field wide" id="fIssuedBy"></span>
+      </div>
+
+      <div class="form-line">
+        <span>ສັນຊາດ :</span>
+        <span class="dot-field" id="fNationality"></span>
+        <span class="lbl-nowrap">ອາຊີບ :</span>
+        <span class="dot-field" id="fOccupation"></span>
+        <span class="lbl-nowrap">ບ່ອນປະຈຳການ :</span>
+        <span class="dot-field wide" id="fWorkplace"></span>
+      </div>
+
+      <div class="form-line">
+        <span>ໝາຍເລກໂທລະສັບ :</span>
+        <span class="dot-field wide" id="fPhone"></span>
+      </div>
+
+      <div class="purpose-heading">ຂໍຮຽນມາຍັງທ່ານ ດ້ວຍຈຸດປະສົງ ຂໍອະນຸຍາດ :</div>
+
+      <div class="checkbox-grid">
+        <div class="chk-item">
+          <span class="box-mark" id="chkExamType">✓</span>
+          <div class="chk-with-dot">
+            <span class="lbl-nowrap">ຂໍສອບເສັງໃບຂັບຂີ່ປະເພດ :</span>
+            <span class="dot-field short" id="fLicenseType"></span>
+          </div>
+        </div>
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍປ່ຽນໃບຂັບຂີ່ລາວເກົ່າ</span>
+        </div>
+
+        <div class="chk-item">
+          <span class="box-mark" id="chkNewOrRenew"></span>
+          <span>ຂໍປ່ຽນໃບຂັບຂີ່ໃໝ່</span>
+        </div>
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍປ່ຽນໃບຂັບຂີ່ກອງທັບເປັນພົນລະເຮືອນ</span>
+        </div>
+
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍແຈ້ງໃບຂັບຂີ່ເສຍຫາຍ</span>
+        </div>
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍປ່ຽນໃບຂັບຂີ່ຕ່າງປະເທດ ເປັນໃບຂັບຂີ່ລາວ</span>
+        </div>
+
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍຍົກຍ້າຍສຳນວນໃບຂັບຂີ່ໄປຂຶ້ນຢູ່ຕ່າງແຂວງ</span>
+        </div>
+        <div class="chk-item">
+          <span class="box-mark"></span>
+          <span>ຂໍປ່ຽນໃບຂັບຂີ່ສາກົນ ເປັນໃບຂັບຂີ່ລາວ</span>
+        </div>
+      </div>
+
+      <div class="form-line">
+        <span>1. ໃບຂັບຂີ່ເດີມ ເລກທີ</span>
+        <span class="dot-field short"></span>
+        <span class="lbl-nowrap">ລົງວັນທີ :</span>
+        <span class="dot-field short"></span>
+        <span class="lbl-nowrap">ປະເພດອະນຸຍາດ :</span>
+        <span class="dot-field short"></span>
+      </div>
+      <div class="form-line">
+        <span>ອອກໃຫ້ທີ່ :</span>
+        <span class="dot-field wide"></span>
+      </div>
+
+      <div class="closing-note">
+        ສະນັ້ນ, ຈຶ່ງສະເໜີມາຍັງທ່ານ ເພື່ອຄົ້ນຄວ້າແກ້ໄຂຕາມລະບຽບການດ້ວຍ.
+      </div>
+
+      <div class="date-sign-wrap">
+        <div class="sign-block">
+          <div class="sign-date-line">
+            <span class="lbl-nowrap">ທີ່ ອັດຕະປື, ວັນທີ :</span>
+            <span class="dot-field" id="fExamDate"></span>
+          </div>
+          <div class="sign-role">ເຊັນຜູ້ຮ້ອງຂໍ</div>
+          <div class="sign-name" id="fSignName"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="attachments">
+      <div class="attachments-title">ເອກະສານຕິດຄັດມາພ້ອມນີ້ມີ:</div>
+      <ol>
+        <li>ໃບຢັ້ງຢືນທີ່ຢູ່ຕິດຮູບແລະປະທັບຕາຈາກອຳນາດການປົກຄອງບ້ານ<br />ຫຼື ອັດສຳເນົາບັດປະຈຳຕົວ, ສຳມະໂນຄົວ ກໍ່ໄດ້</li>
+        <li>ອັດສຳເນົາພາສປອດ (ຖ້າມີ)</li>
+        <li>ໃບຢັ້ງຢືນສຸຂະພາບ (ສຳລັບຜູ້ສອບເສັງໃບຂັບຂີ່ປະເພດລົດສາມລໍ້ຕິດເຄື່ອງຈັກຂຶ້ນເມືອ)</li>
+        <li>ຮູບຖ່າຍສີ ຟ້າຂາວ ຂະໜາດ 3 x 4 ຈຳນວນ 6 ໃບ (ຖ່າຍບໍ່ເກີນ 3 ເດືອນ)</li>
+        <li>ໃບຢັ້ງຢືນການຝຶກອົບຮົມ</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="petition_print.js"></script>
+</body>
+</html>[cite: 24]

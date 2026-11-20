@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>ຕາຕະລາງລົງທະບຽນສອບເສັງໃບຂັບຂີ່</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: sans-serif;
+      max-width: 1150px;
+      margin: 16px auto;
+      padding: 0 14px 40px;
+      font-size: 16px;
+      color: #111;
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+    .sync-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      color: #0f172a;
+      line-height: 1.35;
+    }
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #eab308;
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.25);
+    }
+    .status-dot.online {
+      background: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+    }
+    .status-dot.connecting {
+      background: #eab308;
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.25);
+    }
+    .status-dot.offline {
+      background: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .status-badge.online {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+    .status-badge.connecting {
+      background: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde047;
+    }
+    .status-badge.offline {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .sync-refresh-btn {
+      padding: 6px 11px;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 18px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .row.full {
+      grid-column: 1 / -1;
+    }
+    label {
+      width: 155px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .input-group {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      width: 100%;
+    }
+    input[type="text"], select {
+      flex: 1;
+      min-width: 0;
+      padding: 9px 10px;
+      font-size: 16px;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+    }
+    input[readonly] {
+      background: #f4f4f4;
+      color: #222;
+    }
+    button {
+      padding: 9px 13px;
+      font-size: 15px;
+      cursor: pointer;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: #16a34a;
+      color: #fff;
+      border-color: #15803d;
+      font-weight: bold;
+    }
+    .btn-queue {
+      background: #2563eb;
+      color: #fff;
+      border-color: #1d4ed8;
+      font-weight: bold;
+    }
+    .btn-print-nav {
+      background: #0f766e;
+      color: #fff;
+      border-color: #115e59;
+      font-weight: bold;
+    }
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+      border-color: #b91c1c;
+    }
+    .copy-btn {
+      padding: 5px 10px;
+      font-size: 13px;
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+    }
+    .copy-btn.copied {
+      background: #0f766e;
+    }
+    .row-print-btn {
+      padding: 5px 9px;
+      font-size: 12px;
+      background: #0f766e;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .table-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .list-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+    }
+    .list-search-input {
+      flex: 1;
+      min-width: 210px;
+      padding: 8px 11px !important;
+      font-size: 15px !important;
+      background: #fff;
+    }
+    .btn-filter-action {
+      padding: 7px 11px;
+      font-size: 13px;
+      background: #2563eb;
+      color: #fff;
+      border-color: #1d4ed8;
+      font-weight: bold;
+    }
+    .btn-filter-print {
+      padding: 7px 11px;
+      font-size: 13px;
+      background: #0f766e;
+      color: #fff;
+      border-color: #115e59;
+      font-weight: bold;
+    }
+    .btn-filter-clear {
+      padding: 7px 10px;
+      font-size: 13px;
+      background: #fff;
+      color: #334155;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 10px;
+      text-align: left;
+    }
+    th {
+      background: #f4f4f4;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 0 12px 36px;
+        font-size: 17px;
+      }
+      h2 {
+        font-size: 19px;
+      }
+      .sync-bar {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 5px;
+      }
+      label {
+        width: 100%;
+        font-size: 16px;
+      }
+      input[type="text"], select {
+        font-size: 18px;
+        padding: 11px 12px;
+      }
+      button {
+        font-size: 16px;
+        padding: 11px 14px;
+      }
+      .sync-refresh-btn {
+        font-size: 13px;
+        padding: 6px 10px;
+      }
+      .actions {
+        flex-direction: column;
+      }
+      .actions button {
+        width: 100%;
+        padding: 13px;
+        font-size: 17px;
+      }
+      .list-filter-bar button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>ຕາຕະລາງລົງທະບຽນສອບເສັງໃບຂັບຂີ່</h2>
+
+  <div class="sync-bar">
+    <div id="syncStatusText" class="sync-status">
+      <span id="connectionDot" class="status-dot connecting"></span>
+      <span id="connectionBadge" class="status-badge connecting">ກຳລັງເຊື່ອມຕໍ່</span>
+      <span id="connectionSummaryText">ກຳລັງເຊື່ອມຕໍ່... | ທັງໝົດ: 0 ຄົນ</span>
+    </div>
+    <button type="button" class="sync-refresh-btn" onclick="manualRefreshFromCloud()">🔄 ລີເຟດ</button>
+  </div>
+
+  <div class="form-grid">
+    <div class="row">
+      <label>ວັນ​ທີ່​ຂໍ​ເສັງ:</label>
+      <div class="input-group">
+        <input id="examDate" type="text" placeholder="ວັນ/ເດືອນ/ປີ" />
+        <button type="button" onclick="startVoice('examDate', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ລະ​ຫັດ​ນັກ​ຮຽນ:</label>
+      <div class="input-group">
+        <input id="studentCode" type="text" placeholder="ລະຫັດນັກຮຽນ" />
+        <button type="button" onclick="startVoice('studentCode', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ຊື່ພາສາລາວ:</label>
+      <div class="input-group">
+        <input id="laoName" type="text" placeholder="ຊື່ ແລະ ນາມສະກຸນ (ລາວ)" />
+        <button type="button" onclick="startVoice('laoName', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>Name&amp;Surname:</label>
+      <div class="input-group">
+        <input id="enName" type="text" placeholder="Full Name (English)" />
+        <button type="button" onclick="startVoice('enName', this)">🎤 Voice EN</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ເກີດວັນ/ເດືອນ/ປີ:</label>
+      <div class="input-group">
+        <input id="birthDate" type="text" placeholder="ວັນ/ເດືອນ/ປີເກີດ" />
+        <button type="button" onclick="startVoice('birthDate', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ເກີດຢູ່ ບ້ານ:</label>
+      <div class="input-group">
+        <input id="birthVillage" type="text" placeholder="ບ້ານເກີດ" />
+        <button type="button" onclick="startVoice('birthVillage', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ເມືອງ:</label>
+      <div class="input-group">
+        <input id="district" type="text" placeholder="ເມືອງ" />
+        <button type="button" onclick="startVoice('district', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ແຂວງ:</label>
+      <div class="input-group">
+        <input id="province" type="text" placeholder="ແຂວງ" />
+        <button type="button" onclick="startVoice('province', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ສັນຊາດ:</label>
+      <div class="input-group">
+        <input id="nationality" type="text" value="ລາວ / LAO" />
+        <button type="button" onclick="startVoice('nationality', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ອາຊີບ:</label>
+      <select id="occupation">
+        <option value="">-- ເລືອກອາຊີບ --</option>
+        <option value="ປະຊາຊົນ">ປະຊາຊົນ</option>
+        <option value="ພະນັກງານ">ພະນັກງານ</option>
+        <option value="ນັກຮຽນ">ນັກຮຽນ</option>
+        <option value="ນັກສຶກສາ">ນັກສຶກສາ</option>
+        <option value="ຄ້າຂາຍ">ຄ້າຂາຍ</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>ຊຸດ:</label>
+      <select id="batchSet">
+        <option value="">-- ເລືອກຊຸດ --</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>ໂທລະສັບ:</label>
+      <div class="input-group">
+        <input id="phone" type="text" placeholder="ເບີໂທລະສັບ" />
+        <button type="button" onclick="startVoice('phone', this)">🎤 ເວົ້າລາວ</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>ປະ​ເພດ:</label>
+      <select id="licenseType">
+        <option value="">-- ເລືອກປະເພດໃບຂັບຂີ່ --</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+        <option value="AB">AB</option>
+        <option value="BC">BC</option>
+        <option value="ABC">ABC</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>ຊື່ໂຮງຮຽນ:</label>
+      <input id="schoolName" type="text" value="ຮຮ.ສອນຂັບລົດບ້ານສາມັກຄີ" readonly />
+    </div>
+
+    <div class="row full">
+      <label>ຂໍ້ມູນອື່ນໆ:</label>
+      <input id="otherInfo" type="text" value="ສອບເສັງໃໝ່" readonly />
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-primary" onclick="addRow()">➕ ບັນທຶກ</button>
+    <button type="button" class="btn-print-nav" onclick="openPrintPage()">🖨️ ໄປໜ້າ Print</button>
+    <button type="button" class="btn-queue" onclick="copyAllRowsQueue(this)">📋 ກັອບຄິວທັງໝົດ</button>
+    <button type="button" onclick="downloadCSV()">⬇️ ດາວໂຫລດ(ເປີດໃນ Excel)</button>
+    <button type="button" class="btn-danger" onclick="clearAll()">🗑️ ລ້າງຂໍ້ມູນທັງໝົດ</button>
+  </div>
+
+  <div class="table-header-bar">
+    <span id="totalStudentsCountLabel">ລາຍຊື່ນັກຮຽນທັງໝົດ: 0 ຄົນ</span>
+  </div>
+
+  <div class="list-filter-bar">
+    <input id="tableSearchInput" type="text" class="list-search-input" placeholder="🔍 ຄົ້ນຫາໃນລາຍຊື່: ຊື່ / ລະຫັດ / ເບີໂທ / ບ້ານ / ປະເພດ..." oninput="onTableSearchChange()" />
+    <button type="button" id="copyFirstMatchedBtn" class="btn-filter-action" onclick="copyFirstMatchedRow(this)">📋 ກັອບຄົນທີ່ພົບ (1 ຄົນ)</button>
+    <button type="button" id="copyFilteredQueueBtn" class="btn-filter-action" onclick="copyFilteredRowsQueue(this)">📦 ກັອບສະເພາະຜົນຄົ້ນຫາ</button>
+    <button type="button" id="printFirstMatchedBtn" class="btn-filter-print" onclick="printFirstMatchedRow()">🖨️ Print ຄົນທີ່ພົບ</button>
+    <button type="button" class="btn-filter-clear" onclick="clearTableSearch()">✖ ລ້າງຄົ້ນຫາ</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ສົ່ງກອກ / Print</th>
+          <th>ວັນ​ທີ່​ຂໍ​ເສັງ</th>
+          <th>ລະ​ຫັດ​ນັກ​ຮຽນ</th>
+          <th>ຊື່ພາສາລາວ</th>
+          <th>Name&amp;Surname</th>
+          <th>ເກີດວັນ/ເດືອນ/ປີ</th>
+          <th>ເກີດຢູ່ ບ້ານ</th>
+          <th>ເມືອງ</th>
+          <th>ແຂວງ</th>
+          <th>ສັນຊາດ</th>
+          <th>ອາຊີບ</th>
+          <th>ຊຸດ</th>
+          <th>ໂທລະສັບ</th>
+          <th>ປະ​ເພດ</th>
+          <th>ຊື່ໂຮງຮຽນ</th>
+          <th>ຂໍ້ມູນອື່ນໆ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -87,9 +87,145 @@
             cursor: pointer !important;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
         }
+
+        .reg-menu-row {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .btn-reg-link {
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            background: #64748b;
+            color: #cbd5e1;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-reg-link.unlocked {
+            background: #16a34a;
+            color: #ffffff;
+        }
+
+        .btn-reg-relock {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
     </style>
     <script>
+        // 🔐 รหัสปลดล็อกเฉพาะเมนูตารางลงทะเบียน (แยกอิสระจากระบบครูเดิม)
+        const REG_TEMP_PASSCODE = "1234"; // รหัสปลดล็อกชั่วคราว
+        const REG_PERM_PASSCODE = "02077116687"; // รหัสปลดล็อกถาวร
+        const REG_PERM_STORAGE_KEY = "lao_quiz_reg_menu_perm_unlocked";
+        const REGISTRATION_TARGET_URL = "./registration/index.html";
+
+        let regTempUnlocked = false;
+
+        function isRegMenuPermUnlocked() {
+            return localStorage.getItem(REG_PERM_STORAGE_KEY) === "true";
+        }
+
+        function isRegMenuCurrentlyUnlocked() {
+            return regTempUnlocked || isRegMenuPermUnlocked();
+        }
+
+        function refreshRegistrationMenuButton() {
+            const btn = document.getElementById('btn-registration-menu');
+            const relockBtn = document.getElementById('btn-reg-relock');
+            if (!btn) return;
+
+            const perm = isRegMenuPermUnlocked();
+            const unlocked = regTempUnlocked || perm;
+
+            if (unlocked) {
+                btn.classList.add('unlocked');
+                btn.innerHTML = perm
+                    ? '📝 ຕາຕະລາງລົງທະບຽນສອບເສັງ (ປົດລັອກຖາວອນ)'
+                    : '📝 ຕາຕະລາງລົງທະບຽນສອບເສັງ (ປົດລັອກຊົ່ວຄາວ)';
+            } else {
+                btn.classList.remove('unlocked');
+                btn.innerHTML = '🔒 ຕາຕະລາງລົງທະບຽນສອບເສັງ (ສະເພາະຄູສອນ)';
+            }
+
+            if (relockBtn) {
+                relockBtn.style.display = unlocked ? 'inline-block' : 'none';
+            }
+        }
+
+        function handleRegistrationMenuClick() {
+            if (isRegMenuCurrentlyUnlocked()) {
+                window.location.href = REGISTRATION_TARGET_URL;
+                return;
+            }
+
+            const modal = document.getElementById('reg-password-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const passInput = document.getElementById('reg-password-input');
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
+            }
+        }
+
+        function closeRegPasswordModal() {
+            const modal = document.getElementById('reg-password-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function submitRegPasswordModal() {
+            const passInput = document.getElementById('reg-password-input');
+            const password = passInput ? passInput.value.trim() : '';
+
+            if (password === REG_TEMP_PASSCODE) {
+                regTempUnlocked = true;
+                localStorage.removeItem(REG_PERM_STORAGE_KEY);
+                closeRegPasswordModal();
+                refreshRegistrationMenuButton();
+                alert("🎉 ປົດລັອກເມນູຕາຕະລາງລົງທະບຽນແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
+                window.location.href = REGISTRATION_TARGET_URL;
+            } else if (password === REG_PERM_PASSCODE) {
+                regTempUnlocked = false;
+                localStorage.setItem(REG_PERM_STORAGE_KEY, "true");
+                closeRegPasswordModal();
+                refreshRegistrationMenuButton();
+                alert("🎉 ປົດລັອກເມນູຕາຕະລາງລົງທະບຽນແບບ **ຖາວອນ** ສຳເລັດ!");
+                window.location.href = REGISTRATION_TARGET_URL;
+            } else {
+                alert("❌ ລະຫັດຜ່ານເຂົ້າຕາຕະລາງລົງທະບຽນບໍ່ຖືກຕ້ອງ!");
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
+            }
+        }
+
+        function relockRegistrationMenu() {
+            regTempUnlocked = false;
+            localStorage.removeItem(REG_PERM_STORAGE_KEY);
+            refreshRegistrationMenuButton();
+            alert("🔒 ລັອກເມນູຕາຕະລາງລົງທະບຽນຄືນແລ້ວ!");
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            // รีเซ็ตสถานะชั่วคราวทุกครั้งที่เปิดหน้า index ใหม่ (ส่วนถาวรจะคงอยู่จนกว่าจะกดปุ่มล็อคคืน)
+            regTempUnlocked = false;
+            refreshRegistrationMenuButton();
+
             const quizBox = document.getElementById('main-quiz-box');
             const syncBackground = () => {
                 if (quizBox) {
@@ -100,13 +236,17 @@
             };
             setInterval(syncBackground, 50);
 
-            // โหลดวันที่สอบที่เคยบันทึกไว้มาแสดงในช่องกรอก (ถ้ามี)
             const savedExamDate = localStorage.getItem('lao_quiz_exam_date');
             const examDateInput = document.getElementById('examDateInput');
-            if (savedDate && examDateInput) {
-                examDateInput.value = savedDate;
+            if (savedExamDate && examDateInput) {
+                examDateInput.value = savedExamDate;
                 examDateInput.type = 'date';
             }
+        });
+
+        window.addEventListener('pageshow', () => {
+            regTempUnlocked = false;
+            refreshRegistrationMenuButton();
         });
 
         function closeWelcomeModal() {
@@ -187,7 +327,6 @@
                         <a href="exam-setting.html" style="font-size: 0.72rem; color: #38bdf8; text-decoration: none; font-weight: bold; background: rgba(56, 189, 248, 0.15); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.4);">📅 ຕັ້ງວັນສອບ</a>
                     </div>
                     
-                    <!-- 🎯 แถวที่ 1: ชื่อ-นามสกุล (55%) และ ช่องเลือกวันสอบ (รองรับปฏิทินภาษาลาว) -->
                     <div style="display: flex; gap: 6px; margin-bottom: 6px;" lang="lo">
                         <input type="text" id="studentName" placeholder="ຊື່ ແລະ ນາມສະກຸນ..." style="width: 55%; box-sizing: border-box; padding: 7px; font-size: 0.85rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background-color: #475569 !important; color: #ffffff !important; outline: none; font-weight: bold;">
                         
@@ -233,6 +372,15 @@
                     <button id="btn-category-5" onclick="openCategory5()" style="padding: 10px 14px; font-size: 0.95rem; font-weight: bold; background: #64748b; color: #cbd5e1; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                         🔒 5. ໝວດທີ 5 (ສອບເສັງຈຳລອງພິເສດ) - [ຕ້ອງເຮັດໝວດ 2 ໃຫ້ສຳເລັດກ່ອນ]
                     </button>
+
+                    <div class="reg-menu-row">
+                        <button id="btn-registration-menu" type="button" onclick="handleRegistrationMenuClick()" class="btn-reg-link">
+                            🔒 ຕາຕະລາງລົງທະບຽນສອບເສັງ (ສະເພາະຄູສອນ)
+                        </button>
+                        <button id="btn-reg-relock" type="button" onclick="relockRegistrationMenu()" class="btn-reg-relock" style="display: none;" title="ລັອກເມນູຄືນ">
+                            🔒 ລັອກ
+                        </button>
+                    </div>
                 </div>
 
                 <div style="font-size: 0.75rem; color: #ffffff; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.2); font-weight: bold;">
@@ -353,6 +501,19 @@
             <div style="display: flex; gap: 8px;">
                 <button onclick="closePasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
                 <button onclick="submitPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #0284c7; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔐 หน้าต่างใส่รหัสผ่านเฉพาะเมนูตารางลงทะเบียน (ชั่วคราว / ถาวร) -->
+    <div id="reg-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.82); z-index: 10001; justify-content: center; align-items: center;">
+        <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #22c55e;">
+            <h3 style="color: #ffffff; margin-bottom: 10px; font-size: 1.1rem;">🔒 ລະຫັດຜ່ານຕາຕະລາງລົງທະບຽນ</h3>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px;">ໃສ່ລະຫັດຜ່ານ (ຊົ່ວຄາວ ຫຼື ຖາວອນ):</p>
+            <input type="password" inputmode="numeric" id="reg-password-input" onkeydown="if(event.key==='Enter') submitRegPasswordModal();" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100% !important; box-sizing: border-box !important; padding: 10px !important; font-size: 1rem !important; border-radius: 6px !important; border: 2px solid #22c55e !important; background-color: #facc15 !important; background: #facc15 !important; color: #000000 !important; outline: none !important; font-weight: bold !important; text-align: center !important; margin-bottom: 15px !important;">
+            <div style="display: flex; gap: 8px;">
+                <button type="button" onclick="closeRegPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
+                <button type="button" onclick="submitRegPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
             </div>
         </div>
     </div>

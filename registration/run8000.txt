@@ -1,0 +1,2 @@
+cd c:\Users\likelao\Desktop\lao
+python -m http.server 8000
