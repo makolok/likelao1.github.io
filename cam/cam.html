@@ -122,6 +122,10 @@
                 <button type="button" onclick="goBackToHome()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors" title="ກັບໄປໜ້າຫຼັກ">
                     <i class="fa-solid fa-house"></i> <span>ໜ້າຫຼັກ</span>
                 </button>
+                <button type="button" id="btn-api-key-status" onclick="checkApiKeyStatus(false)" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors" title="ກວດສອບ API Key ອັດຕະໂນມັດ ແລະ ຄລິກເພື່ອເຊັກຊ້ຳໄດ້ຕະຫຼອດ">
+                    <i id="api-key-icon" class="fa-solid fa-key"></i>
+                    <span id="api-key-label" class="hidden md:inline">AI Studio Key</span>
+                </button>
                 <a href="photo_archive.html" class="px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors">
                     <i class="fa-solid fa-database"></i> <span>ຖານຂໍ້ມູນຮູບ</span>
                 </a>
@@ -196,7 +200,7 @@
                         </div>
                     </div>
 
-                    <!-- Person Name Input + Source Image Preview -->
+                    <!-- Person Name Input + Source Image Preview & Quick Two-Mode Actions -->
                     <div class="mt-4 pt-4 border-t border-slate-100 space-y-3">
                         <div>
                             <label for="person-name-input" class="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -210,25 +214,38 @@
                             >
                         </div>
 
-                        <div id="source-preview-box" class="hidden flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-                            <div class="flex items-center gap-3">
-                                <img id="source-thumb" src="" alt="ຕົ້ນສະບັບ" class="w-14 h-[74px] object-cover rounded-xl border border-slate-300 bg-white">
-                                <div>
-                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                                        <i class="fa-solid fa-check"></i> ພ້ອມແຕ່ງຮູບດ້ວຍ AI
-                                    </span>
-                                    <p class="text-xs text-slate-500 mt-1">ລະບົບປັບອັດຕາສ່ວນ 3×4 ຊມ. ອັດຕະໂນມັດ</p>
+                        <div id="source-preview-box" class="hidden bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <img id="source-thumb" src="" alt="ຕົ້ນສະບັບ" class="w-14 h-[74px] object-cover rounded-xl border border-slate-300 bg-white">
+                                    <div>
+                                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                            <i class="fa-solid fa-check"></i> ດຶງຮູບເຂົ້າມາແລ້ວ (3×4 ຊມ.)
+                                        </span>
+                                        <p class="text-xs text-slate-500 mt-1">ເລືອກໄດ້ທັນທີວ່າຈະສັ່ງພິມຮູບນີ້ເລີຍ ຫຼື ໃຫ້ AI ແຕ່ງສູດ</p>
+                                    </div>
                                 </div>
+                                <button type="button" onclick="clearSourceImage()" class="text-xs text-slate-500 hover:text-red-600 px-3 py-2 rounded-xl hover:bg-white transition-colors">
+                                    ປ່ຽນຮູບ
+                                </button>
                             </div>
-                            <button type="button" onclick="clearSourceImage()" class="text-xs text-slate-500 hover:text-red-600 px-3 py-2 rounded-xl hover:bg-white transition-colors">
-                                ປ່ຽນຮູບ
-                            </button>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-slate-200/70">
+                                <button type="button" id="btn-direct-print-uploaded" onclick="makeUploadedPhotoPrintableAndPrint()" class="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-solid fa-print text-base"></i>
+                                    <span>ເຮັດເປັນຮູບ 3×4 & ສັ່ງພິມເລີຍ</span>
+                                </button>
+                                <button type="button" id="btn-jump-generator" onclick="focusGeneratorSection()" class="py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-2 transition-all">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+                                    <span>ໃຊ້ຕົວເຈເນີເຣເຕີ (AI ແຕ່ງສູດ)</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- STEP 2: AI Customization Settings -->
-                <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+                <section id="generator-section" class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2.5">
                             <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-bold flex items-center justify-center">2</span>
@@ -237,6 +254,21 @@
                         <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
                             <i class="fa-solid fa-shield-halved"></i> ລັອກໃບໜ້າເດີມ 100%
                         </span>
+                    </div>
+
+                    <div class="mb-4 p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+                        <div class="text-xs text-slate-600">
+                            <span class="font-semibold text-slate-800">ກວດສອບ API Key:</span>
+                            <span id="api-key-status-text" class="ml-1 text-slate-500">ກຳລັງກວດສອບສະຖານະ Key ອັດຕະໂນມັດ...</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-test-key" onclick="checkApiKeyStatus(false)" class="px-3 py-1.5 rounded-xl bg-white hover:bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-plug-circle-check"></i> <span>ເຊັກ Key</span>
+                            </button>
+                            <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>ເປີດ AI Studio</span>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="space-y-5">
@@ -269,7 +301,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">2. ສີພື້ນຫຼັງມາດຕະຖານ</label>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">2. ສີພື້ນຫຼັງມາດຕະຖານ (50% ຟ້າ)</label>
                                 <div class="grid grid-cols-2 gap-2">
                                     <button type="button" id="bg-standard" onclick="selectBgColor('standard')" class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left">
                                         <span class="w-6 h-6 rounded-lg shrink-0 border border-black/10 shadow-inner" style="background-color: #2b7de9;"></span>
@@ -313,23 +345,29 @@
                             <div>
                                 <label for="hair-option" class="block text-sm font-semibold text-slate-700 mb-1.5">4. ການຈັດຊົງຜົມໃຫ້ຮຽບຮ້ອຍ</label>
                                 <select id="hair-option" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:border-blue-500 focus:outline-none">
-                                    <option value="neat_tied">ມັດລວບຮຽບຕຶງ / ຫວີຮຽບຮ້ອຍບໍ່ມີປາຍຜົມ</option>
+                                    <option value="neat_tied" selected>ມັດລວບຮຽບຕຶງ / ຫວີຮຽບຮ້ອຍບໍ່ມີປາຍຜົມ</option>
                                     <option value="natural_neat">ຈັດຊົງເດີມໃຫ້ເຂົ້າຊົງຮຽບຮ້ອຍ ບໍ່ບັງໜ້າ</option>
                                 </select>
                             </div>
                             <div>
                                 <label for="expression-option" class="block text-sm font-semibold text-slate-700 mb-1.5">5. ສີໜ້າ ແລະ ຜິວພັນ</label>
                                 <select id="expression-option" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:border-blue-500 focus:outline-none">
-                                    <option value="polite_neutral">ສີໜ້າສຸພາບ ສຳລວມ ບໍ່ຍິ້ມເຫັນແຂ້ວ + ປັບຜິວນຽນໃສ</option>
+                                    <option value="polite_neutral" selected>ສີໜ້າສຸພາບ ສຳລວມ ບໍ່ຍິ້ມ + ປັບຜິວນຽນໃສ</option>
                                     <option value="slight_smile">ຍິ້ມເລັກນ້ອຍຢ່າງສຸພາບ + ປັບຜິວນຽນໃສ</option>
                                 </select>
                             </div>
                         </div>
 
-                        <button type="button" id="btn-generate-ai" onclick="generateIdPhotoWithAI()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 active:scale-[0.99] text-white font-bold text-base sm:text-lg shadow-lg shadow-blue-600/30 flex items-center justify-center gap-3 transition-all">
-                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
-                            <span>ໃຫ້ AI ແຕ່ງຮູບຕິດບັດ (ພື້ນຫຼັງຟ້າ + ໃສ່ສູດ)</span>
-                        </button>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button type="button" id="btn-make-print-now" onclick="makeUploadedPhotoPrintableAndPrint()" class="py-4 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2.5 transition-all">
+                                <i class="fa-solid fa-print text-lg"></i>
+                                <span>ເຮັດເປັນຮູບ 3×4 & ສັ່ງພິມເລີຍ</span>
+                            </button>
+                            <button type="button" id="btn-generate-ai" onclick="generateIdPhotoWithAI()" class="py-4 px-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2.5 transition-all">
+                                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                                <span>ໃຫ້ AI ແຕ່ງຮູບຕິດບັດ (ເຈເນີເຣເຕີ)</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -412,6 +450,34 @@
                         </div>
                     </div>
 
+                    <!-- เลือกจำนวนคน / จำนวนแถวที่ต้องการจัดเรียงบนแผ่น A4 ก่อนสั่งพิมพ์ -->
+                    <div class="mb-4 p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200/80 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <label for="print-people-count" class="text-xs sm:text-sm font-bold text-indigo-950">
+                                ເລືອກຈຳນວນຄົນ / ຈຳນວນແຖວ (1 - 6):
+                            </label>
+                            <span id="selected-people-summary" class="text-[11px] font-bold text-indigo-700 bg-white px-2.5 py-0.5 rounded-full border border-indigo-200">
+                                1 ຄົນ (6 ຮູບ)
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="print-people-count" onchange="updatePrintPeopleSummary()" class="flex-1 rounded-xl border border-indigo-300 bg-white px-3 py-2 text-xs sm:text-sm font-semibold text-slate-800 focus:border-indigo-500 focus:outline-none">
+                                <option value="1" selected>1 ຄົນ (1 ແຖວ = 6 ຮູບ)</option>
+                                <option value="2">2 ຄົນ (2 ແຖວ = 12 ຮູບ)</option>
+                                <option value="3">3 ຄົນ (3 ແຖວ = 18 ຮູບ)</option>
+                                <option value="4">4 ຄົນ (4 ແຖວ = 24 ຮູບ)</option>
+                                <option value="5">5 ຄົນ (5 ແຖວ = 30 ຮູບ)</option>
+                                <option value="6">6 ຄົນ (6 ແຖວ = 36 ຮູບ ເຕັມແຜ່ນ)</option>
+                            </select>
+                            <button type="button" onclick="applySelectedPeopleCountToA4()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shrink-0 transition-colors">
+                                ຂຶ້ນແຜ່ນ A4
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-indigo-800/80">
+                            * ເລືອກ 1 ຄົນ ຫຼື ຫຼາຍຄົນໃຫ້ຂຶ້ນເທິງແຜ່ນ A4 ກ່ອນແລ້ວກົດສັ່ງພິມເທື່ອດຽວ ຫຼື ສະສົມຫຼາຍຮູບແລ້ວສັ່ງພິມລວມໄດ້ເລີຍ
+                        </p>
+                    </div>
+
                     <div class="bg-slate-200/70 p-3 sm:p-4 rounded-2xl border border-slate-300/80 flex flex-col items-center">
                         <div class="w-full max-w-[340px] bg-white shadow-xl rounded-sm overflow-hidden border border-slate-300 relative">
                             <canvas id="a4-preview-canvas" class="w-full h-auto block"></canvas>
@@ -434,7 +500,7 @@
                             <div id="empty-a4-state" class="text-center py-6 px-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
                                 <i class="fa-solid fa-layer-group text-slate-400 text-2xl mb-1.5"></i>
                                 <p class="text-xs font-medium text-slate-600">ຍັງບໍ່ມີຮູບໃນແຜ່ນ A4</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">ແຕ່ງຮູບດ້ານຊ້າຍແລ້ວກົດ "ເພີ່ມລົງແຖວໃນເຈ້ຍ A4 (6 ຮູບ)"</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">ເລືອກຈຳນວນຄົນດ້ານເທິງ ຫຼື ກົດ "ເພີ່ມລົງແຖວໃນເຈ້ຍ A4 (6 ຮູບ)"</p>
                             </div>
                         </div>
                     </div>
@@ -468,8 +534,9 @@
 
     <script src="photo_db.js"></script>
     <script>
-        const API_KEY = "AQ.Ab8RN6JtvllfwISs-0RCzDtWyMze4K6rbYIpqUjlhzppva6Scw";
-        
+        const API_KEY = "AQ.Ab8RN6IiMPomQak23iiwu7HoaPLxG81E0KM6Gf4lYiOe8auTYw";
+        const MODEL_NAME = "gemini-3.1-flash-image";
+
         const A4_WIDTH_PX = 2480;
         const A4_HEIGHT_PX = 3508;
         const PHOTO_W_PX = 354;
@@ -480,6 +547,11 @@
         const GAP_Y_PX = 54;
         const MARGIN_LEFT_PX = Math.round((A4_WIDTH_PX - (COLS_PER_ROW * PHOTO_W_PX)) / 2);
         const MARGIN_TOP_PX = 142;
+
+        const AUTO_CHECK_INTERVAL_MS = 900000;
+        let apiStatusMonitorTimer = null;
+        let isGeneratingAiPhoto = false;
+        let lastKnownApiValid = null;
 
         const appState = {
             captureMode: 'upload',
@@ -493,23 +565,212 @@
             a4Rows: []
         };
 
+        function getConfiguredApiKey() {
+            const key = (typeof API_KEY === 'string' ? API_KEY.trim() : '');
+            return key.length > 0 ? key : null;
+        }
+
+        function buildGenerateEndpoint() {
+            const key = getConfiguredApiKey();
+            const base = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
+            return key ? `${base}?key=${encodeURIComponent(key)}` : base;
+        }
+
+        function buildModelsCheckEndpoint() {
+            const key = getConfiguredApiKey();
+            const base = `https://generativelanguage.googleapis.com/v1beta/models`;
+            return key ? `${base}?key=${encodeURIComponent(key)}` : base;
+        }
+
         window.onload = async function() {
+            updatePrintPeopleSummary();
             renderA4Canvas();
             updateRowManagerUI();
 
-            // ตรวจสอบว่ามีรูปที่ส่งมาจากหน้าฐานข้อมูล (photo_archive.html) หรือไม่
-            const queued = consumeQueuedPhotoForA4();
-            if (queued && queued.imageDataUrl) {
-                const row = await createRowFromDataUrl(
-                    queued.imageDataUrl,
-                    `${queued.name} (${queued.suitGender === 'male' ? 'ສູດຊາຍ' : 'ສູດຍິງ'})`
-                );
-                appState.a4Rows.push(row);
-                updateRowManagerUI();
-                renderA4Canvas();
-                showToast(`ເພີ່ມ "${queued.name}" ລົງແຖວເຈ້ຍ A4 ຮຽບຮ້ອຍແລ້ວ`, 'success');
+            setApiKeyVisualState('valid', 'ພ້ອມໃຊ້ງານຜ່ານລະບົບ');
+            setTimeout(() => {
+                if (!isGeneratingAiPhoto) {
+                    checkApiKeyStatus(true);
+                }
+            }, 2000);
+            startContinuousApiKeyMonitor();
+
+            if (typeof consumeQueuedPhotoForA4 === 'function') {
+                const queued = consumeQueuedPhotoForA4();
+                if (queued && queued.imageDataUrl) {
+                    const row = await createRowFromDataUrl(
+                        queued.imageDataUrl,
+                        `${queued.name} (${queued.suitGender === 'male' ? 'ສູດຊາຍ' : 'ສູດຍິງ'})`
+                    );
+                    appState.a4Rows.push(row);
+                    updateRowManagerUI();
+                    renderA4Canvas();
+                    showToast(`ເພີ່ມ "${queued.name}" ລົງແຖວເຈ້ຍ A4 ຮຽບຮ້ອຍແລ້ວ`, 'success');
+                }
             }
         };
+
+        function updatePrintPeopleSummary() {
+            const selectEl = document.getElementById('print-people-count');
+            const summaryEl = document.getElementById('selected-people-summary');
+            const count = Math.max(1, Math.min(MAX_ROWS, parseInt(selectEl?.value || '1', 10)));
+            if (summaryEl) {
+                summaryEl.textContent = `${count} ຄົນ (${count * COLS_PER_ROW} ຮູບ)`;
+            }
+            return count;
+        }
+
+        function getActiveImageForLayout() {
+            return appState.generatedImageBase64 || appState.sourceImageBase64 || (appState.a4Rows[0]?.dataUrl ?? null);
+        }
+
+        async function applySelectedPeopleCountToA4(showMessage = true) {
+            const targetCount = updatePrintPeopleSummary();
+            const activeImg = getActiveImageForLayout();
+
+            if (!activeImg) {
+                if (showMessage) {
+                    showToast('ກະລຸນາເລືອກຮູບ ຫຼື ແຕ່ງຮູບກ່ອນໃຫ້ຂຶ້ນແຜ່ນ A4', 'error');
+                }
+                return false;
+            }
+
+            const normalized3x4 = await normalizeTo3x4Ratio(activeImg);
+            const typedName = (document.getElementById('person-name-input').value || '').trim();
+            const baseLabel = typedName || (appState.generatedImageBase64 ? 'ຮູບຕິດບັດ 3×4' : 'ຮູບພິມດ່ວນ 3×4');
+
+            const rows = [];
+            for (let i = 1; i <= targetCount; i++) {
+                const row = await createRowFromDataUrl(
+                    normalized3x4,
+                    targetCount === 1 ? baseLabel : `${baseLabel} #${i}`
+                );
+                rows.push(row);
+            }
+
+            appState.a4Rows = rows;
+            updateRowManagerUI();
+            renderA4Canvas();
+
+            if (showMessage) {
+                showToast(`ຈັດຂຶ້ນແຜ່ນ A4 ຈຳນວນ ${targetCount} ຄົນ (${targetCount * COLS_PER_ROW} ຮູບ) ຮຽບຮ້ອຍແລ້ວ`, 'success');
+            }
+            return true;
+        }
+
+        function startContinuousApiKeyMonitor() {
+            if (apiStatusMonitorTimer) {
+                clearInterval(apiStatusMonitorTimer);
+            }
+            apiStatusMonitorTimer = setInterval(() => {
+                if (document.visibilityState === 'visible' && !isGeneratingAiPhoto) {
+                    checkApiKeyStatus(true);
+                }
+            }, AUTO_CHECK_INTERVAL_MS);
+        }
+
+        function setApiKeyVisualState(state, detailText = '') {
+            const topBtn = document.getElementById('btn-api-key-status');
+            const topIcon = document.getElementById('api-key-icon');
+            const topLabel = document.getElementById('api-key-label');
+            const statusEl = document.getElementById('api-key-status-text');
+
+            if (state === 'valid') {
+                if (topBtn) {
+                    topBtn.className = 'px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm';
+                    topBtn.title = `API Key ໃຊ້ງານໄດ້ປົກກະຕິ (${detailText || 'ພ້ອມໃຊ້ງານ'}) - ຄລິກເພື່ອເຊັກຊ້ຳ`;
+                }
+                if (topIcon) topIcon.className = 'fa-solid fa-circle-check';
+                if (topLabel) topLabel.textContent = 'API ໃຊ້ໄດ້';
+                if (statusEl) {
+                    statusEl.className = 'ml-1 font-semibold text-emerald-700';
+                    statusEl.textContent = detailText || 'Key ໃຊ້ງານໄດ້ປົກກະຕິ';
+                }
+            } else if (state === 'invalid') {
+                if (topBtn) {
+                    topBtn.className = 'px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white border border-red-700 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm';
+                    topBtn.title = `ກວດສອບພົບບັນຫາ (${detailText || 'HTTP Error'}) - ຄລິກເພື່ອເຊັກຊ້ຳ`;
+                }
+                if (topIcon) topIcon.className = 'fa-solid fa-circle-xmark';
+                if (topLabel) topLabel.textContent = 'API ຕິດໂຄວຕາ/ບັນຫາ';
+                if (statusEl) {
+                    statusEl.className = 'ml-1 font-semibold text-red-600';
+                    statusEl.textContent = detailText || 'ກວດສອບພົບບັນຫາ';
+                }
+            } else if (state === 'checking') {
+                if (topBtn) {
+                    topBtn.className = 'px-3 py-2 rounded-xl bg-slate-200 text-slate-700 border border-slate-300 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors';
+                }
+                if (topIcon) topIcon.className = 'fa-solid fa-spinner fa-spin';
+                if (topLabel) topLabel.textContent = 'ກຳລັງເຊັກ...';
+                if (statusEl) {
+                    statusEl.className = 'ml-1 font-semibold text-blue-700';
+                    statusEl.textContent = 'ກຳລັງກວດສອບສະຖານະ Key...';
+                }
+            }
+        }
+
+        async function checkApiKeyStatus(silent = false) {
+            if (isGeneratingAiPhoto) return false;
+
+            const btn = document.getElementById('btn-test-key');
+            const topBtn = document.getElementById('btn-api-key-status');
+
+            if (!silent) {
+                setApiKeyVisualState('checking');
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('opacity-60');
+            }
+            if (topBtn) topBtn.disabled = true;
+
+            try {
+                const endpoint = buildModelsCheckEndpoint();
+                const res = await fetch(endpoint);
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok) {
+                    const checkedTime = new Date().toLocaleTimeString('lo-LA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    setApiKeyVisualState('valid', `Key ໃຊ້ງານໄດ້ປົກກະຕິ (ເຊັກລ່າສຸດ ${checkedTime})`);
+                    if (!silent) {
+                        showToast('ກວດສອບ Key ສຳເລັດ: API Key ຍັງໃຊ້ງານໄດ້', 'success');
+                    }
+                    lastKnownApiValid = true;
+                    return true;
+                } else {
+                    const rawMsg = data?.error?.message || `HTTP ${res.status}`;
+                    const friendlyMsg = res.status === 429
+                        ? `HTTP 429 (ກວດສອບລາຍການຕິດໂຄວຕາ ແຕ່ສາມາດລອງກົດແຕ່ງຮູບໂດຍກົງໄດ້)`
+                        : `ກວດສອບ: ${rawMsg}`;
+                    setApiKeyVisualState('invalid', friendlyMsg);
+                    if (!silent) {
+                        showToast(friendlyMsg, 'error');
+                    }
+                    lastKnownApiValid = false;
+                    return false;
+                }
+            } catch (err) {
+                const msg = `ກວດສອບບໍ່ສຳເລັດ: ${err.message}`;
+                setApiKeyVisualState('invalid', msg);
+                if (!silent) {
+                    showToast(msg, 'error');
+                }
+                lastKnownApiValid = false;
+                return false;
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-60');
+                }
+                if (topBtn) topBtn.disabled = false;
+            }
+        }
+
+        async function testApiKeyConnection() {
+            return await checkApiKeyStatus(false);
+        }
 
         function goBackToHome() {
             stopCamera();
@@ -640,7 +901,7 @@
 
             const dataUrl = cropCanvas.toDataURL('image/jpeg', 0.95);
             setSourceImage(dataUrl);
-            showToast('ຖ່າຍຮູບສຳເລັດ! ພ້ອມກົດໃຫ້ AI ແຕ່ງຮູບຕິດບັດ', 'success');
+            showToast('ຖ່າຍຮູບສຳເລັດ! ເລືອກໄດ້ວ່າຈະສັ່ງພິມເລີຍ ຫຼື ໃຫ້ AI ແຕ່ງສູດ', 'success');
         }
 
         function handleFileUpload(event) {
@@ -682,7 +943,7 @@
 
                     const dataUrl = cropCanvas.toDataURL('image/jpeg', 0.95);
                     setSourceImage(dataUrl);
-                    showToast('ອັບໂຫຼດຮູບພາບຮຽບຮ້ອຍແລ້ວ', 'success');
+                    showToast('ອັບໂຫຼດຮູບພາບຮຽບຮ້ອຍແລ້ວ! ເລືອກໄດ້ວ່າຈະສັ່ງພິມເລີຍ ຫຼື ໃຊ້ AI ແຕ່ງຮູບ', 'success');
                 };
                 img.src = e.target.result;
             };
@@ -702,6 +963,36 @@
             document.getElementById('file-input').value = '';
             document.getElementById('source-preview-box').classList.add('hidden');
             document.getElementById('result-section').classList.add('hidden');
+        }
+
+        function focusGeneratorSection() {
+            if (!appState.sourceImageBase64) {
+                showToast('ກະລຸນາດຶງຮູບເຂົ້າມາກ່ອນ', 'error');
+                return;
+            }
+            const genSection = document.getElementById('generator-section');
+            if (genSection) {
+                genSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            showToast('ເລືອກຊຸດສູດ ແລະ ພື້ນຫຼັງ ແລ້ວກົດ "ໃຫ້ AI ແຕ່ງຮູບຕິດບັດ" ໄດ້ເລີຍ', 'info');
+        }
+
+        async function makeUploadedPhotoPrintableAndPrint() {
+            if (!appState.sourceImageBase64) {
+                showToast('ກະລຸນາເລືອກຮູບ ຫຼື ຖ່າຍຮູບເຂົ້າມາກ່ອນ', 'error');
+                return;
+            }
+
+            const normalized3x4 = await normalizeTo3x4Ratio(appState.sourceImageBase64);
+            appState.generatedImageBase64 = normalized3x4;
+            document.getElementById('compare-after').src = normalized3x4;
+
+            if (appState.a4Rows.length === 0) {
+                await applySelectedPeopleCountToA4(false);
+            }
+
+            showToast('ກຽມແຜ່ນ A4 3×4 ຊມ. ພ້ອມສັ່ງພິມແລ້ວ', 'success');
+            await printA4Sheet();
         }
 
         function selectSuitGender(gender) {
@@ -778,6 +1069,9 @@
                 return;
             }
 
+            if (isGeneratingAiPhoto) return;
+            isGeneratingAiPhoto = true;
+
             const resultSection = document.getElementById('result-section');
             const loadingBox = document.getElementById('ai-loading-box');
             const comparisonGrid = document.getElementById('comparison-grid');
@@ -800,7 +1094,7 @@
                     : `wearing a tailored ${suitColorDesc} men's business suit jacket, crisp white dress shirt, and a neat dark formal necktie, formal official ID photo attire`;
 
                 const bgPrompt = appState.bgColor === 'standard'
-                    ? 'solid uniform studio medium-light blue background (hex #2B7DE9) with zero gradients, shadows, or textures'
+                    ? 'solid uniform studio medium-light blue background (hex #2B7DE9, around 50% blue saturation) with zero gradients, shadows, or textures'
                     : 'solid uniform studio deep royal blue background (hex #1659C7) with zero gradients, shadows, or textures';
 
                 const hairOption = document.getElementById('hair-option').value;
@@ -812,7 +1106,7 @@
 
                 const exprOption = document.getElementById('expression-option').value;
                 const exprPrompt = exprOption === 'polite_neutral'
-                    ? 'calm, polite, composed neutral facial expression with mouth closed (no wide smiling), looking straight directly at the camera'
+                    ? 'calm, polite, composed neutral facial expression with mouth closed (no smiling), looking straight directly at the camera'
                     : 'polite, subtle closed-lip gentle expression, looking straight directly at the camera';
 
                 const strictPrompt = `Edit this portrait into an official 3x4 cm ID / job application passport-style photograph.
@@ -824,7 +1118,8 @@ REQUIREMENTS:
 4. Expression & Lighting: ${exprPrompt}. Apply soft, even studio portrait lighting across the face, gently smoothing minor blemishes while keeping natural skin texture and authentic facial identity.
 5. Framing: Centered straight-on head-and-shoulders framing suitable for a 3x4 cm ID card photo.`;
 
-                const base64Clean = appState.sourceImageBase64.split(',')[1];
+                const base64Parts = appState.sourceImageBase64.split(',');
+                const base64Clean = base64Parts.length > 1 ? base64Parts[1] : base64Parts[0];
 
                 const payload = {
                     contents: [{
@@ -847,8 +1142,8 @@ REQUIREMENTS:
                     }
                 };
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${API_KEY}`;
-                
+                const apiUrl = buildGenerateEndpoint();
+
                 const response = await fetchWithRetry(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -873,14 +1168,19 @@ REQUIREMENTS:
                 comparisonGrid.classList.remove('hidden');
                 resultActions.classList.remove('hidden');
 
+                setApiKeyVisualState('valid', 'Key ໃຊ້ງານໄດ້ປົກກະຕິ');
+                lastKnownApiValid = true;
                 showToast('AI ແຕ່ງຮູບຕິດບັດສຳເລັດ! ກວດສອບຄວາມຮຽບຮ້ອຍແລ້ວກົດເພີ່ມລົງ A4 ຫຼື ບັນທຶກຖານຂໍ້ມູນໄດ້ເລີຍ', 'success');
 
             } catch (error) {
                 console.error('AI Generation Error:', error);
                 loadingBox.classList.add('hidden');
                 resultSection.classList.add('hidden');
+                setApiKeyVisualState('invalid', error.message);
+                lastKnownApiValid = false;
                 showToast('ເກີດຂໍ້ຜິດພາດໃນການແຕ່ງຮູບ: ' + error.message, 'error');
             } finally {
+                isGeneratingAiPhoto = false;
                 btnGenerate.disabled = false;
                 btnGenerate.classList.remove('opacity-60', 'cursor-not-allowed');
             }
@@ -925,6 +1225,11 @@ REQUIREMENTS:
                 return;
             }
 
+            if (typeof savePhotoRecordToDB !== 'function') {
+                showToast('ບໍ່ພົບລະບົບຖານຂໍ້ມູນ (photo_db.js)', 'error');
+                return;
+            }
+
             const typedName = (document.getElementById('person-name-input').value || '').trim();
             const personName = typedName || `ຄົນທີ ${appState.a4Rows.length + 1}`;
 
@@ -960,8 +1265,9 @@ REQUIREMENTS:
         }
 
         async function addCurrentPhotoToA4Row() {
-            if (!appState.generatedImageBase64) {
-                showToast('ຍັງບໍ່ມີຮູບທີ່ແຕ່ງສຳເລັດ ກະລຸນາກົດໃຫ້ AI ແຕ່ງຮູບກ່ອນ', 'error');
+            const activeImg = appState.generatedImageBase64 || appState.sourceImageBase64;
+            if (!activeImg) {
+                showToast('ຍັງບໍ່ມີຮູບ ກະລຸນາເລືອກຮູບ ຫຼື ໃຫ້ AI ແຕ່ງຮູບກ່ອນ', 'error');
                 return;
             }
             if (appState.a4Rows.length >= MAX_ROWS) {
@@ -969,12 +1275,13 @@ REQUIREMENTS:
                 return;
             }
 
+            const normalized3x4 = await normalizeTo3x4Ratio(activeImg);
             const genderLabel = appState.suitGender === 'female' ? 'ສູດຍິງ' : 'ສູດຊາຍ';
             const typedName = (document.getElementById('person-name-input').value || '').trim();
             const rowIndex = appState.a4Rows.length + 1;
             const rowLabel = typedName ? `${typedName} (${genderLabel})` : `ຄົນທີ ${rowIndex} (${genderLabel})`;
 
-            const newRow = await createRowFromDataUrl(appState.generatedImageBase64, rowLabel);
+            const newRow = await createRowFromDataUrl(normalized3x4, rowLabel);
             appState.a4Rows.push(newRow);
             updateRowManagerUI();
             renderA4Canvas();
@@ -1018,6 +1325,9 @@ REQUIREMENTS:
             clearSourceImage();
             clearAllA4Rows();
             document.getElementById('person-name-input').value = '';
+            const selectEl = document.getElementById('print-people-count');
+            if (selectEl) selectEl.value = '1';
+            updatePrintPeopleSummary();
             showToast('ຣີເຊັດລະບົບເລີ່ມຕົ້ນໃໝ່ຮຽບຮ້ອຍ', 'info');
         }
 
@@ -1181,12 +1491,13 @@ REQUIREMENTS:
         }
 
         function downloadSinglePhoto() {
-            if (!appState.generatedImageBase64) return;
+            const activeImg = appState.generatedImageBase64 || appState.sourceImageBase64;
+            if (!activeImg) return;
             const typedName = (document.getElementById('person-name-input').value || 'ID_Photo').trim().replace(/[\\/:*?"<>|]/g, '_');
             const link = document.createElement('a');
             const timestamp = new Date().toISOString().slice(0, 10);
             link.download = `${typedName}_3x4cm_${timestamp}.png`;
-            link.href = appState.generatedImageBase64;
+            link.href = activeImg;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1218,13 +1529,12 @@ REQUIREMENTS:
         }
 
         async function printA4Sheet() {
-            if (appState.a4Rows.length === 0 && appState.generatedImageBase64) {
-                const genderLabel = appState.suitGender === 'female' ? 'ສູດຍິງ' : 'ສູດຊາຍ';
-                const typedName = (document.getElementById('person-name-input').value || '').trim();
-                const rowLabel = typedName ? `${typedName} (${genderLabel})` : `ຄົນທີ 1 (${genderLabel})`;
-                const autoRow = await createRowFromDataUrl(appState.generatedImageBase64, rowLabel);
-                appState.a4Rows.push(autoRow);
-                updateRowManagerUI();
+            if (appState.a4Rows.length === 0) {
+                const created = await applySelectedPeopleCountToA4(false);
+                if (!created) {
+                    showToast('ກະລຸນາເລືອກຮູບ ຫຼື ແຕ່ງຮູບກ່ອນສັ່ງພິມ', 'error');
+                    return;
+                }
             }
 
             renderA4Canvas();
