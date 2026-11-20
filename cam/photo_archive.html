@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ຖານຂໍ້ມູນຮູບຕິດບັດ 3×4 ຊມ. & ລະບົບຄົ້ນຫາ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Prompt', 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-12">
+
+    <!-- Toast Banner -->
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md pointer-events-none transition-all duration-300 opacity-0 -translate-y-4">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700">
+            <i id="toast-icon" class="fa-solid fa-circle-info text-blue-400 text-lg"></i>
+            <span id="toast-message" class="text-sm font-medium leading-snug">ຂໍ້ຄວາມແຈ້ງເຕືອນ</span>
+        </div>
+    </div>
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white flex items-center justify-center shadow-md shrink-0">
+                    <i class="fa-solid fa-database text-lg"></i>
+                </div>
+                <div class="truncate">
+                    <h1 class="font-bold text-base sm:text-lg text-slate-900 leading-tight truncate">ຖານຂໍ້ມູນຮູບຕິດບັດ 3×4 ຊມ.</h1>
+                    <p class="text-xs text-slate-500 truncate">ຄົ້ນຫາຕາມຊື່ ແກ້ໄຂຊື່ ແລະ ສົ່ງເຂົ້າເຈ້ຍ A4</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="cam.html" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm transition-colors">
+                    <i class="fa-solid fa-camera"></i> <span>ກັບໄປໜ້າຖ່າຍ/ແຕ່ງຮູບ</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+
+        <!-- Search & Filter Bar -->
+        <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex-1">
+                    <label for="search-input" class="block text-sm font-bold text-slate-800 mb-2">
+                        <i class="fa-solid fa-magnifying-glass text-blue-600 mr-1"></i> ຄົ້ນຫາໃນຖານຂໍ້ມູນ (ຊື່ບຸກຄົນ, ສູດຊາຍ/ຍິງ, ວັນທີ)
+                    </label>
+                    <div class="relative flex items-center gap-2">
+                        <input
+                            id="search-input"
+                            type="text"
+                            oninput="filterRecords()"
+                            placeholder="ພິມຊື່ເພື່ອຄົ້ນຫາ ເຊັ່ນ: ສົມຊາຍ, ນາງ ມາລີ, ສູດຊາຍ..."
+                            class="w-full rounded-2xl border border-slate-300 bg-slate-50 focus:bg-white px-4 py-3 text-sm sm:text-base text-slate-900 focus:border-blue-500 focus:outline-none"
+                        >
+                        <button type="button" onclick="clearSearchInput()" class="px-4 py-3 rounded-2xl border border-slate-300 hover:bg-slate-100 text-slate-600 text-sm font-semibold shrink-0">
+                            ລ້າງຄຳຄົ້ນ
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between md:flex-col md:items-end gap-2 pt-2 md:pt-6">
+                    <span id="archive-count-badge" class="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        ພົບ 0 ລາຍການ
+                    </span>
+                    <button type="button" onclick="handleClearAllArchive()" class="text-xs text-red-600 hover:underline font-medium">
+                        <i class="fa-solid fa-trash"></i> ລ້າງຖານຂໍ້ມູນທັງໝົດ
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Records Grid -->
+        <section>
+            <div id="records-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+
+            <!-- Empty State -->
+            <div id="empty-archive-box" class="hidden bg-white rounded-3xl p-10 text-center border border-dashed border-slate-300">
+                <div class="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h2 class="font-bold text-slate-800 text-base">ຍັງບໍ່ມີຂໍ້ມູນຮູບໃນຖານຂໍ້ມູນ</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">ໄປທີ່ໜ້າຖ່າຍ/ແຕ່ງຮູບ ລະບຸຊື່ບຸກຄົນ ແລ້ວກົດ "ບັນທຶກລົງຖານຂໍ້ມູນ" ເພື່ອເກັບໄວ້ຄົ້ນຫາພາຍຫຼັງ</p>
+                <a href="cam.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold">
+                    <i class="fa-solid fa-plus"></i> ໄປສ້າງ ແລະ ບັນທຶກຮູບ
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="photo_db.js"></script>
+    <script>
+        let allRecords = [];
+        let toastTimer;
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            msg.textContent = message;
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+            } else if (type === 'error') {
+                icon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-lg';
+            } else {
+                icon.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
+            }
+
+            container.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+            container.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                container.classList.remove('opacity-100', 'translate-y-0');
+                container.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+            }, 3200);
+        }
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatLaoDate(isoStr) {
+            if (!isoStr) return '-';
+            const d = new Date(isoStr);
+            if (Number.isNaN(d.getTime())) return '-';
+            return d.toLocaleString('lo-LA', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        async function loadArchiveRecords() {
+            try {
+                allRecords = await getAllPhotoRecordsFromDB();
+                filterRecords();
+            } catch (err) {
+                console.error(err);
+                showToast('ໂຫຼດຖານຂໍ້ມູນບໍ່ສຳເລັດ: ' + err.message, 'error');
+            }
+        }
+
+        function filterRecords() {
+            const keyword = (document.getElementById('search-input').value || '').trim().toLowerCase();
+            if (!keyword) {
+                renderRecords(allRecords);
+                return;
+            }
+
+            const filtered = allRecords.filter(rec => {
+                const nameText = (rec.name || '').toLowerCase();
+                const genderText = rec.suitGender === 'male' ? 'ສູດຊາຍ ຜູ້ຊາຍ' : 'ສູດຍິງ ຜູ້ຍິງ';
+                const dateText = formatLaoDate(rec.createdAt).toLowerCase();
+                return nameText.includes(keyword) || genderText.includes(keyword) || dateText.includes(keyword);
+            });
+
+            renderRecords(filtered);
+        }
+
+        function clearSearchInput() {
+            document.getElementById('search-input').value = '';
+            filterRecords();
+        }
+
+        function renderRecords(list) {
+            const grid = document.getElementById('records-grid');
+            const emptyBox = document.getElementById('empty-archive-box');
+            const badge = document.getElementById('archive-count-badge');
+
+            badge.textContent = `ພົບ ${list.length} ລາຍການ (ທັງໝົດ ${allRecords.length})`;
+
+            if (list.length === 0) {
+                grid.innerHTML = '';
+                emptyBox.classList.remove('hidden');
+                return;
+            }
+
+            emptyBox.classList.add('hidden');
+            grid.innerHTML = '';
+
+            list.forEach(rec => {
+                const displayImg = rec.generatedImage || rec.sourceImage;
+                const genderLabel = rec.suitGender === 'male' ? 'ສູດຊາຍ' : 'ສູດຍິງ';
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-4 shadow-sm border border-slate-200/80 flex flex-col justify-between gap-3';
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="relative aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+                                <img src="${escapeHtml(rec.sourceImage || displayImg)}" alt="ຕົ້ນສະບັບ" class="w-full h-full object-cover">
+                                <span class="absolute top-1.5 left-1.5 bg-slate-900/75 text-white text-[10px] px-2 py-0.5 rounded-md">ຕົ້ນສະບັບ</span>
+                            </div>
+                            <div class="relative aspect-[3/4] rounded-xl overflow-hidden border-2 border-blue-600 bg-blue-50">
+                                <img src="${escapeHtml(displayImg)}" alt="3x4 ຊມ." class="w-full h-full object-cover">
+                                <span class="absolute top-1.5 left-1.5 bg-blue-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">3×4 ຊມ.</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between gap-2">
+                                <h3 class="font-bold text-slate-900 text-base truncate" title="${escapeHtml(rec.name)}">
+                                    ${escapeHtml(rec.name)}
+                                </h3>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 shrink-0">
+                                    ${genderLabel}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5">
+                                <i class="fa-regular fa-clock mr-1"></i>${escapeHtml(formatLaoDate(rec.createdAt))}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-2">
+                        <button type="button" onclick="sendToA4(${rec.id})" class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-layer-group"></i> ເພີ່ມລົງເຈ້ຍ A4 (6 ຮູບ)
+                        </button>
+
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" onclick="editRecordName(${rec.id})" class="py-2 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1" title="ແກ້ໄຂຊື່">
+                                <i class="fa-solid fa-pen"></i> ແກ້ຊື່
+                            </button>
+                            <button type="button" onclick="downloadSingleFromRecord(${rec.id})" class="py-2 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1" title="ດາວໂຫຼດຮູບ">
+                                <i class="fa-solid fa-download"></i> ໂຫຼດ
+                            </button>
+                            <button type="button" onclick="removeRecord(${rec.id})" class="py-2 px-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold flex items-center justify-center gap-1" title="ລຶບລາຍການ">
+                                <i class="fa-solid fa-trash-can"></i> ລຶບ
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function sendToA4(id) {
+            const rec = allRecords.find(item => item.id === id);
+            if (!rec) return;
+            queuePhotoToA4FromArchive(rec);
+            showToast(`ກຳລັງພາໄປເພີ່ມ "${rec.name}" ລົງເຈ້ຍ A4...`, 'success');
+            setTimeout(() => {
+                window.location.href = 'cam.html';
+            }, 350);
+        }
+
+        async function editRecordName(id) {
+            const rec = allRecords.find(item => item.id === id);
+            if (!rec) return;
+            const nextName = window.prompt('ປ້ອນຊື່ບຸກຄົນໃໝ່:', rec.name || '');
+            if (nextName === null) return;
+            try {
+                await updatePhotoNameInDB(id, nextName);
+                showToast('ແກ້ໄຂຊື່ຮຽບຮ້ອຍແລ້ວ', 'success');
+                await loadArchiveRecords();
+            } catch (err) {
+                showToast('ແກ້ໄຂຊື່ບໍ່ສຳເລັດ: ' + err.message, 'error');
+            }
+        }
+
+        function downloadSingleFromRecord(id) {
+            const rec = allRecords.find(item => item.id === id);
+            if (!rec) return;
+            const imgSrc = rec.generatedImage || rec.sourceImage;
+            const safeName = (rec.name || 'ID_Photo').replace(/[\\/:*?"<>|]/g, '_');
+            const link = document.createElement('a');
+            link.download = `${safeName}_3x4cm.png`;
+            link.href = imgSrc;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast(`ດາວໂຫຼດຮູບຂອງ "${rec.name}" ຮຽບຮ້ອຍ`, 'success');
+        }
+
+        async function removeRecord(id) {
+            const rec = allRecords.find(item => item.id === id);
+            const label = rec ? rec.name : 'ລາຍການນີ້';
+            if (!window.confirm(`ຕ້ອງການລຶບ "${label}" ອອກຈາກຖານຂໍ້ມູນແທ້ບໍ່?`)) return;
+            try {
+                await deletePhotoRecordFromDB(id);
+                showToast(`ລຶບ "${label}" ຮຽບຮ້ອຍແລ້ວ`, 'info');
+                await loadArchiveRecords();
+            } catch (err) {
+                showToast('ລຶບບໍ່ສຳເລັດ: ' + err.message, 'error');
+            }
+        }
+
+        async function handleClearAllArchive() {
+            if (allRecords.length === 0) return;
+            if (!window.confirm('ຕ້ອງການລ້າງຂໍ້ມູນຮູບທັງໝົດໃນຖານຂໍ້ມູນແທ້ບໍ່?')) return;
+            try {
+                await clearAllPhotoRecordsFromDB();
+                showToast('ລ້າງຖານຂໍ້ມູນທັງໝົດຮຽບຮ້ອຍແລ້ວ', 'info');
+                await loadArchiveRecords();
+            } catch (err) {
+                showToast('ລ້າງຖານຂໍ້ມູນບໍ່ສຳເລັດ: ' + err.message, 'error');
+            }
+        }
+
+        window.onload = loadArchiveRecords;
+    </script>
+</body>
+</html>

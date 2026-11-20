@@ -14,9 +14,17 @@
       font-size: 16px;
       color: #111;
     }
+    .top-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
     h2 {
       font-size: 20px;
-      margin-bottom: 10px;
+      margin: 0;
       line-height: 1.35;
     }
     .sync-bar {
@@ -125,7 +133,7 @@
       background: #f4f4f4;
       color: #222;
     }
-    button {
+    button, a.btn-link {
       padding: 9px 13px;
       font-size: 15px;
       cursor: pointer;
@@ -133,6 +141,16 @@
       border-radius: 6px;
       background: #fff;
       white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-back-home {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+      font-weight: bold;
     }
     .btn-primary {
       background: #16a34a;
@@ -256,6 +274,10 @@
         padding: 0 12px 36px;
         font-size: 17px;
       }
+      .top-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
       h2 {
         font-size: 19px;
       }
@@ -280,7 +302,7 @@
         font-size: 18px;
         padding: 11px 12px;
       }
-      button {
+      button, a.btn-link {
         font-size: 16px;
         padding: 11px 14px;
       }
@@ -291,7 +313,7 @@
       .actions {
         flex-direction: column;
       }
-      .actions button {
+      .actions button, .actions a.btn-link {
         width: 100%;
         padding: 13px;
         font-size: 17px;
@@ -303,7 +325,10 @@
   </style>
 </head>
 <body>
-  <h2>ຕາຕະລາງລົງທະບຽນສອບເສັງໃບຂັບຂີ່</h2>
+  <div class="top-header-bar">
+    <h2>ຕາຕະລາງລົງທະບຽນສອບເສັງໃບຂັບຂີ່</h2>
+    <button type="button" class="btn-back-home" onclick="window.location.href='../index.html'">⬅️ ກັບຄືນໜ້າຫຼັກ</button>
+  </div>
 
   <div class="sync-bar">
     <div id="syncStatusText" class="sync-status">
@@ -457,6 +482,7 @@
   </div>
 
   <div class="actions">
+    <button type="button" class="btn-back-home" onclick="window.location.href='../index.html'">⬅️ ກັບຄືນໜ້າຫຼັກ</button>
     <button type="button" class="btn-primary" onclick="addRow()">➕ ບັນທຶກ</button>
     <button type="button" class="btn-print-nav" onclick="openPrintPage()">🖨️ ໄປໜ້າ Print</button>
     <button type="button" class="btn-queue" onclick="copyAllRowsQueue(this)">📋 ກັອບຄິວທັງໝົດ</button>

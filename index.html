@@ -134,6 +134,14 @@
 
         let regTempUnlocked = false;
 
+        // 🔐 รหัสปลดล็อกเฉพาะเมนู Photo (/cam/cam.html) รูปแบบเดียวกับตารางลงทะเบียน
+        const PHOTO_TEMP_PASSCODE = "1234"; // รหัสปลดล็อกชั่วคราว
+        const PHOTO_PERM_PASSCODE = "02077116687"; // รหัสปลดล็อกถาวร
+        const PHOTO_PERM_STORAGE_KEY = "lao_quiz_photo_menu_perm_unlocked";
+        const PHOTO_TARGET_URL = "./cam/cam.html";
+
+        let photoTempUnlocked = false;
+
         function isRegMenuPermUnlocked() {
             return localStorage.getItem(REG_PERM_STORAGE_KEY) === "true";
         }
@@ -221,10 +229,99 @@
             alert("🔒 ລັອກເມນູຕາຕະລາງລົງທະບຽນຄືນແລ້ວ!");
         }
 
+        function isPhotoMenuPermUnlocked() {
+            return localStorage.getItem(PHOTO_PERM_STORAGE_KEY) === "true";
+        }
+
+        function isPhotoMenuCurrentlyUnlocked() {
+            return photoTempUnlocked || isPhotoMenuPermUnlocked();
+        }
+
+        function refreshPhotoMenuButton() {
+            const btn = document.getElementById('btn-photo-menu');
+            const relockBtn = document.getElementById('btn-photo-relock');
+            if (!btn) return;
+
+            const perm = isPhotoMenuPermUnlocked();
+            const unlocked = photoTempUnlocked || perm;
+
+            if (unlocked) {
+                btn.classList.add('unlocked');
+                btn.innerHTML = perm
+                    ? '📸 ຖ່າຍຮູບຕິດບັດ Photo (ປົດລັອກຖາວອນ)'
+                    : '📸 ຖ່າຍຮູບຕິດບັດ Photo (ປົດລັອກຊົ່ວຄາວ)';
+            } else {
+                btn.classList.remove('unlocked');
+                btn.innerHTML = '🔒 ຖ່າຍຮູບຕິດບັດ Photo (ສະເພາະຄູສອນ)';
+            }
+
+            if (relockBtn) {
+                relockBtn.style.display = unlocked ? 'inline-block' : 'none';
+            }
+        }
+
+        function handlePhotoMenuClick() {
+            if (isPhotoMenuCurrentlyUnlocked()) {
+                window.location.href = PHOTO_TARGET_URL;
+                return;
+            }
+
+            const modal = document.getElementById('photo-password-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const passInput = document.getElementById('photo-password-input');
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
+            }
+        }
+
+        function closePhotoPasswordModal() {
+            const modal = document.getElementById('photo-password-modal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function submitPhotoPasswordModal() {
+            const passInput = document.getElementById('photo-password-input');
+            const password = passInput ? passInput.value.trim() : '';
+
+            if (password === PHOTO_TEMP_PASSCODE) {
+                photoTempUnlocked = true;
+                localStorage.removeItem(PHOTO_PERM_STORAGE_KEY);
+                closePhotoPasswordModal();
+                refreshPhotoMenuButton();
+                alert("🎉 ປົດລັອກເມນູ Photo ແບບ **ຊົ່ວຄາວ** ສຳເລັດ!");
+                window.location.href = PHOTO_TARGET_URL;
+            } else if (password === PHOTO_PERM_PASSCODE) {
+                photoTempUnlocked = false;
+                localStorage.setItem(PHOTO_PERM_STORAGE_KEY, "true");
+                closePhotoPasswordModal();
+                refreshPhotoMenuButton();
+                alert("🎉 ປົດລັອກເມນູ Photo ແບບ **ຖາວອນ** ສຳເລັດ!");
+                window.location.href = PHOTO_TARGET_URL;
+            } else {
+                alert("❌ ລະຫັດຜ່ານເຂົ້າເມນູ Photo ບໍ່ຖືກຕ້ອງ!");
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.focus();
+                }
+            }
+        }
+
+        function relockPhotoMenu() {
+            photoTempUnlocked = false;
+            localStorage.removeItem(PHOTO_PERM_STORAGE_KEY);
+            refreshPhotoMenuButton();
+            alert("🔒 ລັອກເມນູ Photo ຄືນແລ້ວ!");
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             // รีเซ็ตสถานะชั่วคราวทุกครั้งที่เปิดหน้า index ใหม่ (ส่วนถาวรจะคงอยู่จนกว่าจะกดปุ่มล็อคคืน)
             regTempUnlocked = false;
+            photoTempUnlocked = false;
             refreshRegistrationMenuButton();
+            refreshPhotoMenuButton();
 
             const quizBox = document.getElementById('main-quiz-box');
             const syncBackground = () => {
@@ -246,7 +343,9 @@
 
         window.addEventListener('pageshow', () => {
             regTempUnlocked = false;
+            photoTempUnlocked = false;
             refreshRegistrationMenuButton();
+            refreshPhotoMenuButton();
         });
 
         function closeWelcomeModal() {
@@ -378,6 +477,15 @@
                             🔒 ຕາຕະລາງລົງທະບຽນສອບເສັງ (ສະເພາະຄູສອນ)
                         </button>
                         <button id="btn-reg-relock" type="button" onclick="relockRegistrationMenu()" class="btn-reg-relock" style="display: none;" title="ລັອກເມນູຄືນ">
+                            🔒 ລັອກ
+                        </button>
+                    </div>
+
+                    <div class="reg-menu-row">
+                        <button id="btn-photo-menu" type="button" onclick="handlePhotoMenuClick()" class="btn-reg-link">
+                            🔒 ຖ່າຍຮູບຕິດບັດ Photo (ສະເພາະຄູສອນ)
+                        </button>
+                        <button id="btn-photo-relock" type="button" onclick="relockPhotoMenu()" class="btn-reg-relock" style="display: none;" title="ລັອກເມນູຄືນ">
                             🔒 ລັອກ
                         </button>
                     </div>
@@ -514,6 +622,19 @@
             <div style="display: flex; gap: 8px;">
                 <button type="button" onclick="closeRegPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
                 <button type="button" onclick="submitRegPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔐 หน้าต่างใส่รหัสผ่านเฉพาะเมนู Photo (ชั่วคราว / ถาวร) -->
+    <div id="photo-password-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.82); z-index: 10002; justify-content: center; align-items: center;">
+        <div style="background: #1e293b; padding: 20px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 2px solid #22c55e;">
+            <h3 style="color: #ffffff; margin-bottom: 10px; font-size: 1.1rem;">🔒 ລະຫັດຜ່ານເມນູ Photo</h3>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 12px;">ໃສ່ລະຫັດຜ່ານ (ຊົ່ວຄາວ ຫຼື ຖາວອນ):</p>
+            <input type="password" inputmode="numeric" id="photo-password-input" onkeydown="if(event.key==='Enter') submitPhotoPasswordModal();" placeholder="ໃສ່ລະຫັດຜ່ານ..." style="width: 100% !important; box-sizing: border-box !important; padding: 10px !important; font-size: 1rem !important; border-radius: 6px !important; border: 2px solid #22c55e !important; background-color: #facc15 !important; background: #facc15 !important; color: #000000 !important; outline: none !important; font-weight: bold !important; text-align: center !important; margin-bottom: 15px !important;">
+            <div style="display: flex; gap: 8px;">
+                <button type="button" onclick="closePhotoPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer;">ຍົກເລີກ</button>
+                <button type="button" onclick="submitPhotoPasswordModal()" style="flex: 1; padding: 10px; font-weight: bold; background: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer;">ຕົກລົງ</button>
             </div>
         </div>
     </div>

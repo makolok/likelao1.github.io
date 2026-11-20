@@ -1,0 +1,167 @@
+// ==========================================
+// PHOTO ARCHIVE DATABASE ENGINE (IndexedDB)
+// ==========================================
+const PHOTO_DB_NAME = 'LaoIdPhotoArchiveDB_v1';
+const PHOTO_DB_VERSION = 1;
+const PHOTO_STORE_NAME = 'id_photos';
+
+function openPhotoArchiveDB() {
+    return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+            reject(new Error('ເບຣາວເຊີບໍ່ຮອງຮັບ IndexedDB'));
+            return;
+        }
+        const request = indexedDB.open(PHOTO_DB_NAME, PHOTO_DB_VERSION);
+
+        request.onupgradeneeded = function(event) {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(PHOTO_STORE_NAME)) {
+                const store = db.createObjectStore(PHOTO_STORE_NAME, {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+                store.createIndex('name', 'name', { unique: false });
+                store.createIndex('createdAt', 'createdAt', { unique: false });
+            }
+        };
+
+        request.onsuccess = function(event) {
+            resolve(event.target.result);
+        };
+
+        request.onerror = function(event) {
+            reject(event.target.error || new Error('ເປີດຖານຂໍ້ມູນບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+async function savePhotoRecordToDB(record) {
+    const cleanName = (record.name || '').trim() || 'ບໍ່ໄດ້ລະບຸຊື່';
+    const payload = {
+        name: cleanName,
+        suitGender: record.suitGender || 'female',
+        suitColor: record.suitColor || 'black',
+        bgColor: record.bgColor || 'standard',
+        sourceImage: record.sourceImage || '',
+        generatedImage: record.generatedImage || '',
+        createdAt: record.createdAt || new Date().toISOString()
+    };
+
+    const db = await openPhotoArchiveDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(PHOTO_STORE_NAME);
+        const req = store.add(payload);
+
+        req.onsuccess = function() {
+            resolve({ ...payload, id: req.result });
+        };
+        req.onerror = function() {
+            reject(req.error || new Error('ບັນທຶກຂໍ້ມູນບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+async function getAllPhotoRecordsFromDB() {
+    const db = await openPhotoArchiveDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_STORE_NAME, 'readonly');
+        const store = tx.objectStore(PHOTO_STORE_NAME);
+        const req = store.getAll();
+
+        req.onsuccess = function() {
+            const list = Array.isArray(req.result) ? req.result : [];
+            list.sort((a, b) => (b.id || 0) - (a.id || 0));
+            resolve(list);
+        };
+        req.onerror = function() {
+            reject(req.error || new Error('ດຶງຂໍ້ມູນບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+async function updatePhotoNameInDB(id, newName) {
+    const db = await openPhotoArchiveDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(PHOTO_STORE_NAME);
+        const getReq = store.get(id);
+
+        getReq.onsuccess = function() {
+            const item = getReq.result;
+            if (!item) {
+                reject(new Error('ບໍ່ພົບລາຍການນີ້'));
+                return;
+            }
+            item.name = (newName || '').trim() || 'ບໍ່ໄດ້ລະບຸຊື່';
+            item.updatedAt = new Date().toISOString();
+            const putReq = store.put(item);
+            putReq.onsuccess = function() {
+                resolve(item);
+            };
+            putReq.onerror = function() {
+                reject(putReq.error || new Error('ແກ້ໄຂຊື່ບໍ່ສຳເລັດ'));
+            };
+        };
+        getReq.onerror = function() {
+            reject(getReq.error || new Error('ອ່ານລາຍການບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+async function deletePhotoRecordFromDB(id) {
+    const db = await openPhotoArchiveDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(PHOTO_STORE_NAME);
+        const req = store.delete(id);
+
+        req.onsuccess = function() {
+            resolve(true);
+        };
+        req.onerror = function() {
+            reject(req.error || new Error('ລຶບຂໍ້ມູນບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+async function clearAllPhotoRecordsFromDB() {
+    const db = await openPhotoArchiveDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(PHOTO_STORE_NAME, 'readwrite');
+        const store = tx.objectStore(PHOTO_STORE_NAME);
+        const req = store.clear();
+
+        req.onsuccess = function() {
+            resolve(true);
+        };
+        req.onerror = function() {
+            reject(req.error || new Error('ລ້າງຖານຂໍ້ມູນບໍ່ສຳເລັດ'));
+        };
+    });
+}
+
+// ส่งรูปที่เลือกจากหน้าฐานข้อมูลไปรอเพิ่มลงแถวใน A4 ที่หน้า cam.html
+const PENDING_A4_QUEUE_KEY = 'LaoIdPhoto_PendingA4Row_v1';
+
+function queuePhotoToA4FromArchive(record) {
+    const payload = {
+        id: record.id,
+        name: record.name || 'ບໍ່ໄດ້ລະບຸຊື່',
+        suitGender: record.suitGender || 'female',
+        imageDataUrl: record.generatedImage || record.sourceImage,
+        queuedAt: Date.now()
+    };
+    localStorage.setItem(PENDING_A4_QUEUE_KEY, JSON.stringify(payload));
+}
+
+function consumeQueuedPhotoForA4() {
+    const raw = localStorage.getItem(PENDING_A4_QUEUE_KEY);
+    if (!raw) return null;
+    localStorage.removeItem(PENDING_A4_QUEUE_KEY);
+    try {
+        return JSON.parse(raw);
+    } catch (_) {
+        return null;
+    }
+}

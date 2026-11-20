@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ລະບົບສ້າງຮູບຕິດບັດ 3×4 ຊມ. (AI ແຕ່ງສູດ & ຈັດລຽງ A4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .face-guide-oval {
+            box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55);
+        }
+
+        #print-only-container {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #print-only-container {
+                display: block !important;
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
+                page-break-after: avoid;
+                page-break-before: avoid;
+            }
+            #print-only-image {
+                width: 210mm;
+                height: 297mm;
+                object-fit: contain;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-12">
+
+    <div id="print-only-container">
+        <img id="print-only-image" src="" alt="ແຜ່ນພິມ A4">
+    </div>
+
+    <div id="toast-container" class="no-print fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md pointer-events-none transition-all duration-300 opacity-0 -translate-y-4">
+        <div id="toast-box" class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-700">
+            <i id="toast-icon" class="fa-solid fa-circle-info text-blue-400 text-lg"></i>
+            <span id="toast-message" class="text-sm font-medium leading-snug">ຂໍ້ຄວາມແຈ້ງເຕືອນ</span>
+        </div>
+    </div>
+
+    <header class="no-print bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center shadow-md shrink-0">
+                    <i class="fa-solid fa-id-card text-lg"></i>
+                </div>
+                <div class="truncate">
+                    <h1 class="font-bold text-base sm:text-lg text-slate-900 leading-tight truncate">ສະຕູດິໂອຮູບຕິດບັດ 3×4 ຊມ.</h1>
+                    <p class="text-xs text-slate-500 truncate">AI ແຕ່ງສູດພື້ນຫຼັງສີຟ້າ & ຈັດລຽງ A4 ອັດຕະໂນມັດ</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="goBackToHome()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors" title="ກັບໄປໜ້າຫຼັກ">
+                    <i class="fa-solid fa-house"></i> <span>ໜ້າຫຼັກ</span>
+                </button>
+                <a href="photo_archive.html" class="px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-colors">
+                    <i class="fa-solid fa-database"></i> <span>ຖານຂໍ້ມູນຮູບ</span>
+                </a>
+                <button type="button" onclick="resetAllData()" class="text-xs sm:text-sm text-slate-500 hover:text-red-600 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors" title="ລ້າງຂໍ້ມູນທັງໝົດ">
+                    <i class="fa-solid fa-rotate-right"></i> <span class="hidden sm:inline">ເລີ່ມໃໝ່</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="no-print max-w-7xl mx-auto px-4 sm:px-6 pt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- STEP 1: Camera & Image Upload -->
+                <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-bold flex items-center justify-center">1</span>
+                            <h2 class="font-bold text-lg text-slate-900">ຖ່າຍຮູບ ຫຼື ເລືອກຮູບໜ້າກົງ</h2>
+                        </div>
+                        <span class="text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">ອັດຕາສ່ວນ 3:4</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl mb-4">
+                        <button type="button" id="tab-upload" onclick="switchCaptureMode('upload')" class="py-2.5 px-4 rounded-xl text-sm font-semibold transition-all bg-white text-blue-700 shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-image"></i> ເລືອກຮູບຈາກເຄື່ອງ
+                        </button>
+                        <button type="button" id="tab-camera" onclick="switchCaptureMode('camera')" class="py-2.5 px-4 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-camera"></i> ເປີດກ້ອງຖ່າຍຮູບ
+                        </button>
+                    </div>
+
+                    <div id="panel-upload" class="space-y-4">
+                        <label for="file-input" class="block w-full border-2 border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/40 hover:bg-blue-50/80 rounded-2xl p-6 text-center cursor-pointer transition-all group">
+                            <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                            </div>
+                            <p class="font-semibold text-slate-800 text-base">ແຕະເພື່ອເລືອກຮູບພາບ ຫຼື ຖ່າຍຮູບຈາກມືຖື</p>
+                            <p class="text-xs text-slate-500 mt-1">ແນະນຳຮູບໜ້າກົງ ເບິ່ງກ້ອງ ເຫັນຊ່ວງບ່າຊັດເຈນ ແສງສະຫວ່າງພຽງພໍ</p>
+                        </label>
+                    </div>
+
+                    <div id="panel-camera" class="hidden space-y-4">
+                        <div class="relative w-full max-w-sm mx-auto aspect-[3/4] bg-slate-900 rounded-2xl overflow-hidden shadow-inner border border-slate-300">
+                            <video id="camera-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                            
+                            <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center">
+                                <div class="w-full border-t border-dashed border-white/40 absolute top-[10%]"></div>
+                                <div class="w-[52%] h-[46%] rounded-[50%] border-2 border-dashed border-cyan-300 face-guide-oval -mt-8 flex items-center justify-center">
+                                    <div class="w-3 h-3 border-t border-l border-cyan-300/70"></div>
+                                </div>
+                                <svg class="w-[85%] h-[25%] text-cyan-300/80 -mt-2" viewBox="0 0 200 60" fill="none">
+                                    <path d="M10 58 C 35 20, 65 15, 100 15 C 135 15, 165 20, 190 58" stroke="currentColor" stroke-width="2" stroke-dasharray="5 5"/>
+                                </svg>
+                                <span class="absolute bottom-3 bg-slate-900/80 text-white text-[11px] px-3 py-1 rounded-full backdrop-blur-sm">
+                                    ຈັດໃບໜ້າໃຫ້ຢູ່ໃນກອບວົງຮີ ແລະ ບ່າຕົງເສັ້ນປະ
+                                </span>
+                            </div>
+
+                            <button type="button" onclick="flipCamera()" class="absolute top-3 right-3 w-10 h-10 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white flex items-center justify-center backdrop-blur-sm transition-all" title="ສະຫຼັບກ້ອງໜ້າ/ຫຼັງ">
+                                <i class="fa-solid fa-camera-rotate"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex justify-center">
+                            <button type="button" onclick="captureFromCamera()" class="w-full max-w-sm py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold text-base shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2 transition-all">
+                                <i class="fa-solid fa-circle-dot text-xl"></i> ກົດຖ່າຍຮູບນີ້
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Person Name Input + Source Image Preview -->
+                    <div class="mt-4 pt-4 border-t border-slate-100 space-y-3">
+                        <div>
+                            <label for="person-name-input" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                                ຊື່ບຸກຄົນ (ລະບຸຊື່ເພື່ອບັນທຶກ ແລະ ຄົ້ນຫາໃນຖານຂໍ້ມູນ)
+                            </label>
+                            <input
+                                id="person-name-input"
+                                type="text"
+                                placeholder="ພິມຊື່ ແລະ ນາມສະກຸນ ເຊັ່ນ: ນາງ ມາລີ ໄຊຍະວົງ..."
+                                class="w-full rounded-xl border border-slate-300 bg-slate-50 focus:bg-white px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:border-blue-500 focus:outline-none"
+                            >
+                        </div>
+
+                        <div id="source-preview-box" class="hidden flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
+                            <div class="flex items-center gap-3">
+                                <img id="source-thumb" src="" alt="ຕົ້ນສະບັບ" class="w-14 h-[74px] object-cover rounded-xl border border-slate-300 bg-white">
+                                <div>
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                        <i class="fa-solid fa-check"></i> ພ້ອມແຕ່ງຮູບດ້ວຍ AI
+                                    </span>
+                                    <p class="text-xs text-slate-500 mt-1">ລະບົບປັບອັດຕາສ່ວນ 3×4 ຊມ. ອັດຕະໂນມັດ</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearSourceImage()" class="text-xs text-slate-500 hover:text-red-600 px-3 py-2 rounded-xl hover:bg-white transition-colors">
+                                ປ່ຽນຮູບ
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STEP 2: AI Customization Settings -->
+                <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm font-bold flex items-center justify-center">2</span>
+                            <h2 class="font-bold text-lg text-slate-900">ຕັ້ງຄ່າຊຸດສູດ & ໃຫ້ AI ແຕ່ງຮູບຕິດບັດ</h2>
+                        </div>
+                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
+                            <i class="fa-solid fa-shield-halved"></i> ລັອກໃບໜ້າເດີມ 100%
+                        </span>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">1. ເລືອກຊຸດສູດທາງການ (ແຍກຊາຍ / ຍິງ)</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" id="btn-suit-female" onclick="selectSuitGender('female')" class="suit-option relative p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all flex items-center gap-3">
+                                    <div class="w-11 h-11 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shrink-0">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm sm:text-base">ຊຸດສູດຜູ້ຍິງ</div>
+                                        <div class="text-[11px] text-slate-500">ສູດສາກົນສີດຳ/ກົມມະທ່າ ເສື້ອເຊີ້ດຂາວ</div>
+                                    </div>
+                                    <i id="check-female" class="fa-solid fa-circle-check text-blue-600 text-lg absolute top-3 right-3"></i>
+                                </button>
+
+                                <button type="button" id="btn-suit-male" onclick="selectSuitGender('male')" class="suit-option relative p-3.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition-all flex items-center gap-3">
+                                    <div class="w-11 h-11 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-xl shrink-0">
+                                        <i class="fa-solid fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 text-sm sm:text-base">ຊຸດສູດຜູ້ຊາຍ</div>
+                                        <div class="text-[11px] text-slate-500">ສູດສາກົນ ເຊີ້ດຂາວ ຜູກເນັກໄທສຸພາບ</div>
+                                    </div>
+                                    <i id="check-male" class="fa-solid fa-circle-check text-blue-600 text-lg absolute top-3 right-3 hidden"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">2. ສີພື້ນຫຼັງມາດຕະຖານ</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" id="bg-standard" onclick="selectBgColor('standard')" class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left">
+                                        <span class="w-6 h-6 rounded-lg shrink-0 border border-black/10 shadow-inner" style="background-color: #2b7de9;"></span>
+                                        <div>
+                                            <div class="text-xs font-bold text-slate-800">ສີຟ້າມາດຕະຖານ</div>
+                                            <div class="text-[10px] text-slate-500">ສະໝັກວຽກ/ລັດຖະການ</div>
+                                        </div>
+                                    </button>
+                                    <button type="button" id="bg-deep" onclick="selectBgColor('deep')" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left">
+                                        <span class="w-6 h-6 rounded-lg shrink-0 border border-black/10 shadow-inner" style="background-color: #1659c7;"></span>
+                                        <div>
+                                            <div class="text-xs font-bold text-slate-800">ສີຟ້າເຂັ້ມ</div>
+                                            <div class="text-[10px] text-slate-500">ເຂັ້ມຄົມຊັດ</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">3. ສີເສື້ອສູດ</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" id="suit-black" onclick="selectSuitColor('black')" class="p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left">
+                                        <span class="w-6 h-6 rounded-lg bg-slate-900 shrink-0 border border-black/10"></span>
+                                        <div>
+                                            <div class="text-xs font-bold text-slate-800">ສູດສີດຳ</div>
+                                            <div class="text-[10px] text-slate-500">ເປັນທາງການທີ່ສຸດ</div>
+                                        </div>
+                                    </button>
+                                    <button type="button" id="suit-navy" onclick="selectSuitColor('navy')" class="p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left">
+                                        <span class="w-6 h-6 rounded-lg bg-blue-950 shrink-0 border border-black/10"></span>
+                                        <div>
+                                            <div class="text-xs font-bold text-slate-800">ສູດສີກົມມະທ່າ</div>
+                                            <div class="text-[10px] text-slate-500">ສຸພາບ ທັນສະໄໝ</div>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="hair-option" class="block text-sm font-semibold text-slate-700 mb-1.5">4. ການຈັດຊົງຜົມໃຫ້ຮຽບຮ້ອຍ</label>
+                                <select id="hair-option" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:border-blue-500 focus:outline-none">
+                                    <option value="neat_tied">ມັດລວບຮຽບຕຶງ / ຫວີຮຽບຮ້ອຍບໍ່ມີປາຍຜົມ</option>
+                                    <option value="natural_neat">ຈັດຊົງເດີມໃຫ້ເຂົ້າຊົງຮຽບຮ້ອຍ ບໍ່ບັງໜ້າ</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="expression-option" class="block text-sm font-semibold text-slate-700 mb-1.5">5. ສີໜ້າ ແລະ ຜິວພັນ</label>
+                                <select id="expression-option" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-medium text-slate-800 focus:border-blue-500 focus:outline-none">
+                                    <option value="polite_neutral">ສີໜ້າສຸພາບ ສຳລວມ ບໍ່ຍິ້ມເຫັນແຂ້ວ + ປັບຜິວນຽນໃສ</option>
+                                    <option value="slight_smile">ຍິ້ມເລັກນ້ອຍຢ່າງສຸພາບ + ປັບຜິວນຽນໃສ</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-generate-ai" onclick="generateIdPhotoWithAI()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 active:scale-[0.99] text-white font-bold text-base sm:text-lg shadow-lg shadow-blue-600/30 flex items-center justify-center gap-3 transition-all">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                            <span>ໃຫ້ AI ແຕ່ງຮູບຕິດບັດ (ພື້ນຫຼັງຟ້າ + ໃສ່ສູດ)</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- STEP 3: Before / After Result & Add to A4 Row / Save to DB -->
+                <section id="result-section" class="hidden bg-white rounded-3xl p-5 sm:p-6 shadow-md border-2 border-blue-500/40">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-full bg-emerald-600 text-white text-sm font-bold flex items-center justify-center"><i class="fa-solid fa-check"></i></span>
+                            <h2 class="font-bold text-lg text-slate-900">ກວດສອບຜົນໄດ້ຮັບ (ກ່ອນ - ຫຼັງ)</h2>
+                        </div>
+                        <button type="button" onclick="generateIdPhotoWithAI()" class="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-arrows-rotate"></i> ສ້າງໃໝ່ອີກຄັ້ງ
+                        </button>
+                    </div>
+
+                    <div id="ai-loading-box" class="hidden py-12 text-center space-y-4">
+                        <div class="relative w-16 h-16 mx-auto">
+                            <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+                            <i class="fa-solid fa-wand-magic-sparkles text-blue-600 text-xl absolute inset-0 flex items-center justify-center"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-base">AI ກຳລັງແຕ່ງຊຸດສູດ ແລະ ປ່ຽນພື້ນຫຼັງສີຟ້າ...</p>
+                            <p class="text-xs text-slate-500 mt-1">ກຳລັງຮັກສາໂຄງໜ້າເດີມໃຫ້ຄືຕົວຈິງ 100% ກະລຸນາລໍຖ້າຈັກຄາວ (5-12 ວິນາທີ)</p>
+                        </div>
+                    </div>
+
+                    <div id="comparison-grid" class="grid grid-cols-2 gap-4 sm:gap-6 max-w-lg mx-auto">
+                        <div class="space-y-2 text-center">
+                            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-inner">
+                                <img id="compare-before" src="" alt="ຮູບຕົ້ນສະບັບ" class="w-full h-full object-cover">
+                                <span class="absolute top-2 left-2 bg-slate-900/75 text-white text-[11px] font-medium px-2.5 py-0.5 rounded-lg backdrop-blur-sm">ຕົ້ນສະບັບ</span>
+                            </div>
+                            <p class="text-xs text-slate-500">ຮູບກ່ອນແຕ່ງ</p>
+                        </div>
+
+                        <div class="space-y-2 text-center">
+                            <div class="relative aspect-[3/4] rounded-2xl overflow-hidden border-2 border-blue-600 bg-blue-50 shadow-md">
+                                <img id="compare-after" src="" alt="ຮູບຕິດບັດ 3x4 ຊມ." class="w-full h-full object-cover">
+                                <span class="absolute top-2 left-2 bg-blue-600 text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-lg shadow">3 × 4 ຊມ.</span>
+                            </div>
+                            <p class="text-xs font-semibold text-blue-700">ຜົນໄດ້ຮັບພ້ອມຈັດລຽງ</p>
+                        </div>
+                    </div>
+
+                    <div id="result-actions" class="mt-6 pt-5 border-t border-slate-100 space-y-3">
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="addCurrentPhotoToA4Row()" class="flex-1 py-3.5 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-base shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2.5 transition-all">
+                                <i class="fa-solid fa-plus-circle text-xl"></i>
+                                <span>ເພີ່ມລົງແຖວໃນເຈ້ຍ A4 (6 ຮູບ)</span>
+                            </button>
+                            <button type="button" onclick="saveCurrentToArchiveDB()" class="flex-1 py-3.5 px-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-bold text-base shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2.5 transition-all">
+                                <i class="fa-solid fa-floppy-disk text-xl"></i>
+                                <span>ບັນທຶກລົງຖານຂໍ້ມູນ</span>
+                            </button>
+                        </div>
+                        <button type="button" onclick="downloadSinglePhoto()" class="w-full py-2.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs flex items-center justify-center gap-2 transition-colors">
+                            <i class="fa-solid fa-download"></i> ບັນທຶກຮູບດ່ຽວ 3×4
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: A4 Batch Layout Preview & Row Manager -->
+            <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-20">
+                <section class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold flex items-center justify-center">3</span>
+                            <div>
+                                <h2 class="font-bold text-lg text-slate-900 leading-tight">ເຈ້ຍ A4 ພ້ອມພິມ</h2>
+                                <p class="text-xs text-slate-500">ແຖວລະ 6 ຮູບ (ຮູບລະ 3×4 ຊມ.) ສະສົມໄດ້ສູງສຸດ 6 ແຖວ</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span id="row-counter-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                0 / 6 ແຖວ (0 ຮູບ)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-200/70 p-3 sm:p-4 rounded-2xl border border-slate-300/80 flex flex-col items-center">
+                        <div class="w-full max-w-[340px] bg-white shadow-xl rounded-sm overflow-hidden border border-slate-300 relative">
+                            <canvas id="a4-preview-canvas" class="w-full h-auto block"></canvas>
+                        </div>
+                        <div class="mt-2.5 flex items-center justify-between w-full max-w-[340px] text-[11px] text-slate-600">
+                            <span><i class="fa-solid fa-file"></i> ເຈ້ຍ A4 (21.0 × 29.7 ຊມ.)</span>
+                            <span><i class="fa-solid fa-scissors"></i> ວາງຕິດກັນ + ຂີດມາກຕັດຄັດເຕີ</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-bold text-slate-800">ຈັດການແຖວເທິງເຈ້ຍ A4</h3>
+                            <button type="button" id="btn-clear-a4" onclick="clearAllA4Rows()" class="hidden text-xs text-red-600 hover:underline">
+                                ລ້າງທັງໝົດ
+                            </button>
+                        </div>
+                        
+                        <div id="row-manager-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                            <div id="empty-a4-state" class="text-center py-6 px-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                                <i class="fa-solid fa-layer-group text-slate-400 text-2xl mb-1.5"></i>
+                                <p class="text-xs font-medium text-slate-600">ຍັງບໍ່ມີຮູບໃນແຜ່ນ A4</p>
+                                <p class="text-[11px] text-slate-400 mt-0.5">ແຕ່ງຮູບດ້ານຊ້າຍແລ້ວກົດ "ເພີ່ມລົງແຖວໃນເຈ້ຍ A4 (6 ຮູບ)"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-5 border-t border-slate-200 space-y-3">
+                        <button type="button" id="btn-download-a4" onclick="downloadA4Sheet('jpg')" disabled class="w-full py-3.5 px-5 rounded-2xl bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-bold text-sm sm:text-base shadow-md flex items-center justify-center gap-2.5 transition-all">
+                            <i class="fa-solid fa-file-arrow-down text-lg"></i>
+                            <span>ດາວໂຫຼດໄຟລ໌ A4 ພ້ອມພິມ (300 DPI)</span>
+                        </button>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button type="button" id="btn-download-png" onclick="downloadA4Sheet('png')" disabled class="py-2.5 px-3 rounded-xl border border-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed text-slate-700 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-image"></i> ບັນທຶກເປັນ PNG
+                            </button>
+                            <button type="button" id="btn-print-a4" onclick="printA4Sheet()" class="py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-print"></i> ສັ່ງພິມທັນທີ (A4 100%)
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-center text-slate-500">
+                            * ຕັ້ງຄ່າເຄື່ອງພິມເປັນ <strong>ເຈ້ຍ A4</strong> ແລະ ເລືອກຂະໜາດ <strong>100% (Actual Size)</strong> ຮູບທຸກໃບຈະໄດ້ຂະໜາດ 3 × 4 ຊມ. ພໍດີ
+                        </p>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </main>
+
+    <canvas id="crop-canvas" class="hidden"></canvas>
+    <canvas id="a4-export-canvas" width="2480" height="3508" class="hidden"></canvas>
+
+    <script src="photo_db.js"></script>
+    <script>
+        const API_KEY = "";
+        
+        const A4_WIDTH_PX = 2480;
+        const A4_HEIGHT_PX = 3508;
+        const PHOTO_W_PX = 354;
+        const PHOTO_H_PX = 472;
+        const COLS_PER_ROW = 6;
+        const MAX_ROWS = 6;
+        const GAP_X_PX = 0;
+        const GAP_Y_PX = 54;
+        const MARGIN_LEFT_PX = Math.round((A4_WIDTH_PX - (COLS_PER_ROW * PHOTO_W_PX)) / 2);
+        const MARGIN_TOP_PX = 142;
+
+        const appState = {
+            captureMode: 'upload',
+            facingMode: 'user',
+            mediaStream: null,
+            sourceImageBase64: null,
+            generatedImageBase64: null,
+            suitGender: 'female',
+            bgColor: 'standard',
+            suitColor: 'black',
+            a4Rows: []
+        };
+
+        window.onload = async function() {
+            renderA4Canvas();
+            updateRowManagerUI();
+
+            // ตรวจสอบว่ามีรูปที่ส่งมาจากหน้าฐานข้อมูล (photo_archive.html) หรือไม่
+            const queued = consumeQueuedPhotoForA4();
+            if (queued && queued.imageDataUrl) {
+                const row = await createRowFromDataUrl(
+                    queued.imageDataUrl,
+                    `${queued.name} (${queued.suitGender === 'male' ? 'ສູດຊາຍ' : 'ສູດຍິງ'})`
+                );
+                appState.a4Rows.push(row);
+                updateRowManagerUI();
+                renderA4Canvas();
+                showToast(`ເພີ່ມ "${queued.name}" ລົງແຖວເຈ້ຍ A4 ຮຽບຮ້ອຍແລ້ວ`, 'success');
+            }
+        };
+
+        function goBackToHome() {
+            stopCamera();
+            window.location.href = '../index.html';
+        }
+
+        let toastTimeout;
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+
+            msg.textContent = message;
+            
+            if (type === 'success') {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+            } else if (type === 'error') {
+                icon.className = 'fa-solid fa-triangle-exclamation text-amber-400 text-lg';
+            } else {
+                icon.className = 'fa-solid fa-circle-info text-blue-400 text-lg';
+            }
+
+            container.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+            container.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                container.classList.remove('opacity-100', 'translate-y-0');
+                container.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none');
+            }, 3500);
+        }
+
+        async function switchCaptureMode(mode) {
+            appState.captureMode = mode;
+            const tabUpload = document.getElementById('tab-upload');
+            const tabCamera = document.getElementById('tab-camera');
+            const panelUpload = document.getElementById('panel-upload');
+            const panelCamera = document.getElementById('panel-camera');
+
+            if (mode === 'camera') {
+                tabCamera.className = 'py-2.5 px-4 rounded-xl text-sm font-semibold transition-all bg-white text-blue-700 shadow-sm flex items-center justify-center gap-2';
+                tabUpload.className = 'py-2.5 px-4 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2';
+                panelUpload.classList.add('hidden');
+                panelCamera.classList.remove('hidden');
+                await startCamera();
+            } else {
+                tabUpload.className = 'py-2.5 px-4 rounded-xl text-sm font-semibold transition-all bg-white text-blue-700 shadow-sm flex items-center justify-center gap-2';
+                tabCamera.className = 'py-2.5 px-4 rounded-xl text-sm font-semibold transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2';
+                panelCamera.classList.add('hidden');
+                panelUpload.classList.remove('hidden');
+                stopCamera();
+            }
+        }
+
+        async function startCamera() {
+            stopCamera();
+            const video = document.getElementById('camera-video');
+            try {
+                const constraints = {
+                    video: {
+                        facingMode: appState.facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 1600 }
+                    },
+                    audio: false
+                };
+                appState.mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = appState.mediaStream;
+                video.style.transform = appState.facingMode === 'user' ? 'scaleX(-1)' : 'scaleX(1)';
+            } catch (err) {
+                console.error('Camera access error:', err);
+                showToast('ບໍ່ສາມາດເປີດກ້ອງໄດ້ ກະລຸນາອະນຸຍາດສິດກ້ອງ ຫຼື ໃຊ້ການເລືອກຮູບແທນ', 'error');
+                switchCaptureMode('upload');
+            }
+        }
+
+        function stopCamera() {
+            if (appState.mediaStream) {
+                appState.mediaStream.getTracks().forEach(track => track.stop());
+                appState.mediaStream = null;
+            }
+        }
+
+        async function flipCamera() {
+            appState.facingMode = appState.facingMode === 'user' ? 'environment' : 'user';
+            await startCamera();
+        }
+
+        function captureFromCamera() {
+            const video = document.getElementById('camera-video');
+            if (!video.videoWidth) {
+                showToast('ກ້ອງຍັງບໍ່ພ້ອມ ກະລຸນາລໍຖ້າຈັກຄາວ', 'error');
+                return;
+            }
+
+            const cropCanvas = document.getElementById('crop-canvas');
+            const targetW = 708;
+            const targetH = 944;
+            cropCanvas.width = targetW;
+            cropCanvas.height = targetH;
+            const ctx = cropCanvas.getContext('2d');
+
+            const vw = video.videoWidth;
+            const vh = video.videoHeight;
+            const targetRatio = 3 / 4;
+            const videoRatio = vw / vh;
+
+            let sx, sy, sWidth, sHeight;
+            if (videoRatio > targetRatio) {
+                sHeight = vh;
+                sWidth = vh * targetRatio;
+                sx = (vw - sWidth) / 2;
+                sy = 0;
+            } else {
+                sWidth = vw;
+                sHeight = vw / targetRatio;
+                sx = 0;
+                sy = (vh - sHeight) / 2;
+            }
+
+            ctx.save();
+            if (appState.facingMode === 'user') {
+                ctx.translate(targetW, 0);
+                ctx.scale(-1, 1);
+            }
+            ctx.drawImage(video, sx, sy, sWidth, sHeight, 0, 0, targetW, targetH);
+            ctx.restore();
+
+            const dataUrl = cropCanvas.toDataURL('image/jpeg', 0.95);
+            setSourceImage(dataUrl);
+            showToast('ຖ່າຍຮູບສຳເລັດ! ພ້ອມກົດໃຫ້ AI ແຕ່ງຮູບຕິດບັດ', 'success');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const cropCanvas = document.getElementById('crop-canvas');
+                    const targetW = 708;
+                    const targetH = 944;
+                    cropCanvas.width = targetW;
+                    cropCanvas.height = targetH;
+                    const ctx = cropCanvas.getContext('2d');
+
+                    const iw = img.width;
+                    const ih = img.height;
+                    const targetRatio = 3 / 4;
+                    const imgRatio = iw / ih;
+
+                    let sx, sy, sWidth, sHeight;
+                    if (imgRatio > targetRatio) {
+                        sHeight = ih;
+                        sWidth = ih * targetRatio;
+                        sx = (iw - sWidth) / 2;
+                        sy = 0;
+                    } else {
+                        sWidth = iw;
+                        sHeight = iw / targetRatio;
+                        sx = 0;
+                        sy = Math.max(0, (ih - sHeight) * 0.25);
+                    }
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetW, targetH);
+
+                    const dataUrl = cropCanvas.toDataURL('image/jpeg', 0.95);
+                    setSourceImage(dataUrl);
+                    showToast('ອັບໂຫຼດຮູບພາບຮຽບຮ້ອຍແລ້ວ', 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setSourceImage(dataUrl) {
+            appState.sourceImageBase64 = dataUrl;
+            document.getElementById('source-thumb').src = dataUrl;
+            document.getElementById('source-preview-box').classList.remove('hidden');
+            document.getElementById('compare-before').src = dataUrl;
+        }
+
+        function clearSourceImage() {
+            appState.sourceImageBase64 = null;
+            appState.generatedImageBase64 = null;
+            document.getElementById('file-input').value = '';
+            document.getElementById('source-preview-box').classList.add('hidden');
+            document.getElementById('result-section').classList.add('hidden');
+        }
+
+        function selectSuitGender(gender) {
+            appState.suitGender = gender;
+            const btnFemale = document.getElementById('btn-suit-female');
+            const btnMale = document.getElementById('btn-suit-male');
+            const checkFemale = document.getElementById('check-female');
+            const checkMale = document.getElementById('check-male');
+
+            if (gender === 'female') {
+                btnFemale.className = 'suit-option relative p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all flex items-center gap-3';
+                btnMale.className = 'suit-option relative p-3.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition-all flex items-center gap-3';
+                checkFemale.classList.remove('hidden');
+                checkMale.classList.add('hidden');
+            } else {
+                btnMale.className = 'suit-option relative p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 text-left transition-all flex items-center gap-3';
+                btnFemale.className = 'suit-option relative p-3.5 rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white text-left transition-all flex items-center gap-3';
+                checkMale.classList.remove('hidden');
+                checkFemale.classList.add('hidden');
+            }
+        }
+
+        function selectBgColor(shade) {
+            appState.bgColor = shade;
+            const std = document.getElementById('bg-standard');
+            const deep = document.getElementById('bg-deep');
+            if (shade === 'standard') {
+                std.className = 'p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left';
+                deep.className = 'p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left';
+            } else {
+                deep.className = 'p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left';
+                std.className = 'p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left';
+            }
+        }
+
+        function selectSuitColor(color) {
+            appState.suitColor = color;
+            const blk = document.getElementById('suit-black');
+            const nvy = document.getElementById('suit-navy');
+            if (color === 'black') {
+                blk.className = 'p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left';
+                nvy.className = 'p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left';
+            } else {
+                nvy.className = 'p-2.5 rounded-xl border-2 border-blue-600 bg-blue-50/60 flex items-center gap-2.5 text-left';
+                blk.className = 'p-2.5 rounded-xl border-2 border-slate-200 bg-white flex items-center gap-2.5 text-left';
+            }
+        }
+
+        async function fetchWithRetry(url, options, maxRetries = 4) {
+            let delay = 1000;
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return response;
+                    if (response.status === 429 || response.status >= 500) {
+                        if (attempt === maxRetries) throw new Error(`HTTP Error ${response.status}`);
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData?.error?.message || `API Error ${response.status}`);
+                } catch (err) {
+                    if (attempt === maxRetries) throw err;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function generateIdPhotoWithAI() {
+            if (!appState.sourceImageBase64) {
+                showToast('ກະລຸນາຖ່າຍຮູບ ຫຼື ເລືອກຮູບພາບກ່ອນກົດແຕ່ງຮູບ', 'error');
+                return;
+            }
+
+            const resultSection = document.getElementById('result-section');
+            const loadingBox = document.getElementById('ai-loading-box');
+            const comparisonGrid = document.getElementById('comparison-grid');
+            const resultActions = document.getElementById('result-actions');
+            const btnGenerate = document.getElementById('btn-generate-ai');
+
+            resultSection.classList.remove('hidden');
+            loadingBox.classList.remove('hidden');
+            comparisonGrid.classList.add('hidden');
+            resultActions.classList.add('hidden');
+            btnGenerate.disabled = true;
+            btnGenerate.classList.add('opacity-60', 'cursor-not-allowed');
+
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            try {
+                const suitColorDesc = appState.suitColor === 'black' ? 'solid formal jet-black' : 'solid formal dark navy blue';
+                const attirePrompt = appState.suitGender === 'female'
+                    ? `wearing a tailored ${suitColorDesc} women's business suit blazer over a neat, crisp white collared blouse (no necktie), formal official ID photo attire`
+                    : `wearing a tailored ${suitColorDesc} men's business suit jacket, crisp white dress shirt, and a neat dark formal necktie, formal official ID photo attire`;
+
+                const bgPrompt = appState.bgColor === 'standard'
+                    ? 'solid uniform studio medium-light blue background (hex #2B7DE9) with zero gradients, shadows, or textures'
+                    : 'solid uniform studio deep royal blue background (hex #1659C7) with zero gradients, shadows, or textures';
+
+                const hairOption = document.getElementById('hair-option').value;
+                const hairPrompt = hairOption === 'neat_tied'
+                    ? (appState.suitGender === 'female'
+                        ? 'neatly combed and pulled-back hair tied cleanly behind the head with zero loose stray hairs or messy strands, keeping ears and full face clearly visible'
+                        : 'neatly combed, tidy formal short haircut with zero stray or messy hairs, keeping ears and full face clearly visible')
+                    : 'tidied and neatly groomed version of the person\'s exact hairstyle with stray flyaway hairs smoothed down, keeping the face unobstructed';
+
+                const exprOption = document.getElementById('expression-option').value;
+                const exprPrompt = exprOption === 'polite_neutral'
+                    ? 'calm, polite, composed neutral facial expression with mouth closed (no wide smiling), looking straight directly at the camera'
+                    : 'polite, subtle closed-lip gentle expression, looking straight directly at the camera';
+
+                const strictPrompt = `Edit this portrait into an official 3x4 cm ID / job application passport-style photograph.
+CRITICAL IDENTITY RULE: Preserve the exact facial structure, bone structure, eyes, eyebrows, nose, lips, skin tone, and 100% likeness of the person in the input image. Do NOT alter their facial features or make them look like a different person.
+REQUIREMENTS:
+1. Attire: Replace clothing with ${attirePrompt}, centered straight shoulders.
+2. Background: Replace background completely with a ${bgPrompt}.
+3. Hair & Grooming: Style hair as ${hairPrompt}.
+4. Expression & Lighting: ${exprPrompt}. Apply soft, even studio portrait lighting across the face, gently smoothing minor blemishes while keeping natural skin texture and authentic facial identity.
+5. Framing: Centered straight-on head-and-shoulders framing suitable for a 3x4 cm ID card photo.`;
+
+                const base64Clean = appState.sourceImageBase64.split(',')[1];
+
+                const payload = {
+                    contents: [{
+                        role: "user",
+                        parts: [
+                            { text: strictPrompt },
+                            {
+                                inlineData: {
+                                    mimeType: "image/jpeg",
+                                    data: base64Clean
+                                }
+                            }
+                        ]
+                    }],
+                    generationConfig: {
+                        responseModalities: ["IMAGE"],
+                        imageConfig: {
+                            aspectRatio: "3:4"
+                        }
+                    }
+                };
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${API_KEY}`;
+                
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const imagePart = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+
+                if (!imagePart || !imagePart.inlineData?.data) {
+                    throw new Error('ບໍ່ໄດ້ຮັບໄຟລ໌ຮູບຈາກ AI ກະລຸນາລອງກົດໃໝ່ອີກຄັ້ງ');
+                }
+
+                const outputMime = imagePart.inlineData.mimeType || 'image/png';
+                const outputDataUrl = `data:${outputMime};base64,${imagePart.inlineData.data}`;
+
+                const normalizedDataUrl = await normalizeTo3x4Ratio(outputDataUrl);
+                appState.generatedImageBase64 = normalizedDataUrl;
+
+                document.getElementById('compare-after').src = normalizedDataUrl;
+                loadingBox.classList.add('hidden');
+                comparisonGrid.classList.remove('hidden');
+                resultActions.classList.remove('hidden');
+
+                showToast('AI ແຕ່ງຮູບຕິດບັດສຳເລັດ! ກວດສອບຄວາມຮຽບຮ້ອຍແລ້ວກົດເພີ່ມລົງ A4 ຫຼື ບັນທຶກຖານຂໍ້ມູນໄດ້ເລີຍ', 'success');
+
+            } catch (error) {
+                console.error('AI Generation Error:', error);
+                loadingBox.classList.add('hidden');
+                resultSection.classList.add('hidden');
+                showToast('ເກີດຂໍ້ຜິດພາດໃນການແຕ່ງຮູບ: ' + error.message, 'error');
+            } finally {
+                btnGenerate.disabled = false;
+                btnGenerate.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+        }
+
+        function normalizeTo3x4Ratio(dataUrl) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.getElementById('crop-canvas');
+                    canvas.width = PHOTO_W_PX * 2;
+                    canvas.height = PHOTO_H_PX * 2;
+                    const ctx = canvas.getContext('2d');
+
+                    const targetRatio = 3 / 4;
+                    const imgRatio = img.width / img.height;
+                    let sx, sy, sWidth, sHeight;
+
+                    if (imgRatio > targetRatio) {
+                        sHeight = img.height;
+                        sWidth = img.height * targetRatio;
+                        sx = (img.width - sWidth) / 2;
+                        sy = 0;
+                    } else {
+                        sWidth = img.width;
+                        sHeight = img.width / targetRatio;
+                        sx = 0;
+                        sy = (img.height - sHeight) / 2;
+                    }
+
+                    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.src = dataUrl;
+            });
+        }
+
+        async function saveCurrentToArchiveDB() {
+            const finalImg = appState.generatedImageBase64 || appState.sourceImageBase64;
+            if (!finalImg) {
+                showToast('ຍັງບໍ່ມີຮູບໃຫ້ບັນທຶກລົງຖານຂໍ້ມູນ', 'error');
+                return;
+            }
+
+            const typedName = (document.getElementById('person-name-input').value || '').trim();
+            const personName = typedName || `ຄົນທີ ${appState.a4Rows.length + 1}`;
+
+            try {
+                await savePhotoRecordToDB({
+                    name: personName,
+                    suitGender: appState.suitGender,
+                    suitColor: appState.suitColor,
+                    bgColor: appState.bgColor,
+                    sourceImage: appState.sourceImageBase64 || finalImg,
+                    generatedImage: finalImg
+                });
+                showToast(`ບັນທຶກ "${personName}" ລົງຖານຂໍ້ມູນຮຽບຮ້ອຍແລ້ວ`, 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('ບັນທຶກລົງຖານຂໍ້ມູນບໍ່ສຳເລັດ: ' + err.message, 'error');
+            }
+        }
+
+        function createRowFromDataUrl(dataUrl, label) {
+            return new Promise((resolve) => {
+                const imgObj = new Image();
+                imgObj.onload = () => {
+                    resolve({
+                        id: Date.now() + Math.random(),
+                        dataUrl,
+                        label,
+                        imageObj: imgObj
+                    });
+                };
+                imgObj.src = dataUrl;
+            });
+        }
+
+        async function addCurrentPhotoToA4Row() {
+            if (!appState.generatedImageBase64) {
+                showToast('ຍັງບໍ່ມີຮູບທີ່ແຕ່ງສຳເລັດ ກະລຸນາກົດໃຫ້ AI ແຕ່ງຮູບກ່ອນ', 'error');
+                return;
+            }
+            if (appState.a4Rows.length >= MAX_ROWS) {
+                showToast('ເຈ້ຍ A4 ເຕັມຄົບ 6 ແຖວ (36 ຮູບ) ແລ້ວ ກະລຸນາດາວໂຫຼດ ຫຼື ລຶບແຖວເກົ່າອອກກ່ອນ', 'error');
+                return;
+            }
+
+            const genderLabel = appState.suitGender === 'female' ? 'ສູດຍິງ' : 'ສູດຊາຍ';
+            const typedName = (document.getElementById('person-name-input').value || '').trim();
+            const rowIndex = appState.a4Rows.length + 1;
+            const rowLabel = typedName ? `${typedName} (${genderLabel})` : `ຄົນທີ ${rowIndex} (${genderLabel})`;
+
+            const newRow = await createRowFromDataUrl(appState.generatedImageBase64, rowLabel);
+            appState.a4Rows.push(newRow);
+            updateRowManagerUI();
+            renderA4Canvas();
+            showToast(`ເພີ່ມ "${rowLabel}" ລົງແຖວທີ ${appState.a4Rows.length} (6 ຮູບ) ຮຽບຮ້ອຍແລ້ວ`, 'success');
+        }
+
+        function duplicateA4Row(index) {
+            if (appState.a4Rows.length >= MAX_ROWS) {
+                showToast('ເຈ້ຍ A4 ເຕັມຄົບ 6 ແຖວແລ້ວ ບໍ່ສາມາດເຮັດຊ້ຳເພີ່ມໄດ້', 'error');
+                return;
+            }
+            const sourceRow = appState.a4Rows[index];
+            if (!sourceRow) return;
+
+            appState.a4Rows.splice(index + 1, 0, {
+                id: Date.now() + Math.random(),
+                dataUrl: sourceRow.dataUrl,
+                label: `${sourceRow.label} (ຊ້ຳ)`,
+                imageObj: sourceRow.imageObj
+            });
+            updateRowManagerUI();
+            renderA4Canvas();
+            showToast('ເຮັດຊ້ຳແຖວ (ເພີ່ມອີກ 6 ຮູບ) ຮຽບຮ້ອຍແລ້ວ', 'success');
+        }
+
+        function deleteA4Row(index) {
+            appState.a4Rows.splice(index, 1);
+            updateRowManagerUI();
+            renderA4Canvas();
+            showToast('ລຶບແຖວອອກຈາກເຈ້ຍ A4 ແລ້ວ', 'info');
+        }
+
+        function clearAllA4Rows() {
+            appState.a4Rows = [];
+            updateRowManagerUI();
+            renderA4Canvas();
+            showToast('ລ້າງຮູບທັງໝົດເທິງເຈ້ຍ A4 ແລ້ວ', 'info');
+        }
+
+        function resetAllData() {
+            clearSourceImage();
+            clearAllA4Rows();
+            document.getElementById('person-name-input').value = '';
+            showToast('ຣີເຊັດລະບົບເລີ່ມຕົ້ນໃໝ່ຮຽບຮ້ອຍ', 'info');
+        }
+
+        function updateRowManagerUI() {
+            const listEl = document.getElementById('row-manager-list');
+            const emptyState = document.getElementById('empty-a4-state');
+            const badge = document.getElementById('row-counter-badge');
+            const clearBtn = document.getElementById('btn-clear-a4');
+            const btnDownloadA4 = document.getElementById('btn-download-a4');
+            const btnDownloadPng = document.getElementById('btn-download-png');
+
+            const rowCount = appState.a4Rows.length;
+            const totalPhotos = rowCount * COLS_PER_ROW;
+
+            badge.textContent = `${rowCount} / ${MAX_ROWS} ແຖວ (${totalPhotos} ຮູບ)`;
+
+            const hasRows = rowCount > 0;
+            btnDownloadA4.disabled = !hasRows;
+            btnDownloadPng.disabled = !hasRows;
+
+            if (hasRows) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            if (!hasRows) {
+                listEl.innerHTML = '';
+                listEl.appendChild(emptyState);
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            listEl.innerHTML = '';
+            appState.a4Rows.forEach((row, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-2.5 bg-slate-50 hover:bg-slate-100/80 rounded-2xl border border-slate-200 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white text-xs font-bold flex items-center justify-center shrink-0">
+                            ${idx + 1}
+                        </span>
+                        <img src="${row.dataUrl}" alt="ແຖວ ${idx + 1}" class="w-9 h-12 object-cover rounded-md border border-slate-300 bg-white shrink-0">
+                        <div class="truncate">
+                            <div class="text-xs font-bold text-slate-800 truncate">ແຖວທີ ${idx + 1} : ${row.label}</div>
+                            <div class="text-[11px] text-slate-500">6 ຮູບ (ຂະໜາດ 3×4 ຊມ. ແນວນອນ)</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="duplicateA4Row(${idx})" ${rowCount >= MAX_ROWS ? 'disabled' : ''} class="p-2 rounded-xl text-blue-600 hover:bg-blue-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="ເຮັດຊ້ຳແຖວນີ້ (+6 ຮູບ)">
+                            <i class="fa-regular fa-copy text-sm"></i>
+                        </button>
+                        <button type="button" onclick="deleteA4Row(${idx})" class="p-2 rounded-xl text-red-500 hover:bg-red-100 transition-colors" title="ລຶບແຖວນີ້">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        function renderA4Canvas() {
+            const exportCanvas = document.getElementById('a4-export-canvas');
+            const ctx = exportCanvas.getContext('2d');
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, A4_WIDTH_PX, A4_HEIGHT_PX);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('A4 (21.0 x 29.7 cm) | ID Photo 3.0 x 4.0 cm (Zero-Gap Cutter Strip - 300 DPI 100%)', A4_WIDTH_PX - MARGIN_LEFT_PX, 85);
+
+            const rowTotalWidth = COLS_PER_ROW * PHOTO_W_PX;
+
+            appState.a4Rows.forEach((row, rIdx) => {
+                const y = MARGIN_TOP_PX + rIdx * (PHOTO_H_PX + GAP_Y_PX);
+
+                for (let cIdx = 0; cIdx < COLS_PER_ROW; cIdx++) {
+                    const x = MARGIN_LEFT_PX + cIdx * PHOTO_W_PX;
+                    if (row.imageObj) {
+                        ctx.drawImage(row.imageObj, x, y, PHOTO_W_PX, PHOTO_H_PX);
+                    }
+                }
+
+                ctx.save();
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 2.5;
+
+                const tickOffset = 4;
+                const tickLenTop = 16;
+                const tickLenBot = 24;
+                const tickLenSide = 22;
+
+                for (let cIdx = 0; cIdx <= COLS_PER_ROW; cIdx++) {
+                    const lineX = MARGIN_LEFT_PX + cIdx * PHOTO_W_PX;
+
+                    ctx.beginPath();
+                    ctx.moveTo(lineX, y - tickOffset - tickLenTop);
+                    ctx.lineTo(lineX, y - tickOffset);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(lineX, y + PHOTO_H_PX + tickOffset);
+                    ctx.lineTo(lineX, y + PHOTO_H_PX + tickOffset + tickLenBot);
+                    ctx.stroke();
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(MARGIN_LEFT_PX - tickOffset - tickLenSide, y);
+                ctx.lineTo(MARGIN_LEFT_PX - tickOffset, y);
+                ctx.moveTo(MARGIN_LEFT_PX + rowTotalWidth + tickOffset, y);
+                ctx.lineTo(MARGIN_LEFT_PX + rowTotalWidth + tickOffset + tickLenSide, y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(MARGIN_LEFT_PX - tickOffset - tickLenSide, y + PHOTO_H_PX);
+                ctx.lineTo(MARGIN_LEFT_PX - tickOffset, y + PHOTO_H_PX);
+                ctx.moveTo(MARGIN_LEFT_PX + rowTotalWidth + tickOffset, y + PHOTO_H_PX);
+                ctx.lineTo(MARGIN_LEFT_PX + rowTotalWidth + tickOffset + tickLenSide, y + PHOTO_H_PX);
+                ctx.stroke();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+                ctx.lineWidth = 1;
+                for (let cIdx = 1; cIdx < COLS_PER_ROW; cIdx++) {
+                    const seamX = MARGIN_LEFT_PX + cIdx * PHOTO_W_PX;
+                    ctx.beginPath();
+                    ctx.moveTo(seamX, y);
+                    ctx.lineTo(seamX, y + PHOTO_H_PX);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
+            });
+
+            const previewCanvas = document.getElementById('a4-preview-canvas');
+            const previewW = 620;
+            const previewH = Math.round(previewW * (A4_HEIGHT_PX / A4_WIDTH_PX));
+            previewCanvas.width = previewW;
+            previewCanvas.height = previewH;
+            const pCtx = previewCanvas.getContext('2d');
+
+            pCtx.drawImage(exportCanvas, 0, 0, previewW, previewH);
+
+            const scale = previewW / A4_WIDTH_PX;
+            for (let rIdx = appState.a4Rows.length; rIdx < MAX_ROWS; rIdx++) {
+                const py = (MARGIN_TOP_PX + rIdx * (PHOTO_H_PX + GAP_Y_PX)) * scale;
+                for (let cIdx = 0; cIdx < COLS_PER_ROW; cIdx++) {
+                    const px = (MARGIN_LEFT_PX + cIdx * PHOTO_W_PX) * scale;
+                    const pw = PHOTO_W_PX * scale;
+                    const ph = PHOTO_H_PX * scale;
+
+                    pCtx.save();
+                    pCtx.strokeStyle = '#e2e8f0';
+                    pCtx.lineWidth = 1;
+                    pCtx.setLineDash([3, 3]);
+                    pCtx.strokeRect(px, py, pw, ph);
+                    pCtx.restore();
+                }
+            }
+        }
+
+        function downloadSinglePhoto() {
+            if (!appState.generatedImageBase64) return;
+            const typedName = (document.getElementById('person-name-input').value || 'ID_Photo').trim().replace(/[\\/:*?"<>|]/g, '_');
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            link.download = `${typedName}_3x4cm_${timestamp}.png`;
+            link.href = appState.generatedImageBase64;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('ດາວໂຫຼດຮູບຕິດບັດດ່ຽວ 3×4 ຊມ. ຮຽບຮ້ອຍ', 'success');
+        }
+
+        function downloadA4Sheet(format = 'jpg') {
+            if (appState.a4Rows.length === 0) {
+                showToast('ກະລຸນາເພີ່ມຮູບລົງໃນເຈ້ຍ A4 ຢ່າງໜ້ອຍ 1 ແຖວກ່ອນດາວໂຫຼດ', 'error');
+                return;
+            }
+
+            renderA4Canvas();
+            const exportCanvas = document.getElementById('a4-export-canvas');
+            const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
+            const ext = format === 'png' ? 'png' : 'jpg';
+            const dataUrl = exportCanvas.toDataURL(mimeType, 0.98);
+
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().slice(0, 10);
+            const totalPhotos = appState.a4Rows.length * COLS_PER_ROW;
+            link.download = `A4_ID_Photos_3x4cm_${totalPhotos}pcs_300DPI_${timestamp}.${ext}`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast(`ບັນທຶກໄຟລ໌ A4 ພ້ອມພິມ (${totalPhotos} ຮູບ) ສຳເລັດ!`, 'success');
+        }
+
+        async function printA4Sheet() {
+            if (appState.a4Rows.length === 0 && appState.generatedImageBase64) {
+                const genderLabel = appState.suitGender === 'female' ? 'ສູດຍິງ' : 'ສູດຊາຍ';
+                const typedName = (document.getElementById('person-name-input').value || '').trim();
+                const rowLabel = typedName ? `${typedName} (${genderLabel})` : `ຄົນທີ 1 (${genderLabel})`;
+                const autoRow = await createRowFromDataUrl(appState.generatedImageBase64, rowLabel);
+                appState.a4Rows.push(autoRow);
+                updateRowManagerUI();
+            }
+
+            renderA4Canvas();
+            const exportCanvas = document.getElementById('a4-export-canvas');
+            const printImg = document.getElementById('print-only-image');
+            const sheetDataUrl = exportCanvas.toDataURL('image/png');
+
+            printImg.src = sheetDataUrl;
+
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    window.print();
+                }, 150);
+            });
+        }
+    </script>
+</body>
+</html>
